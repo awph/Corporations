@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Corporations</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="app_id">169291389944036</string>
+    <string name="login_title">Login</string>
+    <string name="get_started">To get started, log in using Facebook</string>
+    <string name="action_logout">Logout</string>
+    
+
+</resources>
