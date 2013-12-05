@@ -55,7 +55,7 @@ public class DataLoader
 		parameters.put("token", facebookToken);
 		parameters.put("lat", String.format("%1$.4f", home.latitude));
 		parameters.put("lng", String.format("%1$.4f", home.longitude));
-		request(parameters, ApiRequestType.territoriesFetching, dataLoaderListener);
+		request(parameters, ApiRequestType.connexion, dataLoaderListener);
 	}
 
 	private DataLoader()
@@ -65,7 +65,7 @@ public class DataLoader
 
 	private void request(Map<String, String> arguments, final ApiRequestType apiRequestType, final DataLoaderListener listener)
 	{
-		arguments.put("identifier", "425ffb07ca9578dae37832fc167c79629f5cc2b1");// AccountController.getInstance().getIdentifier());
+		arguments.put("identifier", AccountController.getInstance().getIdentifier());
 		StringBuilder url = new StringBuilder(CorporationsConfiguration.API_PATH);
 		url.append("?");
 		for (Entry<String, String> entry : arguments.entrySet())
@@ -135,20 +135,20 @@ public class DataLoader
 					Log.e("status", result.getString("status"));
 					JSONObject jsonObject = result.getJSONObject("results");
 					String userId = jsonObject.getString("id");
-					int numberAllies = jsonObject.getInt("na");
-					int numberTerritories = jsonObject.getInt("nt");
-					int rank = jsonObject.getInt("r");
-					int currentMoney = jsonObject.getInt("cm");
-					int currentRevenue = jsonObject.getInt("cr");
-					int totalGain = jsonObject.getInt("tg");
-					int experiencePoints = jsonObject.getInt("ep");
-					LatLng home = new LatLng(jsonObject.getDouble("hlat"), jsonObject.getDouble("hlng"));
-					int purchasePriceSkillLevel = jsonObject.getInt("ppl");
-					int purchaseDistanceSkillLevel = jsonObject.getInt("pdl");
-					int experienceLimitSkillLevel = jsonObject.getInt("ell");
-					int moneyLimitSkillLevel = jsonObject.getInt("mll");
-					int experienceQuantityFoundSkillLevel = jsonObject.getInt("eqfl");
-					int alliancePriceSkillLevel = jsonObject.getInt("apl");
+					int numberAllies = Integer.valueOf(jsonObject.getString("na"));
+					int numberTerritories = Integer.valueOf(jsonObject.getString("nt"));
+					int rank = Integer.valueOf(jsonObject.getString("r"));
+					int currentMoney = Integer.valueOf(jsonObject.getString("cm"));
+					int currentRevenue = Integer.valueOf(jsonObject.getString("cr"));
+					int totalGain = Integer.valueOf(jsonObject.getString("tg"));
+					int experiencePoints = Integer.valueOf(jsonObject.getString("ep"));
+					LatLng home = new LatLng(Double.valueOf(jsonObject.getString("hlat")), Double.valueOf(jsonObject.getString("hlng")));
+					int purchasePriceSkillLevel = Integer.valueOf(jsonObject.getString("ppl"));
+					int purchaseDistanceSkillLevel = Integer.valueOf(jsonObject.getString("pdl"));
+					int experienceLimitSkillLevel = Integer.valueOf(jsonObject.getString("ell"));
+					int moneyLimitSkillLevel = Integer.valueOf(jsonObject.getString("mll"));
+					int experienceQuantityFoundSkillLevel = Integer.valueOf(jsonObject.getString("eqfl"));
+					int alliancePriceSkillLevel = Integer.valueOf(jsonObject.getString("apl"));
 					Profile profile = new Profile(userId, numberAllies, numberTerritories, rank, currentMoney, currentRevenue, totalGain, experiencePoints, home, purchasePriceSkillLevel,
 							purchaseDistanceSkillLevel, experienceLimitSkillLevel, moneyLimitSkillLevel, experienceQuantityFoundSkillLevel, alliancePriceSkillLevel);
 					listener.connexionFinished(profile);
@@ -194,6 +194,7 @@ public class DataLoader
 		}
 		catch (Exception e)
 		{
+			Log.e(DataLoader.class.getSimpleName() + "->getJson", e.toString());
 			return null;
 		}
 
@@ -212,6 +213,7 @@ public class DataLoader
 		}
 		catch (Exception e)
 		{
+			Log.e(DataLoader.class.getSimpleName() + "->getJson", e.toString());
 			return null;
 		}
 
@@ -222,6 +224,9 @@ public class DataLoader
 		}
 		catch (JSONException e)
 		{
+
+			Log.e(DataLoader.class.getSimpleName() + "->getJson", result.toString());
+			Log.e(DataLoader.class.getSimpleName() + "->getJson", e.toString());
 			return null;
 		}
 

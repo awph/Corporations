@@ -56,6 +56,11 @@ public class Profile extends Player
 				+ Arrays.toString(skills) + ", toString()=" + super.toString() + "]";
 	}
 
+	public LatLng getHome()
+	{
+		return home;
+	}
+
 
 
 	private static final int	SKILL_PURCHASE_PRICE			= 0;

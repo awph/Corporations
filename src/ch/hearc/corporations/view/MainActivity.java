@@ -57,6 +57,7 @@ public class MainActivity extends Activity
 																	onSessionStateChange(session, state, exception);
 																}
 															};
+	LocationClient					locationClient;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -81,13 +82,14 @@ public class MainActivity extends Activity
 
 		getActionBar().hide();
 		generateKeyHash();
+		/*
 		DataLoader.getInstance().getTerritoriesForLocation(new LatLng(47.597, 6.99), new DataLoaderAdapter() {
 
 			@Override
 			public void territoriesFetched(List<Territory> territories)
 			{
 			}
-		});
+		});*/
 	}
 
 	private void showFragment(int fragmentIndex, boolean addToBackStack)
@@ -137,7 +139,7 @@ public class MainActivity extends Activity
 							AccountController.getInstance().setFacebookID(user.getId());
 							if (AccountController.getInstance().getHome() == null)
 							{
-								final LocationClient locationClient = new LocationClient(MainActivity.this, new GooglePlayServicesClient.ConnectionCallbacks() {
+								locationClient = new LocationClient(MainActivity.this, new GooglePlayServicesClient.ConnectionCallbacks() {
 
 									@Override
 									public void onDisconnected()
@@ -149,8 +151,9 @@ public class MainActivity extends Activity
 									@Override
 									public void onConnected(Bundle arg0)
 									{
-//										Location location = locationClient.getLastLocation();
-										Log.e("Login", arg0.toString());
+										Location location = locationClient.getLastLocation();
+										loginToServer(session, new LatLng(location.getLatitude(), location.getLongitude()));
+										locationClient.disconnect();
 									}
 								}, new GooglePlayServicesClient.OnConnectionFailedListener() {
 
@@ -162,44 +165,6 @@ public class MainActivity extends Activity
 									}
 								});
 								locationClient.connect();
-								// loginToServer(session,
-								// AccountController.getInstance().getHome());
-
-								// locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-								// 5000l, 10f, new LocationListener() {
-								//
-								// @Override
-								// public void onLocationChanged(Location
-								// location)
-								// {
-								// Log.e("Login", location.toString());
-								// locationManager.removeUpdates(this);
-								// //loginToServer(session, new
-								// LatLng(location.getLatitude(),
-								// location.getLongitude()));
-								// }
-								//
-								// @Override
-								// public void onProviderDisabled(String
-								// provider)
-								// {
-								//
-								// }
-								//
-								// @Override
-								// public void onProviderEnabled(String
-								// provider)
-								// {
-								//
-								// }
-								//
-								// @Override
-								// public void onStatusChanged(String provider,
-								// int status, Bundle extras)
-								// {
-								//
-								// }
-								// });
 							}
 							else
 							{
@@ -222,6 +187,7 @@ public class MainActivity extends Activity
 							{
 								showFragment(TERRITORIES_FRAGMENT, false);
 								AccountController.getInstance().setProfile(profile);
+								AccountController.getInstance().setHome(profile.getHome());
 								Log.e("Login", AccountController.getInstance().getProfile().toString());
 							}
 						});
