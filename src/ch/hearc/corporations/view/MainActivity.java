@@ -2,7 +2,6 @@ package ch.hearc.corporations.view;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.List;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -14,8 +13,6 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.Signature;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
@@ -26,7 +23,6 @@ import ch.hearc.corporations.controller.AccountController;
 import ch.hearc.corporations.controller.DataLoader;
 import ch.hearc.corporations.controller.DataLoaderAdapter;
 import ch.hearc.corporations.model.Profile;
-import ch.hearc.corporations.model.Territory;
 
 import com.facebook.Request;
 import com.facebook.Response;
@@ -45,7 +41,8 @@ public class MainActivity extends Activity
 	private boolean					isResumed				= false;
 	private static final int		LOGIN_FRAGMENT			= 0;
 	private static final int		TERRITORIES_FRAGMENT	= 1;
-	private static final int		FRAGMENT_COUNT			= TERRITORIES_FRAGMENT + 1;
+	private static final int		PROFILE_FRAGMENT	= 2;
+	private static final int		FRAGMENT_COUNT			= PROFILE_FRAGMENT + 1;
 
 	private Fragment[]				fragments				= new Fragment[FRAGMENT_COUNT];
 
@@ -65,13 +62,12 @@ public class MainActivity extends Activity
 		super.onCreate(savedInstanceState);
 		uiHelper = new UiLifecycleHelper(this, callback);
 		uiHelper.onCreate(savedInstanceState);
-		Log.d(LOG, "Before layout");
 		setContentView(R.layout.main);
-		Log.d(LOG, "After layout");
 
 		FragmentManager fm = getFragmentManager();
-		fragments[LOGIN_FRAGMENT] = fm.findFragmentById(R.id.splashFragment);
+		fragments[LOGIN_FRAGMENT] = fm.findFragmentById(R.id.loginFragment);
 		fragments[TERRITORIES_FRAGMENT] = fm.findFragmentById(R.id.territoriesFragment);
+		fragments[PROFILE_FRAGMENT] = fm.findFragmentById(R.id.profileFragment);
 
 		FragmentTransaction transaction = fm.beginTransaction();
 		for (int i = 0; i < fragments.length; i++)
@@ -82,18 +78,21 @@ public class MainActivity extends Activity
 
 		getActionBar().hide();
 		generateKeyHash();
-		/*
-		DataLoader.getInstance().getTerritoriesForLocation(new LatLng(47.597, 6.99), new DataLoaderAdapter() {
-
-			@Override
-			public void territoriesFetched(List<Territory> territories)
-			{
-			}
-		});*/
+	}
+	
+	public void showProfileFragment()
+	{
+		showFragment(PROFILE_FRAGMENT, true);
+		((ProfileFragment)fragments[PROFILE_FRAGMENT]).displayed();
 	}
 
 	private void showFragment(int fragmentIndex, boolean addToBackStack)
 	{
+		if(fragmentIndex == TERRITORIES_FRAGMENT)
+			((TerritoriesFragment)fragments[TERRITORIES_FRAGMENT]).setActived(true);
+		else
+			((TerritoriesFragment)fragments[TERRITORIES_FRAGMENT]).setActived(false);
+		
 		FragmentManager fm = getFragmentManager();
 		FragmentTransaction transaction = fm.beginTransaction();
 		for (int i = 0; i < fragments.length; i++)
@@ -183,12 +182,11 @@ public class MainActivity extends Activity
 						DataLoader.getInstance().loginToServer(session.getAccessToken(), location, new DataLoaderAdapter() {
 
 							@Override
-							public void connexionFinished(Profile profile)
+							public void connectionFinished(Profile profile)
 							{
-								showFragment(TERRITORIES_FRAGMENT, false);
 								AccountController.getInstance().setProfile(profile);
 								AccountController.getInstance().setHome(profile.getHome());
-								Log.e("Login", AccountController.getInstance().getProfile().toString());
+								showFragment(TERRITORIES_FRAGMENT, false);
 							}
 						});
 					}

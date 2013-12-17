@@ -2,8 +2,7 @@ package ch.hearc.corporations.model;
 
 import java.util.Comparator;
 
-import android.location.Location;
-
+import android.util.Log;
 import ch.hearc.corporations.view.TerritoriesFragment;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -15,14 +14,13 @@ public class LatLngComparator implements Comparator<LatLng>
 	public int compare(LatLng latLng1, LatLng latLng2)
 	{
 		LatLng currentLocation = TerritoriesFragment.currentLocation;
-		float[] results = new float[3];
-		float distanceToLatLng1 = -1;
-		float distanceToLatLng2 = -1;
-		Location.distanceBetween(currentLocation.latitude, currentLocation.longitude, latLng1.latitude, latLng1.longitude, results);
-		if (results != null && results.length > 0) distanceToLatLng1 = results[0];
-		Location.distanceBetween(currentLocation.latitude, currentLocation.longitude, latLng2.latitude, latLng2.longitude, results);
-		if (results != null && results.length > 0) distanceToLatLng2 = results[0];
-		return Float.compare(distanceToLatLng1, distanceToLatLng2);
+		double distanceToLatLng1 = Math.pow(currentLocation.latitude - latLng1.latitude, 2) + Math.pow(currentLocation.longitude - latLng1.longitude, 2);
+		double distanceToLatLng2 = Math.pow(currentLocation.latitude - latLng2.latitude, 2) + Math.pow(currentLocation.longitude - latLng2.longitude, 2);
+		if (Double.compare(distanceToLatLng1, distanceToLatLng2) == 0)
+		{
+			Log.i("compare", latLng1.toString());
+			Log.i("compare", latLng2.toString());
+		}
+		return Double.compare(distanceToLatLng1, distanceToLatLng2);
 	};
-
 }

@@ -39,12 +39,12 @@ public class Profile extends Player
 		this.experiencePoints = experiencePoints;
 		this.home = home;
 		this.skills = new Skill[6];
-		this.skills[SKILL_PURCHASE_PRICE] = new Skill(SkillType.purchasePrice, purchasePriceSkillLevel);
-		this.skills[SKILL_PURCHASE_DISTANCE] = new Skill(SkillType.purchaseDistance, purchaseDistanceSkillLevel);
-		this.skills[SKILL_EXPERIENCE_LIMIT] = new Skill(SkillType.experienceLimit, experienceLimitSkillLevel);
-		this.skills[SKILL_MONEY_LIMIT] = new Skill(SkillType.moneyLimit, moneyLimitSkillLevel);
-		this.skills[SKILL_EXPERIENCE_QUANTITY_FOUND] = new Skill(SkillType.experienceQuantityFound, experienceQuantityFoundSkillLevel);
-		this.skills[SKILL_ALLIANCE_PRICE] = new Skill(SkillType.alliancePrice, alliancePriceSkillLevel);
+		this.skills[Skill.SKILL_PURCHASE_PRICE] = new Skill(SkillType.purchasePrice, purchasePriceSkillLevel);
+		this.skills[Skill.SKILL_PURCHASE_DISTANCE] = new Skill(SkillType.purchaseDistance, purchaseDistanceSkillLevel);
+		this.skills[Skill.SKILL_EXPERIENCE_LIMIT] = new Skill(SkillType.experienceLimit, experienceLimitSkillLevel);
+		this.skills[Skill.SKILL_MONEY_LIMIT] = new Skill(SkillType.moneyLimit, moneyLimitSkillLevel);
+		this.skills[Skill.SKILL_EXPERIENCE_QUANTITY_FOUND] = new Skill(SkillType.experienceQuantityFound, experienceQuantityFoundSkillLevel);
+		this.skills[Skill.SKILL_ALLIANCE_PRICE] = new Skill(SkillType.alliancePrice, alliancePriceSkillLevel);
 	}
 	
 	
@@ -63,10 +63,8 @@ public class Profile extends Player
 
 
 
-	private static final int	SKILL_PURCHASE_PRICE			= 0;
-	private static final int	SKILL_PURCHASE_DISTANCE			= 1;
-	private static final int	SKILL_EXPERIENCE_LIMIT			= 2;
-	private static final int	SKILL_MONEY_LIMIT				= 3;
-	private static final int	SKILL_EXPERIENCE_QUANTITY_FOUND	= 4;
-	private static final int	SKILL_ALLIANCE_PRICE			= 5;
+	public Skill[] getSkills()
+	{
+		return skills;
+	}
 }

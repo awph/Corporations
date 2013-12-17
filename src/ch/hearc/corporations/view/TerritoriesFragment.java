@@ -4,13 +4,15 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
 import ch.hearc.corporations.R;
-import ch.hearc.corporations.controller.Territories;
+import ch.hearc.corporations.controller.TerritoriesManager;
 import ch.hearc.corporations.model.MercatorProjection;
-import ch.hearc.corporations.model.PurchasableTerritory;
 import ch.hearc.corporations.model.Territory;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -25,22 +27,21 @@ import com.google.android.gms.maps.model.PolygonOptions;
 public class TerritoriesFragment extends Fragment
 {
 	private GoogleMap			map;
+	private boolean				actived;
 	public static LatLng		currentLocation	= new LatLng(47.039340, 6.799249);
 	private static final LatLng	HOUSE			= new LatLng(47.039340, 6.799249);
 	public static final int		BORDER_COLOR	= Color.argb(150, 0, 0, 0);
-	public static final int		OWN_COLOR		= Color.argb(100, 25, 230, 25);
-	public static final int		ALLY_COLOR		= Color.argb(100, 25, 25, 230);
-	public static final int		ENEMY_COLOR		= Color.argb(100, 230, 25, 25);
-	public static final int		EMPTY_COLOR		= Color.argb(0, 0, 0, 0);
-	private Territories			territories;
+	private TerritoriesManager			territories;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
 		super.onCreateView(inflater, container, savedInstanceState);
-		View view = inflater.inflate(R.layout.activity_main, container, false);
-		territories = new Territories();
+		View view = inflater.inflate(R.layout.territories_fragment, container, false);
+		actived = false;
+		territories = new TerritoriesManager();
 		map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
+
 		map.setOnCameraChangeListener(new OnCameraChangeListener() {
 
 			@Override
@@ -52,33 +53,51 @@ public class TerritoriesFragment extends Fragment
 
 			private void refreshPolygoneForLocation(LatLng target)
 			{
-				Object[] territories = TerritoriesFragment.this.territories.getTerritoryPolygoneForLocation(target);
-				map.clear();
-				for (int i = 0; i < 70 && i < territories.length; ++i)
-					map.addPolygon(((Territory) territories[i]).getPolygon());
+				if (TerritoriesFragment.this.actived)
+				{
+					Object[] territories = TerritoriesFragment.this.territories.getTerritoryPolygoneForLocation(target, map);
+					//map.clear();
+					//for (int i = 0; i < 70 && i < territories.length; ++i)
+						//map.addPolygon(((Territory) territories[i]).getPolygon());
+				}
 			}
 		});
 		map.animateCamera(CameraUpdateFactory.newLatLngZoom(HOUSE, 13));
-		addShowHideListener(map, getFragmentManager().findFragmentById(R.id.territory));
-		new PurchasableTerritory(HOUSE);
+		addTerritoryInfoListener(map, (TerritoryInfoFragment) getFragmentManager().findFragmentById(R.id.territory));
+
+		Button showProfileButton = (Button) view.findViewById(R.id.showProfile);
+		showProfileButton.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v)
+			{
+				((MainActivity) getActivity()).showProfileFragment();
+			}
+		});
 		return view;
 	}
 
-	void addShowHideListener(GoogleMap map, final Fragment fragment)
+	void addTerritoryInfoListener(final GoogleMap map, final TerritoryInfoFragment fragment)
 	{
+		getFragmentManager().beginTransaction().hide(fragment).commit();
 		map.setOnMapClickListener(new OnMapClickListener() {
 
 			@Override
-			public void onMapClick(LatLng arg0)
+			public void onMapClick(LatLng location)
 			{
+				Territory territory = territories.getTerritoryForLocation(location, map);
+				boolean showFragment = fragment.updateTerritoryInfo(territory);
 				FragmentTransaction ft = getFragmentManager().beginTransaction();
 				ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
-				if (fragment.isHidden())
+				if (showFragment)
 				{
 					ft.show(fragment);
+					territory.setHighlighted(true);
+					map.animateCamera(CameraUpdateFactory.newLatLng(location));
 				}
 				else
 				{
+					territory.setHighlighted(false);//TODO
 					ft.hide(fragment);
 				}
 				ft.commit();
@@ -97,10 +116,15 @@ public class TerritoriesFragment extends Fragment
 						.add(MercatorProjection.fromLatLng(new LatLng(center.latitude + i * 0.001, center.longitude + j * 0.001)).getLatLng(),
 								MercatorProjection.fromLatLng(new LatLng(center.latitude + (i + 1) * 0.001, center.longitude + j * 0.001)).getLatLng(),
 								MercatorProjection.fromLatLng(new LatLng(center.latitude + (i + 1) * 0.001, center.longitude + (j + 1) * 0.001)).getLatLng(),
-								MercatorProjection.fromLatLng(new LatLng(center.latitude + i * 0.001, center.longitude + (j + 1) * 0.001)).getLatLng()).strokeColor(BORDER_COLOR).fillColor(OWN_COLOR)
+								MercatorProjection.fromLatLng(new LatLng(center.latitude + i * 0.001, center.longitude + (j + 1) * 0.001)).getLatLng()).strokeColor(BORDER_COLOR).fillColor(0)
 						.strokeWidth(1f));
 			}
 		}
+	}
+
+	public void setActived(boolean actived)
+	{
+		this.actived = actived;
 	}
 
 	private static final String	FACEBOOK_LOG	= "Log : Facebook";

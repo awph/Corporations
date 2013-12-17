@@ -22,14 +22,47 @@ import com.google.android.gms.maps.model.LatLng;
 public class PurchasableTerritory extends Territory
 {
 	private int	salePrice;
+	private int	purchasingPrice;
 
-	public PurchasableTerritory(LatLng location)
+	public PurchasableTerritory(LatLng location, Player owner, long timeOwned, int salePrice, int purchasingPrice)
 	{
-		super(location);
+		super(location, owner, timeOwned);
+		this.salePrice = salePrice;
+		this.purchasingPrice = purchasingPrice;
 	}
+	
+	
+
+	/**
+	 * @return the salePrice
+	 */
+	public int getSalePrice()
+	{
+		return salePrice;
+	}
+
+
+
+	/**
+	 * @return the purchasingPrice
+	 */
+	public int getPurchasingPrice()
+	{
+		return purchasingPrice;
+	}
+
+
 
 	public void buy()
 	{
 
+	}
+
+
+
+	public void changePrice()
+	{
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -51,7 +51,19 @@ public abstract class DataLoaderAdapter implements DataLoaderListener
 	{
 	}
 
-	public void connexionFinished(Profile profile)
+	public void connectionFinished(Profile profile)
+	{
+	}
+
+	public void allianceUpdated(int status)
+	{
+	}
+
+	public void profileUpdated(Profile profile)
+	{
+	}
+
+	public void tripUpdated(int status)
 	{
 	}
 }

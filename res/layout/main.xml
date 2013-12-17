@@ -5,14 +5,20 @@
     android:orientation="vertical" >
 
     <fragment
-        android:id="@+id/splashFragment"
-        android:name="ch.hearc.corporations.view.SplashFragment"
+        android:id="@+id/loginFragment"
+        android:name="ch.hearc.corporations.view.LoginFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
     
     <fragment
         android:id="@+id/territoriesFragment"
         android:name="ch.hearc.corporations.view.TerritoriesFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+    
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="ch.hearc.corporations.view.ProfileFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

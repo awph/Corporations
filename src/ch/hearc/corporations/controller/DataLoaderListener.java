@@ -7,8 +7,6 @@ import ch.hearc.corporations.model.Profile;
 import ch.hearc.corporations.model.Territory;
 import ch.hearc.corporations.model.Trip;
 
-
-
 public interface DataLoaderListener
 {
 	void leaderboardFetched(List<Player> players);
@@ -17,5 +15,8 @@ public interface DataLoaderListener
 	void tripsFetched(List<Trip> trips);
 	void territoryPurchased(Territory territory);
 	void territoryCaptured(Territory territory);
-	void connexionFinished(Profile profile);
+	void connectionFinished(Profile profile);
+	void allianceUpdated(int status);
+	void profileUpdated(Profile profile);
+	void tripUpdated(int status);
 }

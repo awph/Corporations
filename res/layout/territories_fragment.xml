@@ -15,10 +15,18 @@
 
     <fragment
         android:id="@+id/territory"
-        android:name="ch.hearc.corporations.view.TerritoryFragment"
+        android:name="ch.hearc.corporations.view.TerritoryInfoFragment"
         android:layout_width="fill_parent"
         android:layout_height="200dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true" />
+
+    <Button
+        android:id="@+id/showProfile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:text="Button" />
 
 </RelativeLayout>

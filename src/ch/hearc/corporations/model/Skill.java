@@ -19,6 +19,13 @@ package ch.hearc.corporations.model;
  */
 public class Skill
 {
+	public static final int	SKILL_PURCHASE_PRICE			= 0;
+	public static final int	SKILL_PURCHASE_DISTANCE			= 1;
+	public static final int	SKILL_EXPERIENCE_LIMIT			= 2;
+	public static final int	SKILL_MONEY_LIMIT				= 3;
+	public static final int	SKILL_EXPERIENCE_QUANTITY_FOUND	= 4;
+	public static final int	SKILL_ALLIANCE_PRICE			= 5;
+	
 	private SkillType	type;
 	private int			level;
 

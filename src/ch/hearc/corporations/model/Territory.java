@@ -1,21 +1,74 @@
 package ch.hearc.corporations.model;
 
-import java.util.Arrays;
+import java.util.Random;
 
 import android.location.Location;
 import android.util.Log;
-
+import ch.hearc.corporations.controller.AccountController;
 import ch.hearc.corporations.view.TerritoriesFragment;
 
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
 
 public abstract class Territory implements Comparable<Territory>
 {
-	private int					revenue;
-	private TerritoyType		type;
-	private LatLng[]			points;
-	private PolygonOptions		polygon;
+	protected int			revenue;
+	private TerritoyType	type;
+	private Player			owner;
+	protected long			timeOwned;
+
+	private LatLng[]		points;
+
+	/**
+	 * @return the type
+	 */
+	public TerritoyType getType()
+	{
+		return type;
+	}
+
+	/**
+	 * @return the revenue
+	 */
+	public int getRevenue()
+	{
+		return revenue;
+	}
+
+	/**
+	 * @return the owner
+	 */
+	public Player getOwner()
+	{
+		return owner;
+	}
+
+	/**
+	 * @return the timeOwned
+	 */
+	public long getTimeOwned()
+	{
+		return timeOwned;
+	}
+
+	/**
+	 * @return the points
+	 */
+	public LatLng[] getPoints()
+	{
+		return points;
+	}
+
+	public long getTotalGain()
+	{
+		return timeOwned * revenue;
+	}
+
+	private Polygon				polygon;
+	private PolygonOptions		polygonOptions;
+
 	private static final int	TOP_LEFT					= 0;
 	private static final int	TOP_RIGHT					= 1;
 	private static final int	BOTTOM_LEFT					= 2;
@@ -27,8 +80,25 @@ public abstract class Territory implements Comparable<Territory>
 	private static final int	TERRITORY_SIZE_IN_METER		= 5000;
 	private static final double	TERRITORY_SIZE_IN_LAT_LON	= 0.01D;
 
-	public Territory(LatLng location)
+	public Territory(LatLng location, Player owner, long timeOwned)
 	{
+		this.owner = owner;
+		this.timeOwned = timeOwned;
+		this.polygon = null;
+		if (owner != null)
+		{
+			if (owner.getUserID().equals(AccountController.getInstance().getProfile().getUserID()))
+				this.type = TerritoyType.Mine;
+			else if (owner.isAlly())
+				this.type = TerritoyType.Ally;
+			else
+				this.type = TerritoyType.Enemy;
+			
+			owner.addTerritory(this);
+		}
+		else
+			this.type = TerritoyType.Free;
+
 		if (deltaLat == 0)
 		{
 			deltaLat = computeLatitudeDeltaForMeters();
@@ -47,8 +117,8 @@ public abstract class Territory implements Comparable<Territory>
 			points[BOTTOM_LEFT] = new LatLng(topLatitude - TERRITORY_SIZE_IN_LAT_LON, leftLongitude);
 			points[BOTTOM_RIGHT] = new LatLng(topLatitude - TERRITORY_SIZE_IN_LAT_LON, leftLongitude + TERRITORY_SIZE_IN_LAT_LON);
 			points[CENTER] = new LatLng(topLatitude - TERRITORY_SIZE_IN_LAT_LON / 2, leftLongitude + TERRITORY_SIZE_IN_LAT_LON / 2);
-			polygon = new PolygonOptions().add(points[TOP_LEFT], points[TOP_RIGHT], points[BOTTOM_RIGHT], points[BOTTOM_LEFT]).strokeColor(TerritoriesFragment.BORDER_COLOR)
-					.fillColor(TerritoriesFragment.OWN_COLOR).strokeWidth(1f);
+			polygonOptions = new PolygonOptions().add(points[TOP_LEFT], points[TOP_RIGHT], points[BOTTOM_RIGHT], points[BOTTOM_LEFT]).strokeColor(TerritoriesFragment.BORDER_COLOR)
+					.fillColor(type.getColor()).strokeWidth(1f);
 		}
 		else
 		{
@@ -63,8 +133,8 @@ public abstract class Territory implements Comparable<Territory>
 			points[BOTTOM_LEFT] = new LatLng(topLatitude - deltaLat * TERRITORY_SIZE_IN_METER, leftLongitude);
 			points[BOTTOM_RIGHT] = new LatLng(topLatitude - deltaLat * TERRITORY_SIZE_IN_METER, leftLongitude + deltaLon * TERRITORY_SIZE_IN_METER);
 			points[CENTER] = new LatLng(topLatitude - deltaLat * TERRITORY_SIZE_IN_METER / 2, leftLongitude + deltaLon * TERRITORY_SIZE_IN_METER / 2);
-			polygon = new PolygonOptions().add(points[TOP_LEFT], points[TOP_RIGHT], points[BOTTOM_RIGHT], points[BOTTOM_LEFT]).strokeColor(TerritoriesFragment.BORDER_COLOR)
-					.fillColor(TerritoriesFragment.OWN_COLOR).strokeWidth(1f);
+			polygonOptions = new PolygonOptions().add(points[TOP_LEFT], points[TOP_RIGHT], points[BOTTOM_RIGHT], points[BOTTOM_LEFT]).strokeColor(TerritoriesFragment.BORDER_COLOR)
+					.fillColor(type.getColor()).strokeWidth(1f);
 		}
 
 		// Log.d("Log : Territory", points[CENTER].toString());
@@ -75,7 +145,7 @@ public abstract class Territory implements Comparable<Territory>
 		// - points[CENTER].longitude));
 	}
 
-	public boolean isInBounds(double longitude, double latitude)
+	public boolean isInBounds(double latitude, double longitude)
 	{
 		return (latitude < points[TOP_LEFT].latitude && latitude > points[BOTTOM_LEFT].latitude && longitude > points[TOP_LEFT].longitude && longitude < points[TOP_RIGHT].longitude);
 	}
@@ -152,7 +222,20 @@ public abstract class Territory implements Comparable<Territory>
 		return delta;
 	}
 
-	public PolygonOptions getPolygon()
+	public void setMap(GoogleMap map)
+	{
+		polygon = map.addPolygon(polygonOptions);
+	}
+
+	public void setVisible(boolean visible)
+	{
+		polygon.setVisible(visible);
+	}
+
+	/**
+	 * @return the polygon
+	 */
+	public Polygon getPolygon()
 	{
 		return polygon;
 	}
@@ -173,6 +256,21 @@ public abstract class Territory implements Comparable<Territory>
 	public int hashCode()
 	{
 		Log.d("Log : Territory", "" + (int) ((points[CENTER].latitude + points[CENTER].longitude) / TERRITORY_SIZE_IN_LAT_LON / 0.1));
-		return (int) ((points[CENTER].latitude + points[CENTER].longitude) / TERRITORY_SIZE_IN_LAT_LON / 0.1);
+		Random random = new Random();
+		return (int) ((points[CENTER].latitude + points[CENTER].longitude) / TERRITORY_SIZE_IN_LAT_LON / 0.1) * random.nextInt();
+	}
+
+	public void setHighlighted(boolean highlighted)
+	{
+		polygon.setStrokeWidth(highlighted ? 5f : 1f);
+	}
+
+	public void updateAlliance()
+	{
+		if (owner.isAlly())
+			this.type = TerritoyType.Ally;
+		else
+			this.type = TerritoyType.Enemy;
+		polygon.setFillColor(this.type.getColor());
 	}
 }
