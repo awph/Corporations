@@ -271,6 +271,7 @@ public abstract class Territory implements Comparable<Territory>
 			this.type = TerritoyType.Ally;
 		else
 			this.type = TerritoyType.Enemy;
-		polygon.setFillColor(this.type.getColor());
+		if(polygon != null)
+			polygon.setFillColor(this.type.getColor());
 	}
 }

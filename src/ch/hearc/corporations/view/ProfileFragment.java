@@ -46,7 +46,7 @@ public class ProfileFragment extends Fragment
 	
 	public void displayed()
 	{
-		initSkills();
+		//initSkills();
 	}
 
 	private void initSkills()

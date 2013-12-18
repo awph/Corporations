@@ -37,11 +37,10 @@ import com.google.android.gms.maps.model.LatLng;
 
 public class MainActivity extends Activity
 {
-	private Session					session;
 	private boolean					isResumed				= false;
 	private static final int		LOGIN_FRAGMENT			= 0;
 	private static final int		TERRITORIES_FRAGMENT	= 1;
-	private static final int		PROFILE_FRAGMENT	= 2;
+	private static final int		PROFILE_FRAGMENT		= 2;
 	private static final int		FRAGMENT_COUNT			= PROFILE_FRAGMENT + 1;
 
 	private Fragment[]				fragments				= new Fragment[FRAGMENT_COUNT];
@@ -74,38 +73,35 @@ public class MainActivity extends Activity
 		{
 			transaction.hide(fragments[i]);
 		}
+		transaction.show(fragments[LOGIN_FRAGMENT]);
 		transaction.commit();
 
 		getActionBar().hide();
-		generateKeyHash();
 	}
-	
+
 	public void showProfileFragment()
 	{
 		showFragment(PROFILE_FRAGMENT, true);
-		((ProfileFragment)fragments[PROFILE_FRAGMENT]).displayed();
+		((ProfileFragment) fragments[PROFILE_FRAGMENT]).displayed();
 	}
 
 	private void showFragment(int fragmentIndex, boolean addToBackStack)
 	{
-		if(fragmentIndex == TERRITORIES_FRAGMENT)
-			((TerritoriesFragment)fragments[TERRITORIES_FRAGMENT]).setActived(true);
+		if (fragmentIndex == TERRITORIES_FRAGMENT)
+			((TerritoriesFragment) fragments[TERRITORIES_FRAGMENT]).setActived(true);
 		else
-			((TerritoriesFragment)fragments[TERRITORIES_FRAGMENT]).setActived(false);
-		
+			((TerritoriesFragment) fragments[TERRITORIES_FRAGMENT]).setActived(false);
+
 		FragmentManager fm = getFragmentManager();
 		FragmentTransaction transaction = fm.beginTransaction();
-		for (int i = 0; i < fragments.length; i++)
-		{
-			if (i == fragmentIndex)
-			{
-				transaction.show(fragments[i]);
-			}
-			else
-			{
-				transaction.hide(fragments[i]);
-			}
-		}
+		
+		int currentFragment = -1;
+		for(int i = 0; i < fragments.length; ++i)
+			if(fragments[i].isVisible())
+				currentFragment = i;
+		transaction.show(fragments[fragmentIndex]);
+		if(currentFragment >= 0) transaction.hide(fragments[currentFragment]);
+		
 		if (addToBackStack)
 		{
 			transaction.addToBackStack(null);
@@ -199,36 +195,6 @@ public class MainActivity extends Activity
 				showFragment(LOGIN_FRAGMENT, false);
 			}
 		}
-	}
-
-	/*
-	 * @Override protected void onResumeFragments() { super.onResumeFragments();
-	 * Session session = Session.getActiveSession();
-	 * 
-	 * if (session != null && session.isOpened()) { // if the session is already
-	 * open, // try to show the selection fragment
-	 * showFragment(TERRITORIES_FRAGMENT, false); } else { // otherwise present
-	 * the splash screen // and ask the person to login.
-	 * showFragment(LOGIN_FRAGMENT, false); } }
-	 */
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu)
-	{
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
-	}
-
-	public boolean onOptionsItemSelected(MenuItem item)
-	{
-		switch (item.getItemId())
-		{
-			case R.id.action_logout:
-				showFragment(LOGIN_FRAGMENT, true);
-				return true;
-		}
-		return false;
 	}
 
 	@Override

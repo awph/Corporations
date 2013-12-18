@@ -34,6 +34,11 @@ public class TerritoryInfoFragment extends Fragment
 	private Territory								territory;
 	private boolean									displayed;
 
+	public interface Callback
+	{
+		void update();
+	}
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
@@ -114,8 +119,7 @@ public class TerritoryInfoFragment extends Fragment
 			}
 			else
 			{
-				hideButton(firstButton);
-				hideButton(secondButton);
+				setCaptureButton();
 			}
 			if (territory.getOwner().isAlly())
 			{
@@ -150,10 +154,14 @@ public class TerritoryInfoFragment extends Fragment
 			@Override
 			public void onClick(View arg0)
 			{
-				if (ally)
-					territory.getOwner().askAlliance();
-				else
-					territory.getOwner().revokeAlliance();
+				territory.getOwner().updateAlliance(new Callback() {
+
+					@Override
+					public void update()
+					{
+						TerritoryInfoFragment.this.loadInfo();
+					}
+				});
 			}
 		});
 	}

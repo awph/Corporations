@@ -14,7 +14,6 @@
 package ch.hearc.corporations.model;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import android.widget.Toast;
@@ -22,6 +21,7 @@ import ch.hearc.corporations.Corporations;
 import ch.hearc.corporations.controller.DataLoader;
 import ch.hearc.corporations.controller.DataLoaderAdapter;
 import ch.hearc.corporations.controller.DataLoaderUtil;
+import ch.hearc.corporations.view.TerritoryInfoFragment.Callback;
 
 /**
  * @author Alexandre
@@ -46,7 +46,7 @@ public class Player
 		this.numberAllies = numberAllies;
 		this.nomberTerritories = nomberTerritories;
 		this.ally = ally;
-		this.territories = new LinkedList<Territory>();
+		this.territories = new ArrayList<Territory>();
 	}
 
 	@Override
@@ -68,10 +68,10 @@ public class Player
 	public String getName()
 	{
 		// TODO Auto-generated method stub
-		return null;
+		return userID;
 	}
 
-	public void askAlliance()
+	public void updateAlliance(final Callback callback)
 	{
 		DataLoader.getInstance().updateAlliance(this, new DataLoaderAdapter() {
 			@Override
@@ -85,6 +85,7 @@ public class Player
 				else
 				{
 					Player.this.ally = !Player.this.ally;
+					callback.update();
 					for (Territory territory : territories)
 						if(territory != null) //TODO: WTF
 							territory.updateAlliance();
@@ -93,16 +94,8 @@ public class Player
 		});
 	}
 
-	public void revokeAlliance()
-	{
-		askAlliance();
-	}
-
 	public void addTerritory(Territory territory)
 	{
-		int i;
-		if(territory == null)
-			i = 1;
 		territories.add(territory);
 	}
 

@@ -11,6 +11,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import ch.hearc.corporations.R;
+import ch.hearc.corporations.controller.AccountController;
 import ch.hearc.corporations.controller.TerritoriesManager;
 import ch.hearc.corporations.model.MercatorProjection;
 import ch.hearc.corporations.model.Territory;
@@ -31,7 +32,8 @@ public class TerritoriesFragment extends Fragment
 	public static LatLng		currentLocation	= new LatLng(47.039340, 6.799249);
 	private static final LatLng	HOUSE			= new LatLng(47.039340, 6.799249);
 	public static final int		BORDER_COLOR	= Color.argb(150, 0, 0, 0);
-	private TerritoriesManager			territories;
+	private TerritoriesManager	territories;
+	private ProfilePictureView	profilePictureView;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -41,6 +43,7 @@ public class TerritoriesFragment extends Fragment
 		actived = false;
 		territories = new TerritoriesManager();
 		map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
+		map.getUiSettings().setZoomControlsEnabled(false);
 
 		map.setOnCameraChangeListener(new OnCameraChangeListener() {
 
@@ -56,17 +59,18 @@ public class TerritoriesFragment extends Fragment
 				if (TerritoriesFragment.this.actived)
 				{
 					Object[] territories = TerritoriesFragment.this.territories.getTerritoryPolygoneForLocation(target, map);
-					//map.clear();
-					//for (int i = 0; i < 70 && i < territories.length; ++i)
-						//map.addPolygon(((Territory) territories[i]).getPolygon());
+					// map.clear();
+					// for (int i = 0; i < 70 && i < territories.length; ++i)
+					// map.addPolygon(((Territory)
+					// territories[i]).getPolygon());
 				}
 			}
 		});
 		map.animateCamera(CameraUpdateFactory.newLatLngZoom(HOUSE, 13));
 		addTerritoryInfoListener(map, (TerritoryInfoFragment) getFragmentManager().findFragmentById(R.id.territory));
 
-		Button showProfileButton = (Button) view.findViewById(R.id.showProfile);
-		showProfileButton.setOnClickListener(new OnClickListener() {
+		profilePictureView = (ProfilePictureView) view.findViewById(R.id.profile_picture_view);
+		profilePictureView.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v)
@@ -97,7 +101,7 @@ public class TerritoriesFragment extends Fragment
 				}
 				else
 				{
-					territory.setHighlighted(false);//TODO
+					territory.setHighlighted(false);// TODO
 					ft.hide(fragment);
 				}
 				ft.commit();
@@ -105,26 +109,11 @@ public class TerritoriesFragment extends Fragment
 		});
 	}
 
-	private void addOverlay(GoogleMap map, LatLng center)
-	{
-		currentLocation = center;
-		for (int i = -5; i < 5; ++i)
-		{
-			for (int j = -5; j < 5; ++j)
-			{
-				map.addPolygon(new PolygonOptions()
-						.add(MercatorProjection.fromLatLng(new LatLng(center.latitude + i * 0.001, center.longitude + j * 0.001)).getLatLng(),
-								MercatorProjection.fromLatLng(new LatLng(center.latitude + (i + 1) * 0.001, center.longitude + j * 0.001)).getLatLng(),
-								MercatorProjection.fromLatLng(new LatLng(center.latitude + (i + 1) * 0.001, center.longitude + (j + 1) * 0.001)).getLatLng(),
-								MercatorProjection.fromLatLng(new LatLng(center.latitude + i * 0.001, center.longitude + (j + 1) * 0.001)).getLatLng()).strokeColor(BORDER_COLOR).fillColor(0)
-						.strokeWidth(1f));
-			}
-		}
-	}
-
 	public void setActived(boolean actived)
 	{
 		this.actived = actived;
+		profilePictureView.setPresetSize(ProfilePictureView.NORMAL);
+		profilePictureView.setProfileId(AccountController.getInstance().getFacebookID());
 	}
 
 	private static final String	FACEBOOK_LOG	= "Log : Facebook";
