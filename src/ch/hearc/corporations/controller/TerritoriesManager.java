@@ -26,14 +26,14 @@ public class TerritoriesManager
 		if (!fetchRunning)
 		{
 			fetchRunning = true;
-			DataLoader.getInstance().getTerritoriesForLocation(location, new DataLoaderAdapter() {
+			DataLoader.getInstance().getTerritoriesForLocation(location, 0, new DataLoaderAdapter() { //TODO
 
 				@Override
 				public void territoriesFetched(List<Territory> territories)
 				{
 					TerritoriesManager.this.territories.addAll(territories);
 					TerritoriesManager.this.setVisibleTerritories(location, map);
-//					fetchRunning = false;
+					// fetchRunning = false;
 				}
 			});
 		}
@@ -58,10 +58,7 @@ public class TerritoriesManager
 	{
 		for (int i = 0; i < 10; ++i)
 			for (int j = 0; j < 10; ++j)
-			{
-				LatLng border = new LatLng(currentLocation.latitude + (i - 5) * 0.01D, currentLocation.longitude + (j - 5) * 0.01D);
-				this.territories.add(new PurchasableTerritory(border, new Player("0", 0, 0, 0, true), 0, 0, 0));
-			}
+				this.territories.add(new PurchasableTerritory(currentLocation.latitude + (i - 5) * 0.01D, currentLocation.longitude + (j - 5) * 0.01D, new Player("0", 0, 0, 0, true), 0, 0, 0));
 
 	}
 
@@ -72,7 +69,7 @@ public class TerritoriesManager
 			if (territory.isInBounds(location.latitude, location.longitude)) return territory;
 		}
 
-		Territory territory = new PurchasableTerritory(location, null, 0, 0, 0);
+		Territory territory = new PurchasableTerritory(location.latitude, location.longitude, null, 0, 0, 0);
 		if (territory.getPolygon() == null) territory.setMap(map);
 		return territory;
 	}

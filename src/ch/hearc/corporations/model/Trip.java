@@ -13,6 +13,10 @@
 
 package ch.hearc.corporations.model;
 
+import java.util.Calendar;
+import java.util.Date;
+
+
 /**
  * @author Alexandre
  * 
@@ -21,11 +25,37 @@ public class Trip
 {
 	private float	distance;
 	private int		secondes;
+	private Date	date;
 
 	public Trip(float distance, int secondes)
 	{
 		this.distance = distance;
 		this.secondes = secondes;
+		this.date = Calendar.getInstance().getTime();
+	}
+
+	/**
+	 * @return the distance
+	 */
+	public float getDistance()
+	{
+		return distance;
+	}
+
+	/**
+	 * @return the secondes
+	 */
+	public int getTime()
+	{
+		return secondes;
+	}
+
+	/**
+	 * @return the date
+	 */
+	public Date getDate()
+	{
+		return date;
 	}
 
 	public int getExperienceEarned()

@@ -1,7 +1,6 @@
 package ch.hearc.corporations.model;
 
-import java.util.Random;
-
+import android.graphics.Color;
 import android.location.Location;
 import android.util.Log;
 import ch.hearc.corporations.controller.AccountController;
@@ -19,7 +18,8 @@ public abstract class Territory implements Comparable<Territory>
 	private Player			owner;
 	protected long			timeOwned;
 
-	private LatLng[]		points;
+	private double[]		latitudes;
+	private double[]		longitudes;
 
 	/**
 	 * @return the type
@@ -53,17 +53,19 @@ public abstract class Territory implements Comparable<Territory>
 		return timeOwned;
 	}
 
-	/**
-	 * @return the points
-	 */
-	public LatLng[] getPoints()
-	{
-		return points;
-	}
-
 	public long getTotalGain()
 	{
 		return timeOwned * revenue;
+	}
+
+	public double getLatitude()
+	{
+		return latitudes[CENTER];
+	}
+
+	public double getLongitude()
+	{
+		return longitudes[CENTER];
 	}
 
 	private Polygon				polygon;
@@ -79,8 +81,10 @@ public abstract class Territory implements Comparable<Territory>
 	private static final int	EARTH_RADIUS				= 6356752;
 	private static final int	TERRITORY_SIZE_IN_METER		= 5000;
 	private static final double	TERRITORY_SIZE_IN_LAT_LON	= 0.01D;
+	private static final float	BORDER_WIDTH				= 1f;
+	public static final int		BORDER_COLOR				= Color.argb(150, 0, 0, 0);
 
-	public Territory(LatLng location, Player owner, long timeOwned)
+	public Territory(double latitude, double longitude, Player owner, long timeOwned)
 	{
 		this.owner = owner;
 		this.timeOwned = timeOwned;
@@ -93,48 +97,72 @@ public abstract class Territory implements Comparable<Territory>
 				this.type = TerritoyType.Ally;
 			else
 				this.type = TerritoyType.Enemy;
-			
+
 			owner.addTerritory(this);
 		}
 		else
 			this.type = TerritoyType.Free;
+
+		latitudes = new double[5];
+		longitudes = new double[5];
 
 		if (deltaLat == 0)
 		{
 			deltaLat = computeLatitudeDeltaForMeters();
 			Log.d("Log : Delta Lat", Double.toString(deltaLat));
 		}
-		points = new LatLng[5];
 
 		boolean simple = true;
 		if (simple)
 		{
-			double topLatitude = getTopLatitudeTerritoryForLatitude2(location.latitude);
-			double leftLongitude = getLeftLongitudeTerritoryForLatitudeAndLongitude2(location.longitude);
+			double topLatitude = getTopLatitudeTerritoryForLatitude2(latitude);
+			double leftLongitude = getLeftLongitudeTerritoryForLatitudeAndLongitude2(longitude);
 
-			points[TOP_LEFT] = new LatLng(topLatitude, leftLongitude);
-			points[TOP_RIGHT] = new LatLng(topLatitude, leftLongitude + TERRITORY_SIZE_IN_LAT_LON);
-			points[BOTTOM_LEFT] = new LatLng(topLatitude - TERRITORY_SIZE_IN_LAT_LON, leftLongitude);
-			points[BOTTOM_RIGHT] = new LatLng(topLatitude - TERRITORY_SIZE_IN_LAT_LON, leftLongitude + TERRITORY_SIZE_IN_LAT_LON);
-			points[CENTER] = new LatLng(topLatitude - TERRITORY_SIZE_IN_LAT_LON / 2, leftLongitude + TERRITORY_SIZE_IN_LAT_LON / 2);
-			polygonOptions = new PolygonOptions().add(points[TOP_LEFT], points[TOP_RIGHT], points[BOTTOM_RIGHT], points[BOTTOM_LEFT]).strokeColor(TerritoriesFragment.BORDER_COLOR)
-					.fillColor(type.getColor()).strokeWidth(1f);
+			latitudes[TOP_LEFT] = topLatitude;
+			longitudes[TOP_LEFT] = leftLongitude;
+
+			latitudes[TOP_RIGHT] = topLatitude;
+			longitudes[TOP_RIGHT] = leftLongitude + TERRITORY_SIZE_IN_LAT_LON;
+
+			latitudes[BOTTOM_RIGHT] = topLatitude - TERRITORY_SIZE_IN_LAT_LON;
+			longitudes[BOTTOM_RIGHT] = leftLongitude + TERRITORY_SIZE_IN_LAT_LON;
+
+			latitudes[BOTTOM_LEFT] = topLatitude - TERRITORY_SIZE_IN_LAT_LON;
+			longitudes[BOTTOM_LEFT] = leftLongitude;
+
+			latitudes[CENTER] = topLatitude - TERRITORY_SIZE_IN_LAT_LON / 2;
+			longitudes[CENTER] = leftLongitude + TERRITORY_SIZE_IN_LAT_LON / 2;
+
+			polygonOptions = new PolygonOptions()
+					.add(new LatLng(latitudes[TOP_LEFT], longitudes[TOP_LEFT]), new LatLng(latitudes[TOP_RIGHT], longitudes[TOP_RIGHT]), new LatLng(latitudes[BOTTOM_RIGHT], longitudes[BOTTOM_RIGHT]),
+							new LatLng(latitudes[BOTTOM_LEFT], longitudes[BOTTOM_LEFT])).strokeColor(BORDER_COLOR).fillColor(type.getColor()).strokeWidth(BORDER_WIDTH);
 		}
 		else
 		{
 
-			double topLatitude = getTopLatitudeTerritoryForLatitude(location.latitude);
-			double[] leftLongitudeAndDelta = getLeftLongitudeTerritoryForLatitudeAndLongitude(topLatitude - deltaLat * TERRITORY_SIZE_IN_METER / 2, location.longitude);
+			double topLatitude = getTopLatitudeTerritoryForLatitude(latitude);
+			double[] leftLongitudeAndDelta = getLeftLongitudeTerritoryForLatitudeAndLongitude(topLatitude - deltaLat * TERRITORY_SIZE_IN_METER / 2, longitude);
 			double leftLongitude = leftLongitudeAndDelta[0];
 			double deltaLon = leftLongitudeAndDelta[1];
 
-			points[TOP_LEFT] = new LatLng(topLatitude, leftLongitude);
-			points[TOP_RIGHT] = new LatLng(topLatitude, leftLongitude + deltaLon * TERRITORY_SIZE_IN_METER);
-			points[BOTTOM_LEFT] = new LatLng(topLatitude - deltaLat * TERRITORY_SIZE_IN_METER, leftLongitude);
-			points[BOTTOM_RIGHT] = new LatLng(topLatitude - deltaLat * TERRITORY_SIZE_IN_METER, leftLongitude + deltaLon * TERRITORY_SIZE_IN_METER);
-			points[CENTER] = new LatLng(topLatitude - deltaLat * TERRITORY_SIZE_IN_METER / 2, leftLongitude + deltaLon * TERRITORY_SIZE_IN_METER / 2);
-			polygonOptions = new PolygonOptions().add(points[TOP_LEFT], points[TOP_RIGHT], points[BOTTOM_RIGHT], points[BOTTOM_LEFT]).strokeColor(TerritoriesFragment.BORDER_COLOR)
-					.fillColor(type.getColor()).strokeWidth(1f);
+			latitudes[TOP_LEFT] = topLatitude;
+			longitudes[TOP_LEFT] = topLatitude;
+
+			latitudes[TOP_RIGHT] = topLatitude;
+			longitudes[TOP_RIGHT] = leftLongitude + deltaLon * TERRITORY_SIZE_IN_METER;
+
+			latitudes[BOTTOM_RIGHT] = topLatitude - deltaLat * TERRITORY_SIZE_IN_METER;
+			longitudes[BOTTOM_RIGHT] = leftLongitude + deltaLon * TERRITORY_SIZE_IN_METER;
+
+			latitudes[BOTTOM_LEFT] = topLatitude - deltaLat * TERRITORY_SIZE_IN_METER;
+			longitudes[BOTTOM_LEFT] = leftLongitude;
+
+			latitudes[CENTER] = topLatitude - deltaLat * TERRITORY_SIZE_IN_METER / 2;
+			longitudes[CENTER] = leftLongitude + deltaLon * TERRITORY_SIZE_IN_METER / 2;
+
+			polygonOptions = new PolygonOptions()
+					.add(new LatLng(latitudes[TOP_LEFT], longitudes[TOP_LEFT]), new LatLng(latitudes[TOP_RIGHT], longitudes[TOP_RIGHT]), new LatLng(latitudes[BOTTOM_RIGHT], longitudes[BOTTOM_RIGHT]),
+							new LatLng(latitudes[BOTTOM_LEFT], longitudes[BOTTOM_LEFT])).strokeColor(BORDER_COLOR).fillColor(type.getColor()).strokeWidth(BORDER_WIDTH);
 		}
 
 		// Log.d("Log : Territory", points[CENTER].toString());
@@ -147,13 +175,16 @@ public abstract class Territory implements Comparable<Territory>
 
 	public boolean isInBounds(double latitude, double longitude)
 	{
-		return (latitude < points[TOP_LEFT].latitude && latitude > points[BOTTOM_LEFT].latitude && longitude > points[TOP_LEFT].longitude && longitude < points[TOP_RIGHT].longitude);
+		return (latitude < latitudes[TOP_LEFT] && latitude > latitudes[BOTTOM_LEFT] && longitude > longitudes[TOP_LEFT] && longitude < longitudes[TOP_RIGHT]);
 	}
 
 	@Override
-	public int compareTo(Territory another)
+	public int compareTo(Territory second)
 	{
-		return new LatLngComparator().compare(points[CENTER], another.points[CENTER]);
+		LatLng currentLocation = TerritoriesFragment.currentLocation;
+		double distanceToLatLng1 = Math.pow(currentLocation.latitude - latitudes[CENTER], 2) + Math.pow(currentLocation.longitude - longitudes[CENTER], 2);
+		double distanceToLatLng2 = Math.pow(currentLocation.latitude - second.latitudes[CENTER], 2) + Math.pow(currentLocation.longitude - second.longitudes[CENTER], 2);
+		return Double.compare(distanceToLatLng1, distanceToLatLng2);
 	}
 
 	private double getLeftLongitudeTerritoryForLatitudeAndLongitude2(double longitude)
@@ -225,6 +256,7 @@ public abstract class Territory implements Comparable<Territory>
 	public void setMap(GoogleMap map)
 	{
 		polygon = map.addPolygon(polygonOptions);
+		polygonOptions = null;
 	}
 
 	public void setVisible(boolean visible)
@@ -247,17 +279,14 @@ public abstract class Territory implements Comparable<Territory>
 		if (obj == null) return false;
 		if (getClass() != obj.getClass()) return false;
 		Territory other = (Territory) obj;
-		Log.d("Log : Territory", "" + (int) ((points[CENTER].latitude + points[CENTER].longitude) / TERRITORY_SIZE_IN_LAT_LON / 0.1));
-		return (int) ((points[CENTER].latitude + points[CENTER].longitude) / TERRITORY_SIZE_IN_LAT_LON / 0.1) == (int) ((other.points[CENTER].latitude + other.points[CENTER].longitude)
-				/ TERRITORY_SIZE_IN_LAT_LON / 0.1);
+		Log.d("Log : Territory", "" + (int) ((latitudes[CENTER] + longitudes[CENTER]) / TERRITORY_SIZE_IN_LAT_LON / 0.1));
+		return (int) ((latitudes[CENTER] + longitudes[CENTER]) / TERRITORY_SIZE_IN_LAT_LON / 0.1) == (int) ((other.latitudes[CENTER] + other.longitudes[CENTER]) / TERRITORY_SIZE_IN_LAT_LON / 0.1);
 	}
 
 	@Override
 	public int hashCode()
 	{
-		Log.d("Log : Territory", "" + (int) ((points[CENTER].latitude + points[CENTER].longitude) / TERRITORY_SIZE_IN_LAT_LON / 0.1));
-		Random random = new Random();
-		return (int) ((points[CENTER].latitude + points[CENTER].longitude) / TERRITORY_SIZE_IN_LAT_LON / 0.1) * random.nextInt();
+		return (int) ((latitudes[CENTER] + longitudes[CENTER]) / TERRITORY_SIZE_IN_LAT_LON / 0.1);
 	}
 
 	public void setHighlighted(boolean highlighted)
@@ -271,7 +300,6 @@ public abstract class Territory implements Comparable<Territory>
 			this.type = TerritoyType.Ally;
 		else
 			this.type = TerritoyType.Enemy;
-		if(polygon != null)
-			polygon.setFillColor(this.type.getColor());
+		if (polygon != null) polygon.setFillColor(this.type.getColor());
 	}
 }

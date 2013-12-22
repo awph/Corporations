@@ -13,7 +13,6 @@
 
 package ch.hearc.corporations.model;
 
-import com.google.android.gms.maps.model.LatLng;
 
 /**
  * @author Alexandre
@@ -24,14 +23,12 @@ public class PurchasableTerritory extends Territory
 	private int	salePrice;
 	private int	purchasingPrice;
 
-	public PurchasableTerritory(LatLng location, Player owner, long timeOwned, int salePrice, int purchasingPrice)
+	public PurchasableTerritory(double latitude, double longitude, Player owner, long timeOwned, int salePrice, int purchasingPrice)
 	{
-		super(location, owner, timeOwned);
+		super(latitude, longitude, owner, timeOwned);
 		this.salePrice = salePrice;
 		this.purchasingPrice = purchasingPrice;
 	}
-	
-	
 
 	/**
 	 * @return the salePrice
@@ -41,8 +38,6 @@ public class PurchasableTerritory extends Territory
 		return salePrice;
 	}
 
-
-
 	/**
 	 * @return the purchasingPrice
 	 */
@@ -51,18 +46,14 @@ public class PurchasableTerritory extends Territory
 		return purchasingPrice;
 	}
 
-
-
 	public void buy()
 	{
 
 	}
 
-
-
 	public void changePrice()
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
 }

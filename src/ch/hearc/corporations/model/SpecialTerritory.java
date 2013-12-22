@@ -22,9 +22,9 @@ import com.google.android.gms.maps.model.LatLng;
 public class SpecialTerritory extends Territory
 {
 
-	public SpecialTerritory(LatLng location, Player owner, long timeOwned)
+	public SpecialTerritory(double latitude, double longitude, Player owner, long timeOwned)
 	{
-		super(location, owner, timeOwned);
+		super(latitude, longitude, owner, timeOwned);
 	}
 
 	public void capture()

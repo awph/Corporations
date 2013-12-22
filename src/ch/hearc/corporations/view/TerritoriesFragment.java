@@ -4,16 +4,15 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.TextView;
 import ch.hearc.corporations.R;
 import ch.hearc.corporations.controller.AccountController;
 import ch.hearc.corporations.controller.TerritoriesManager;
-import ch.hearc.corporations.model.MercatorProjection;
+import ch.hearc.corporations.model.Profile;
 import ch.hearc.corporations.model.Territory;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -23,27 +22,35 @@ import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.PolygonOptions;
 
 public class TerritoriesFragment extends Fragment
 {
 	private GoogleMap			map;
 	private boolean				actived;
-	public static LatLng		currentLocation	= new LatLng(47.039340, 6.799249);
-	private static final LatLng	HOUSE			= new LatLng(47.039340, 6.799249);
-	public static final int		BORDER_COLOR	= Color.argb(150, 0, 0, 0);
+	public static LatLng		currentLocation		= new LatLng(47.039340, 6.799249);
+	private static final LatLng	HOUSE				= new LatLng(47.039340, 6.799249);
+	public static final int		POSITIV_REVENUE		= Color.argb(255, 91, 139, 34);
+	public static final int		NEGATIVE_REVENUE	= Color.argb(255, 176, 30, 30);
 	private TerritoriesManager	territories;
 	private ProfilePictureView	profilePictureView;
+	private TextView			moneyTextView;
+	private TextView			revenuTextView;
+	private TextView			experiencePointsTextView;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
 		super.onCreateView(inflater, container, savedInstanceState);
 		View view = inflater.inflate(R.layout.territories_fragment, container, false);
+
 		actived = false;
 		territories = new TerritoriesManager();
+
 		map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
 		map.getUiSettings().setZoomControlsEnabled(false);
+		moneyTextView = (TextView) view.findViewById(R.id.money_text_view);
+		revenuTextView = (TextView) view.findViewById(R.id.revenue_text_view);
+		experiencePointsTextView = (TextView) view.findViewById(R.id.experience_text_view);
 
 		map.setOnCameraChangeListener(new OnCameraChangeListener() {
 
@@ -112,13 +119,25 @@ public class TerritoriesFragment extends Fragment
 	public void setActived(boolean actived)
 	{
 		this.actived = actived;
+		updateProfileInfo();
 		profilePictureView.setPresetSize(ProfilePictureView.NORMAL);
 		profilePictureView.setProfileId(AccountController.getInstance().getFacebookID());
 	}
 
-	private static final String	FACEBOOK_LOG	= "Log : Facebook";
+	public void updateProfileInfo()
+	{
+		Profile profile = AccountController.getInstance().getProfile();
+		if (profile != null)
+		{
+			moneyTextView.setText("$" + profile.getCurrentMoney());
+			long revenue = profile.getCurrentRevenue();
+			if (revenue >= 0)
+				revenuTextView.setTextColor(POSITIV_REVENUE);
+			else
+				revenuTextView.setTextColor(NEGATIVE_REVENUE);
 
-	private static final String	LOG				= "Log : MainActivity";
-
-	private static final String	PACKAGE_NAME	= "com.example.howtoandroid";
+			revenuTextView.setText((revenue >= 0 ? "+" : "-") + "$" + revenue);
+			experiencePointsTextView.setText("Exp. " + profile.getExperiencePoints());
+		}
+	}
 }

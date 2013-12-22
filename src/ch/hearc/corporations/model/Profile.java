@@ -24,17 +24,19 @@ import com.google.android.gms.maps.model.LatLng;
 public class Profile extends Player
 {
 	private String	identifier;
-	private int		currentMoney;
-	private int		totalGain;
+	private long	currentMoney;
+	private long	currentRevenue;
+	private long	totalGain;
 	private int		experiencePoints;
 	private LatLng	home;
 	private Skill[]	skills;
 
-	public Profile(String userID, int numberAllies, int numberTerritories, int rank, int currentMoney, int currentRevenue, int totalGain, int experiencePoints, LatLng home,
+	public Profile(String userID, int numberAllies, int numberTerritories, int rank, long currentMoney, long currentRevenue, long totalGain, int experiencePoints, LatLng home,
 			int purchasePriceSkillLevel, int purchaseDistanceSkillLevel, int experienceLimitSkillLevel, int moneyLimitSkillLevel, int experienceQuantityFoundSkillLevel, int alliancePriceSkillLevel)
 	{
 		super(userID, rank, numberAllies, numberTerritories, false);
 		this.currentMoney = currentMoney;
+		this.currentRevenue = currentRevenue;
 		this.totalGain = totalGain;
 		this.experiencePoints = experiencePoints;
 		this.home = home;
@@ -46,9 +48,7 @@ public class Profile extends Player
 		this.skills[Skill.SKILL_EXPERIENCE_QUANTITY_FOUND] = new Skill(SkillType.experienceQuantityFound, experienceQuantityFoundSkillLevel);
 		this.skills[Skill.SKILL_ALLIANCE_PRICE] = new Skill(SkillType.alliancePrice, alliancePriceSkillLevel);
 	}
-	
-	
-	
+
 	@Override
 	public String toString()
 	{
@@ -61,10 +61,41 @@ public class Profile extends Player
 		return home;
 	}
 
-
-
 	public Skill[] getSkills()
 	{
 		return skills;
 	}
+
+	/**
+	 * @return the currentMoney
+	 */
+	public long getCurrentMoney()
+	{
+		return currentMoney;
+	}
+
+	/**
+	 * @return the currentRevenue
+	 */
+	public long getCurrentRevenue()
+	{
+		return currentRevenue;
+	}
+
+	/**
+	 * @return the totalGain
+	 */
+	public long getTotalGain()
+	{
+		return totalGain;
+	}
+
+	/**
+	 * @return the experiencePoints
+	 */
+	public int getExperiencePoints()
+	{
+		return experiencePoints;
+	}
+
 }

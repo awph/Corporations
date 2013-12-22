@@ -16,8 +16,6 @@ import android.location.Location;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import ch.hearc.corporations.R;
 import ch.hearc.corporations.controller.AccountController;
 import ch.hearc.corporations.controller.DataLoader;
@@ -100,7 +98,7 @@ public class MainActivity extends Activity
 			if(fragments[i].isVisible())
 				currentFragment = i;
 		transaction.show(fragments[fragmentIndex]);
-		if(currentFragment >= 0) transaction.hide(fragments[currentFragment]);
+		if(currentFragment >= 0 && currentFragment != fragmentIndex) transaction.hide(fragments[currentFragment]);
 		
 		if (addToBackStack)
 		{
@@ -204,7 +202,7 @@ public class MainActivity extends Activity
 
 		Session session = Session.getActiveSession();
 
-		if (session != null && session.isOpened())
+		if (session != null && session.isOpened() && AccountController.getInstance().getProfile() != null)
 		{
 			// if the session is already open,
 			// try to show the selection fragment

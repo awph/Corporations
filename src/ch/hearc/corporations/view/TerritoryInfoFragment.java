@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import ch.hearc.corporations.R;
 import ch.hearc.corporations.controller.AccountController;
+import ch.hearc.corporations.model.Player;
 import ch.hearc.corporations.model.PurchasableTerritory;
 import ch.hearc.corporations.model.SpecialTerritory;
 import ch.hearc.corporations.model.Territory;
@@ -49,7 +50,6 @@ public class TerritoryInfoFragment extends Fragment
 		profileView = (RoundedFacebookProfilePictureImageView) view.findViewById(R.id.player_image_territory_info);
 		profileView.setBorderColor(Color.WHITE);
 		profileView.setBorderWidth(1);
-		profileView.setProfileId("thedarkmammouth");// sebyx";//diego.antognini";//thedarkmammouth";
 
 		return view;
 	}
@@ -60,6 +60,14 @@ public class TerritoryInfoFragment extends Fragment
 		{
 			displayed = true;
 			this.territory = territory;
+			Player owner = territory.getOwner();
+			if(owner != null)
+			{
+				profileView.setProfileId(owner.getUserID());
+				profileView.setVisibility(View.VISIBLE);
+			}
+			else
+				profileView.setVisibility(View.GONE);
 			loadInfo();
 		}
 		else
