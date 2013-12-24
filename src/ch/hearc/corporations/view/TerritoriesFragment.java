@@ -2,6 +2,7 @@ package ch.hearc.corporations.view;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -82,7 +83,8 @@ public class TerritoriesFragment extends Fragment
 			@Override
 			public void onClick(View v)
 			{
-				((MainActivity) getActivity()).showProfileFragment();
+				Intent intent = new Intent(getActivity(), ProfileActivity.class);
+				startActivity(intent);
 			}
 		});
 		return view;

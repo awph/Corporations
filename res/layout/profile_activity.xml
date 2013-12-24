@@ -14,24 +14,26 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" >
 
-            <ch.hearc.corporations.view.RoundedFacebookProfilePictureImageView
-                android:id="@+id/imageView1"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_margin="15dp"
-                android:src="@drawable/com_facebook_profile_picture_blank_square" />
+            <ch.hearc.corporations.view.ProfilePictureView
+                android:id="@+id/profile_picture_view"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_margin="15dp" >
+            </ch.hearc.corporations.view.ProfilePictureView>
 
             <TextView
                 android:id="@+id/profile_info"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="TextView" />
+                android:textSize="@dimen/text_size"
+                android:textColor="@color/white" />
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/skills_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_margin = "15dp"
             android:orientation="vertical" >
         </LinearLayout>
     </LinearLayout>

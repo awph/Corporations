@@ -15,11 +15,5 @@
         android:name="ch.hearc.corporations.view.TerritoriesFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-    
-    <fragment
-        android:id="@+id/profileFragment"
-        android:name="ch.hearc.corporations.view.ProfileFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
 
 </LinearLayout>

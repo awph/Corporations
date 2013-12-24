@@ -179,6 +179,16 @@ public class ProfilePictureView extends FrameLayout {
         requestLayout();
     }
 
+	public void setBorderColor(int borderColor)
+	{
+		image.setBorderColor(borderColor);
+	}
+
+	public void setBorderWidth(int borderWidth)
+	{
+		image.setBorderWidth(borderWidth);
+	}
+
     /**
      * Indicates whether the cropped version of the profile photo has been chosen
      *

@@ -98,4 +98,10 @@ public class Profile extends Player
 		return experiencePoints;
 	}
 
+	public long getTripMoneyEarned()
+	{
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 }

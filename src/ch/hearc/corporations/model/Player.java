@@ -60,6 +60,11 @@ public class Player
 		return userID;
 	}
 
+	public int getRank()
+	{
+		return rank;
+	}
+
 	public boolean isAlly()
 	{
 		return ally;
@@ -69,6 +74,22 @@ public class Player
 	{
 		// TODO Auto-generated method stub
 		return userID;
+	}
+
+	/**
+	 * @return the numberAllies
+	 */
+	public int getNumberAllies()
+	{
+		return numberAllies;
+	}
+
+	/**
+	 * @return the nomberTerritories
+	 */
+	public int getNumberTerritories()
+	{
+		return nomberTerritories;
 	}
 
 	public void updateAlliance(final Callback callback)

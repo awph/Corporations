@@ -12,7 +12,9 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import ch.hearc.corporations.CorporationsConfiguration;
 import ch.hearc.corporations.R;
+import ch.hearc.corporations.Tools;
 import ch.hearc.corporations.controller.AccountController;
 import ch.hearc.corporations.model.Player;
 import ch.hearc.corporations.model.PurchasableTerritory;
@@ -22,10 +24,6 @@ import ch.hearc.corporations.model.Territory;
 public class TerritoryInfoFragment extends Fragment
 {
 	public static final String						TAG					= TerritoryInfoFragment.class.getSimpleName();
-	private static final GradientDrawable			BACKGROUND_FREE		= new GradientDrawable(GradientDrawable.Orientation.BR_TL, new int[] { 0xEE3A3F44, 0xEE707A85 });
-	private static final GradientDrawable			BACKGROUND_ENEMY	= new GradientDrawable(GradientDrawable.Orientation.BR_TL, new int[] { 0xEEDF5D07, 0xEEFF0000 });
-	private static final GradientDrawable			BACKGROUND_ALLY		= new GradientDrawable(GradientDrawable.Orientation.BR_TL, new int[] { 0xEE2980B9, 0xEE54AEEB });
-	private static final GradientDrawable			BACKGROUND_OWN		= new GradientDrawable(GradientDrawable.Orientation.BR_TL, new int[] { 0xEE399A48, 0xEE6BB471 });
 
 	private RoundedFacebookProfilePictureImageView	profileView;
 	private TextView								infoTextView;
@@ -83,27 +81,27 @@ public class TerritoryInfoFragment extends Fragment
 		{
 			if (territory instanceof PurchasableTerritory)
 			{
-				infos.append("Sale price : $" + ((PurchasableTerritory) territory).getSalePrice());
+				infos.append("Sale price: " + Tools.formatMoney(((PurchasableTerritory) territory).getSalePrice()));
 				setBuyButton();
 				hideButton(secondButton);
 			}
 			else
 			{
-				infos.append("Revenue : $" + territory.getRevenue());
+				infos.append("Revenue: " + Tools.formatMoney(territory.getRevenue()));
 				setCaptureButton();
 				hideButton(secondButton);
 			}
 
-			setBackground(BACKGROUND_FREE);
+			setBackground(CorporationsConfiguration.BACKGROUND_TRANSPARENT_FREE);
 		}
 		else if (territory.getOwner().getUserID().equals(AccountController.getInstance().getFacebookID()))
 		{
-			infos.append("Revenue: $" + ((PurchasableTerritory) territory).getRevenue());
-			infos.append("\nTotal gain: $" + ((PurchasableTerritory) territory).getTotalGain());
+			infos.append("Revenue: " + Tools.formatMoney(((PurchasableTerritory) territory).getRevenue()));
+			infos.append("\nTotal gain: " + Tools.formatMoney(((PurchasableTerritory) territory).getTotalGain()));
 			if (territory instanceof PurchasableTerritory)
 			{
-				infos.append("\nPurchasing price: $" + ((PurchasableTerritory) territory).getPurchasingPrice());
-				infos.append("\nSale price: $" + ((PurchasableTerritory) territory).getSalePrice());
+				infos.append("\nPurchasing price: " + Tools.formatMoney(((PurchasableTerritory) territory).getPurchasingPrice()));
+				infos.append("\nSale price: " + Tools.formatMoney(((PurchasableTerritory) territory).getSalePrice()));
 				setChangePriceButton();
 				hideButton(secondButton);
 			}
@@ -113,16 +111,16 @@ public class TerritoryInfoFragment extends Fragment
 				hideButton(secondButton);
 			}
 
-			setBackground(BACKGROUND_OWN);
+			setBackground(CorporationsConfiguration.BACKGROUND_TRANSPARENT_OWN);
 		}
 		else
 		{
 			infos.append("Owner: " + territory.getOwner().getName());
 			infos.append("\nAlly: " + (territory.getOwner().isAlly() ? "Yes" : "No"));
-			infos.append("\nRevenue: $" + territory.getRevenue());
+			infos.append("\nRevenue: " + Tools.formatMoney(territory.getRevenue()));
 			if (territory instanceof PurchasableTerritory)
 			{
-				infos.append("\nSale price: $" + ((PurchasableTerritory) territory).getSalePrice());
+				infos.append("\nSale price: " + Tools.formatMoney(((PurchasableTerritory) territory).getSalePrice()));
 				setBuyButton();
 			}
 			else
@@ -131,12 +129,12 @@ public class TerritoryInfoFragment extends Fragment
 			}
 			if (territory.getOwner().isAlly())
 			{
-				setBackground(BACKGROUND_ALLY);
+				setBackground(CorporationsConfiguration.BACKGROUND_TRANSPARENT_ALLY);
 				setAskAllianceButton(true);
 			}
 			else
 			{
-				setBackground(BACKGROUND_ENEMY);
+				setBackground(CorporationsConfiguration.BACKGROUND_TRANSPARENT_ENEMY);
 				setAskAllianceButton(false);
 			}
 		}
@@ -223,6 +221,7 @@ public class TerritoryInfoFragment extends Fragment
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 	private void setBackground(GradientDrawable gradientDrawable)
 	{

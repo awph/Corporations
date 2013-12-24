@@ -38,8 +38,7 @@ public class MainActivity extends Activity
 	private boolean					isResumed				= false;
 	private static final int		LOGIN_FRAGMENT			= 0;
 	private static final int		TERRITORIES_FRAGMENT	= 1;
-	private static final int		PROFILE_FRAGMENT		= 2;
-	private static final int		FRAGMENT_COUNT			= PROFILE_FRAGMENT + 1;
+	private static final int		FRAGMENT_COUNT			= TERRITORIES_FRAGMENT + 1;
 
 	private Fragment[]				fragments				= new Fragment[FRAGMENT_COUNT];
 
@@ -64,7 +63,6 @@ public class MainActivity extends Activity
 		FragmentManager fm = getFragmentManager();
 		fragments[LOGIN_FRAGMENT] = fm.findFragmentById(R.id.loginFragment);
 		fragments[TERRITORIES_FRAGMENT] = fm.findFragmentById(R.id.territoriesFragment);
-		fragments[PROFILE_FRAGMENT] = fm.findFragmentById(R.id.profileFragment);
 
 		FragmentTransaction transaction = fm.beginTransaction();
 		for (int i = 0; i < fragments.length; i++)
@@ -75,12 +73,6 @@ public class MainActivity extends Activity
 		transaction.commit();
 
 		getActionBar().hide();
-	}
-
-	public void showProfileFragment()
-	{
-		showFragment(PROFILE_FRAGMENT, true);
-		((ProfileFragment) fragments[PROFILE_FRAGMENT]).displayed();
 	}
 
 	private void showFragment(int fragmentIndex, boolean addToBackStack)
