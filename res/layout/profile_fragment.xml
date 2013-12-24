@@ -1,66 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scroll_id"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:orientation="vertical" >
+    android:layout_height="wrap_content"
+    android:scrollbars="vertical" >
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical" >
 
-        <ch.hearc.corporations.view.RoundedFacebookProfilePictureImageView
-            android:id="@+id/imageView1"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:src="@drawable/com_facebook_profile_picture_blank_square" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
 
-        <TextView
-            android:id="@+id/skill_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="TextView" />
+            <ch.hearc.corporations.view.RoundedFacebookProfilePictureImageView
+                android:id="@+id/imageView1"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_margin="15dp"
+                android:src="@drawable/com_facebook_profile_picture_blank_square" />
+
+            <TextView
+                android:id="@+id/profile_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TextView" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/skills_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical" >
+        </LinearLayout>
     </LinearLayout>
 
-    <fragment
-        android:id="@+id/purchase_price_skill_fragment"
-        android:name="ch.hearc.corporations.view.SkillFragment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <fragment
-        android:id="@+id/purchase_distance_skill_fragment"
-        android:name="ch.hearc.corporations.view.SkillFragment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <fragment
-        android:id="@+id/experience_limit_skill_fragment"
-        android:name="ch.hearc.corporations.view.SkillFragment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <fragment
-        android:id="@+id/money_limit_skill_fragment"
-        android:name="ch.hearc.corporations.view.SkillFragment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <fragment
-        android:id="@+id/experience_quantity_found_skill_fragment"
-        android:name="ch.hearc.corporations.view.SkillFragment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <fragment
-        android:id="@+id/alliance_price_skill_fragment"
-        android:name="ch.hearc.corporations.view.SkillFragment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <Button
-        android:id="@+id/upgrade_skill"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Button" />
-
-</LinearLayout>
+</ScrollView>

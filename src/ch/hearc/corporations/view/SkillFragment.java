@@ -32,25 +32,16 @@ import ch.hearc.corporations.model.Skill;
 public class SkillFragment extends Fragment
 {
 	private Skill	skill;
+	private View	view;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
 		// Inflate the layout for this fragment
-		return inflater.inflate(R.layout.skill_fragment, container, false);
-	}
-
-	public void setSkill(Skill skill)
-	{
-		this.skill = skill;
-		update();
-	}
-
-	private void update()
-	{
-		((TextView) getView().findViewById(R.id.skill_name)).setText(skill.getType().getName());
-		((TextView) getView().findViewById(R.id.skill_level)).setText(skill.getType().getName() + "level");
-		((Button) getView().findViewById(R.id.upgrade_skill)).setOnClickListener(new OnClickListener() {
+		view = inflater.inflate(R.layout.skill_fragment, container, false);
+		((TextView) view.findViewById(R.id.skill_name)).setText(skill.getType().getName());
+		updateLevel();
+		((Button) view.findViewById(R.id.upgrade_skill)).setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v)
@@ -58,7 +49,16 @@ public class SkillFragment extends Fragment
 				Log.e("upgrade", skill.getType().getName());
 			}
 		});
-		;
+		return view;
+	}
 
+	public void setSkill(Skill skill)
+	{
+		this.skill = skill;
+	}
+
+	public void updateLevel()
+	{
+		((TextView) view.findViewById(R.id.skill_level)).setText(skill.getType().getName() + "level");
 	}
 }
