@@ -52,14 +52,14 @@ public class DataLoader
 																										// need
 																										// -1
 		parameters.put(DataLoaderUtil.RequestParameters.Leaderboard.KEY_LIMIT, Integer.toString(to - from));
-		request(parameters, ApiRequestType.territoriesFetching, dataLoaderListener);
+		request(parameters, ApiRequestType.leaderboard, dataLoaderListener);
 	}
 
 	public void getProfile(LatLng coordinate, DataLoaderListener dataLoaderListener)
 	{
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put(DataLoaderUtil.RequestParameters.Profile.KEY_WHAT, DataLoaderUtil.RequestParameters.Profile.WHAT);
-		request(parameters, ApiRequestType.territoriesFetching, dataLoaderListener);
+		request(parameters, ApiRequestType.profile, dataLoaderListener);
 	}
 
 	public void getTrips(int number, DataLoaderListener dataLoaderListener)
@@ -67,7 +67,7 @@ public class DataLoader
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put(DataLoaderUtil.RequestParameters.Trips.KEY_WHAT, DataLoaderUtil.RequestParameters.Trips.WHAT);
 		parameters.put(DataLoaderUtil.RequestParameters.Trips.KEY_LIMIT, Integer.toString(number));
-		request(parameters, ApiRequestType.territoriesFetching, dataLoaderListener);
+		request(parameters, ApiRequestType.trips, dataLoaderListener);
 	}
 
 	public void getTerritoriesForLocation(LatLng coordinate, int number, DataLoaderListener dataLoaderListener)
@@ -88,7 +88,7 @@ public class DataLoader
 		parameters.put(DataLoaderUtil.RequestParameters.PurchaseTerritory.KEY_LONGITUDE, String.format("%1$.4f", territory.getLongitude()));
 		parameters.put(DataLoaderUtil.RequestParameters.PurchaseTerritory.KEY_OWNER, territory.getOwner().getUserID());
 		parameters.put(DataLoaderUtil.RequestParameters.PurchaseTerritory.KEY_PRICE, Integer.toString(territory.getSalePrice()));
-		request(parameters, ApiRequestType.territoriesFetching, dataLoaderListener);
+		request(parameters, ApiRequestType.territoryPurchasing, dataLoaderListener);
 	}
 
 	public void captureTerritory(Territory territory, DataLoaderListener dataLoaderListener)
@@ -98,7 +98,7 @@ public class DataLoader
 		parameters.put(DataLoaderUtil.RequestParameters.CaptureTerritory.KEY_LATITUDE, String.format("%1$.4f", territory.getLatitude()));
 		parameters.put(DataLoaderUtil.RequestParameters.CaptureTerritory.KEY_LONGITUDE, String.format("%1$.4f", territory.getLongitude()));
 		parameters.put(DataLoaderUtil.RequestParameters.CaptureTerritory.KEY_OWNER, territory.getOwner().getUserID());
-		request(parameters, ApiRequestType.territoriesFetching, dataLoaderListener);
+		request(parameters, ApiRequestType.territoryCapturing, dataLoaderListener);
 	}
 
 	public void loginToServer(String facebookToken, LatLng home, DataLoaderListener dataLoaderListener)
@@ -129,7 +129,7 @@ public class DataLoader
 		parameters.put(DataLoaderUtil.RequestParameters.UploadTrip.KEY_TIME, Integer.toString(trip.getTime()));
 		parameters.put(DataLoaderUtil.RequestParameters.UploadTrip.KEY_DISTANCE, Float.toString(trip.getDistance()));
 		parameters.put(DataLoaderUtil.RequestParameters.UploadTrip.KEY_MONEY_EARNED, Integer.toString(trip.getMoneyEarned()));
-		request(parameters, ApiRequestType.territoriesFetching, dataLoaderListener);
+		request(parameters, ApiRequestType.uploadTrip, dataLoaderListener);
 	}
 
 	public void updateProfile(Profile profile, DataLoaderListener dataLoaderListener)
@@ -146,7 +146,7 @@ public class DataLoader
 		parameters.put(DataLoaderUtil.RequestParameters.UpdateProfile.KEY_EXPERIENCE_QUANTITY_FOUND_SKILL_LEVEL,
 				Integer.toString(profile.getSkills()[Skill.SKILL_EXPERIENCE_QUANTITY_FOUND].getLevel()));
 		parameters.put(DataLoaderUtil.RequestParameters.UpdateProfile.KEY_ALLIANCE_PRICE_SKILL_LEVEL, Integer.toString(profile.getSkills()[Skill.SKILL_ALLIANCE_PRICE].getLevel()));
-		request(parameters, ApiRequestType.updateAlliance, dataLoaderListener);
+		request(parameters, ApiRequestType.updateProfile, dataLoaderListener);
 	}
 
 	private DataLoader()
@@ -186,10 +186,37 @@ public class DataLoader
 
 	protected void requestFinished(JSONObject result, ApiRequestType apiRequestType, DataLoaderListener listener)
 	{
+		try
+		{
+			Log.e("status", result.getString("status"));
+		}
+		catch (JSONException e)
+		{
+			e.printStackTrace();
+		}
 		switch (apiRequestType)
 		{
 			case leaderboard:
-
+				try
+				{
+					List<Player> players = new ArrayList<Player>();
+					JSONArray jsonArray = result.getJSONArray("results");
+					for (int i = 0; i < jsonArray.length(); ++i)
+					{
+						JSONObject jsonObject = jsonArray.getJSONObject(i);
+						int rank = Integer.parseInt(jsonObject.getString(DataLoaderUtil.ResultKeys.Leaderboard.RANK));
+						String userId = jsonObject.getString(DataLoaderUtil.ResultKeys.Leaderboard.USER_ID);
+						int numberTerritories = Integer.parseInt(jsonObject.getString(DataLoaderUtil.ResultKeys.Leaderboard.NUMBER_OF_TERRITORIES));
+						Boolean ally = jsonObject.getString(DataLoaderUtil.ResultKeys.Leaderboard.ALLY).equals("1");
+						Player player = PlayersManager.getInstance().createOrUpdatePlayerForUserID(userId, rank, numberTerritories, ally);
+						players.add(player);
+					}
+					listener.leaderboardFetched(players);
+				}
+				catch (JSONException e)
+				{
+					e.printStackTrace();
+				}
 				break;
 			case profile:
 

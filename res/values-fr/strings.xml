@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Corporations</string>
+    <string name="action_settings">Settings</string>
+    <string name="app_id">169291389944036</string>
+    <string name="profile_activity_title">Profil</string>
+    <string name="login_facebook_activity_title">Connexion</string>
+    <string name="get_started">Pour commencer à joueur, connecté vous avec Facebook</string>
+    <string name="action_logout">Déconnexion</string>
+    <string name="action_leaderboard">Classement</string>
+    <string name="title_activity_leaderboard">Classement</string>
+    <string name="action_refresh">Rafraîchir</string>
+
+</resources>

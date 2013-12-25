@@ -1,5 +1,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
+    <!-- Search, should appear as action button -->
+    <item
+        android:id="@+id/action_leaderboard"
+        android:icon="@drawable/ic_leaderboard"
+        android:showAsAction="always"
+        android:title="@string/action_leaderboard"/>
+    <!-- Settings, should always be in the overflow -->
     <item
         android:id="@+id/action_logout"
         android:orderInCategory="10"

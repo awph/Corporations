@@ -13,20 +13,28 @@
 
 package ch.hearc.corporations.view;
 
+import java.util.List;
+
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.graphics.Color;
+import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import ch.hearc.corporations.CorporationsConfiguration;
 import ch.hearc.corporations.R;
 import ch.hearc.corporations.Tools;
 import ch.hearc.corporations.controller.AccountController;
+import ch.hearc.corporations.controller.DataLoader;
+import ch.hearc.corporations.controller.DataLoaderAdapter;
+import ch.hearc.corporations.model.Player;
 import ch.hearc.corporations.model.Profile;
 import ch.hearc.corporations.model.Skill;
 
@@ -48,6 +56,43 @@ public class ProfileActivity extends Activity
 		setProfileInfo();
 		initSkills();
 		addFragmentsToView();
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu)
+	{
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.profile_activity, menu);
+		return super.onCreateOptionsMenu(menu);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item)
+	{
+		// Handle presses on the action bar items
+		switch (item.getItemId())
+		{
+			case R.id.action_logout:
+				// TODO
+				return true;
+			case R.id.action_settings:
+				// TODO
+				return true;
+			case R.id.action_leaderboard:
+				DataLoader.getInstance().getLeaderboard(0, 1000, new DataLoaderAdapter() {
+
+					@Override
+					public void leaderboardFetched(List<Player> players)
+					{
+						Intent intent = new Intent(ProfileActivity.this, LeaderboardActivity.class);
+						startActivity(intent);
+					}
+
+				});
+				return true;
+			default:
+				return super.onOptionsItemSelected(item);
+		}
 	}
 
 	private void setProfileInfo()

@@ -13,7 +13,9 @@
 
 package ch.hearc.corporations.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import ch.hearc.corporations.model.Player;
@@ -24,18 +26,18 @@ import ch.hearc.corporations.model.Player;
  */
 public class PlayersManager
 {
-	private static PlayersManager instance; 
-	private Map<String, Player>	players;
+	private static PlayersManager	instance;
+	private Map<String, Player>		players;
 
 	public static PlayersManager getInstance()
 	{
-		if(instance == null)
+		if (instance == null)
 		{
 			instance = new PlayersManager();
 		}
 		return instance;
 	}
-	
+
 	private PlayersManager()
 	{
 		players = new HashMap<String, Player>();
@@ -51,10 +53,32 @@ public class PlayersManager
 			return players.get(userID);
 		}
 	}
-	
+
 	public Player getPlayerForUserID(String userID)
 	{
 		return players.get(userID);
+	}
+
+	public List<Player> getPlayers()
+	{
+		return new ArrayList<Player>(players.values());
+	}
+
+	public Player createOrUpdatePlayerForUserID(String userId, int rank, int numberTerritories, Boolean ally)
+	{
+		Player player = players.get(userId);
+		if (player == null)
+		{
+			player = new Player(userId, rank, 0, numberTerritories, ally);
+			players.put(userId, player);
+		}
+		else
+		{
+			player.setRank(rank);
+			player.setNumberTerritories(numberTerritories);
+			player.setAlly(ally);
+		}
+		return player;
 	}
 
 }

@@ -16,6 +16,9 @@ package ch.hearc.corporations.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.facebook.Request;
+import com.facebook.Response;
+
 import android.widget.Toast;
 import ch.hearc.corporations.Corporations;
 import ch.hearc.corporations.controller.DataLoader;
@@ -33,47 +36,75 @@ public class Player
 	private String			name;
 	private int				rank;
 	private int				numberAllies;
-	private int				nomberTerritories;
+	private int				numberTerritories;
 	private boolean			ally;				// Alliance current logged
 												// player
 												// (profile) -> this player
 	private List<Territory>	territories;
 
-	public Player(String userID, int rank, int numberAllies, int nomberTerritories, boolean ally)
+	public Player(String userID, int rank, int numberAllies, int numberTerritories, boolean ally)
 	{
 		this.userID = userID;
 		this.rank = rank;
 		this.numberAllies = numberAllies;
-		this.nomberTerritories = nomberTerritories;
+		this.numberTerritories = numberTerritories;
 		this.ally = ally;
 		this.territories = new ArrayList<Territory>();
+		loadFullName();
 	}
 
 	@Override
 	public String toString()
 	{
-		return "Player [userID=" + userID + ", name=" + name + ", rank=" + rank + ", numberAllies=" + numberAllies + ", nomberTerritories=" + nomberTerritories + ", ally=" + ally + "]";
+		return "Player [userID=" + userID + ", name=" + name + ", rank=" + rank + ", numberAllies=" + numberAllies + ", nomberTerritories=" + numberTerritories + ", ally=" + ally + "]";
 	}
-
-	public String getUserID()
-	{
-		return userID;
-	}
-
+	
+	/**
+	 * @return the rank
+	 */
 	public int getRank()
 	{
 		return rank;
 	}
 
+	/**
+	 * @param rank the rank to set
+	 */
+	public void setRank(int rank)
+	{
+		this.rank = rank;
+	}
+
+	/**
+	 * @return the ally
+	 */
 	public boolean isAlly()
 	{
 		return ally;
 	}
 
+	/**
+	 * @param ally the ally to set
+	 */
+	public void setAlly(boolean ally)
+	{
+		this.ally = ally;
+	}
+
+	/**
+	 * @return the userID
+	 */
+	public String getUserID()
+	{
+		return userID;
+	}
+
+	/**
+	 * @return the name
+	 */
 	public String getName()
 	{
-		// TODO Auto-generated method stub
-		return userID;
+		return name;
 	}
 
 	/**
@@ -85,11 +116,19 @@ public class Player
 	}
 
 	/**
+	 * @param numberTerritories the numberTerritories to set
+	 */
+	public void setNumberTerritories(int numberTerritories)
+	{
+		this.numberTerritories = numberTerritories;
+	}
+
+	/**
 	 * @return the nomberTerritories
 	 */
 	public int getNumberTerritories()
 	{
-		return nomberTerritories;
+		return numberTerritories;
 	}
 
 	public void updateAlliance(final Callback callback)
@@ -108,7 +147,7 @@ public class Player
 					Player.this.ally = !Player.this.ally;
 					callback.update();
 					for (Territory territory : territories)
-						if(territory != null) //TODO: WTF
+						if (territory != null) // TODO: WTF
 							territory.updateAlliance();
 				}
 			}
@@ -118,6 +157,18 @@ public class Player
 	public void addTerritory(Territory territory)
 	{
 		territories.add(territory);
+	}
+
+	private void loadFullName()
+	{
+		Request.newGraphPathRequest(null, userID, new Request.Callback() {
+
+			@Override
+			public void onCompleted(Response response)
+			{
+				if (response.getGraphObject() != null) name = response.getGraphObject().getProperty("name").toString();
+			}
+		}).executeAsync();
 	}
 
 }

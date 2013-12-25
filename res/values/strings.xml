@@ -9,6 +9,8 @@
     <string name="login_facebook_activity_title">Login</string>
     <string name="get_started">To get started, log in using Facebook</string>
     <string name="action_logout">Logout</string>
-    
+    <string name="action_leaderboard">Classement</string>
+    <string name="title_activity_leaderboard">Leaderboard</string>
+    <string name="action_refresh">Refresh</string>
 
 </resources>
