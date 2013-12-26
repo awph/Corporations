@@ -2,8 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal"
-    android:background="#FF00FF00">
+    android:background="#FF00FF00"
+    android:orientation="horizontal" >
 
     <ch.hearc.corporations.view.RoundedFacebookProfilePictureImageView
         android:id="@+id/player_image_territory_info"
@@ -21,22 +21,18 @@
             android:id="@+id/info_text_territory_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Medium Text"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="@color/white" />
 
         <Button
             android:id="@+id/first_button_territory_info"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Button" />
+            android:layout_height="wrap_content" />
 
         <Button
             android:id="@+id/second_button_territory_info"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Button" />
-
+            android:layout_height="wrap_content" />
     </LinearLayout>
 
 </LinearLayout>

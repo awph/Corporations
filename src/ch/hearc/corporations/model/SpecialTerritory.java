@@ -13,7 +13,6 @@
 
 package ch.hearc.corporations.model;
 
-import com.google.android.gms.maps.model.LatLng;
 
 /**
  * @author Alexandre

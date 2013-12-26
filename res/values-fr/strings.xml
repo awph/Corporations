@@ -11,5 +11,14 @@
     <string name="action_leaderboard">Classement</string>
     <string name="title_activity_leaderboard">Classement</string>
     <string name="action_refresh">Rafraîchir</string>
+    <string name="icon_description">Icone de l\'application</string>
+    <string name="improve_alert_dialog_title">Améliorer</string>
+    <string name="improve_alert_dialog_message">Voulez-vous améliorer votre compétence %1$s au niveau %2$d pour %3$d points d\'expériences ?</string>
+    <string name="purchase_price_skill_name">Prix d\'achat d\'un territoire</string>
+    <string name="purchase_distance_skill_name">Distance d\'achat d\'un territoire</string>
+    <string name="experience_limit_skill_name">Limite d\'expérience possédé</string>
+    <string name="money_limit_skill_name">Limite d\'argent possédé</string>
+    <string name="experience_quantity_found_skill_name">Points d\'expérience trouvé lors des déplacements</string>
+    <string name="alliance_price_skill_name">Prix d\'une alliance</string>
 
 </resources>

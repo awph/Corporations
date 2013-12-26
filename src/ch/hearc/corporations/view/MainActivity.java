@@ -84,14 +84,13 @@ public class MainActivity extends Activity
 
 		FragmentManager fm = getFragmentManager();
 		FragmentTransaction transaction = fm.beginTransaction();
-		
+
 		int currentFragment = -1;
-		for(int i = 0; i < fragments.length; ++i)
-			if(fragments[i].isVisible())
-				currentFragment = i;
+		for (int i = 0; i < fragments.length; ++i)
+			if (fragments[i].isVisible()) currentFragment = i;
 		transaction.show(fragments[fragmentIndex]);
-		if(currentFragment >= 0 && currentFragment != fragmentIndex) transaction.hide(fragments[currentFragment]);
-		
+		if (currentFragment >= 0 && currentFragment != fragmentIndex) transaction.hide(fragments[currentFragment]);
+
 		if (addToBackStack)
 		{
 			transaction.addToBackStack(null);
@@ -155,7 +154,7 @@ public class MainActivity extends Activity
 							{
 								loginToServer(session, AccountController.getInstance().getHome());
 							}
-							Log.i(FACEBOOK_LOG, "User Name " + user.getFirstName() + " " + user.getLastName());
+							Log.i(FACEBOOK_TAG, "User Name " + user.getFirstName() + " " + user.getLastName());
 						}
 					}
 
@@ -251,7 +250,7 @@ public class MainActivity extends Activity
 			{
 				MessageDigest md = MessageDigest.getInstance("SHA");
 				md.update(signature.toByteArray());
-				Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
+				Log.d(TAG, "KeyHash: " + Base64.encodeToString(md.digest(), Base64.DEFAULT));
 			}
 		}
 		catch (NameNotFoundException e)
@@ -264,9 +263,9 @@ public class MainActivity extends Activity
 		}
 	}
 
-	private static final String	FACEBOOK_LOG	= "Log : Facebook";
+	private static final String	FACEBOOK_TAG	= "Log : Facebook";
 
-	private static final String	LOG				= "Log : MainActivity";
+	private static final String	TAG				= "Log : MainActivity";
 
 	private static final String	PACKAGE_NAME	= "ch.hearc.corporations";
 }

@@ -66,7 +66,10 @@ public class TerritoriesFragment extends Fragment
 			{
 				if (TerritoriesFragment.this.actived)
 				{
-					Object[] territories = TerritoriesFragment.this.territories.getTerritoryPolygoneForLocation(target, map);
+					TerritoriesFragment.this.territories.getTerritoryPolygoneForLocation(target, map);
+					// Object[] territories =
+					// TerritoriesFragment.this.territories.getTerritoryPolygoneForLocation(target,
+					// map);
 					// map.clear();
 					// for (int i = 0; i < 70 && i < territories.length; ++i)
 					// map.addPolygon(((Territory)

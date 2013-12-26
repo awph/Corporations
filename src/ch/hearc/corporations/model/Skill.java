@@ -45,4 +45,21 @@ public class Skill
 		return level;
 	}
 
+	public Object getName()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Object getPrice()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void upgrade()
+	{
+		level++;
+	}
+
 }

@@ -54,6 +54,7 @@ public class TerritoriesManager
 		}
 	}
 
+	@SuppressWarnings("unused")
 	private void fillSetForLocation(LatLng currentLocation)
 	{
 		for (int i = 0; i < 10; ++i)

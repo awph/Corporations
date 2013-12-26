@@ -37,6 +37,7 @@ import ch.hearc.corporations.controller.DataLoaderAdapter;
 import ch.hearc.corporations.model.Player;
 import ch.hearc.corporations.model.Profile;
 import ch.hearc.corporations.model.Skill;
+import ch.hearc.corporations.model.SkillType;
 
 /**
  * @author Alexandre
@@ -141,20 +142,18 @@ public class ProfileActivity extends Activity
 
 	private void initSkills()
 	{
-		Skill[] skills = AccountController.getInstance().getProfile().getSkills();
-
 		skillFragments[Skill.SKILL_PURCHASE_PRICE] = new SkillFragment();
-		skillFragments[Skill.SKILL_PURCHASE_PRICE].setSkill(skills[Skill.SKILL_PURCHASE_PRICE]);
+		skillFragments[Skill.SKILL_PURCHASE_PRICE].setSkillType(SkillType.purchasePrice);
 		skillFragments[Skill.SKILL_PURCHASE_DISTANCE] = new SkillFragment();
-		skillFragments[Skill.SKILL_PURCHASE_DISTANCE].setSkill(skills[Skill.SKILL_PURCHASE_DISTANCE]);
+		skillFragments[Skill.SKILL_PURCHASE_DISTANCE].setSkillType(SkillType.purchaseDistance);
 		skillFragments[Skill.SKILL_EXPERIENCE_LIMIT] = new SkillFragment();
-		skillFragments[Skill.SKILL_EXPERIENCE_LIMIT].setSkill(skills[Skill.SKILL_EXPERIENCE_LIMIT]);
+		skillFragments[Skill.SKILL_EXPERIENCE_LIMIT].setSkillType(SkillType.experienceLimit);
 		skillFragments[Skill.SKILL_MONEY_LIMIT] = new SkillFragment();
-		skillFragments[Skill.SKILL_MONEY_LIMIT].setSkill(skills[Skill.SKILL_MONEY_LIMIT]);
+		skillFragments[Skill.SKILL_MONEY_LIMIT].setSkillType(SkillType.moneyLimit);
 		skillFragments[Skill.SKILL_EXPERIENCE_QUANTITY_FOUND] = new SkillFragment();
-		skillFragments[Skill.SKILL_EXPERIENCE_QUANTITY_FOUND].setSkill(skills[Skill.SKILL_EXPERIENCE_QUANTITY_FOUND]);
+		skillFragments[Skill.SKILL_EXPERIENCE_QUANTITY_FOUND].setSkillType(SkillType.experienceQuantityFound);
 		skillFragments[Skill.SKILL_ALLIANCE_PRICE] = new SkillFragment();
-		skillFragments[Skill.SKILL_ALLIANCE_PRICE].setSkill(skills[Skill.SKILL_ALLIANCE_PRICE]);
+		skillFragments[Skill.SKILL_ALLIANCE_PRICE].setSkillType(SkillType.alliancePrice);
 	}
 
 	@SuppressWarnings("deprecation")

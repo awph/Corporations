@@ -78,7 +78,6 @@ public abstract class Territory implements Comparable<Territory>
 	private static final int	CENTER						= 4;
 	private static double		deltaLat					= 0;
 	private static float[]		results						= new float[3];
-	private static final int	EARTH_RADIUS				= 6356752;
 	private static final int	TERRITORY_SIZE_IN_METER		= 5000;
 	private static final double	TERRITORY_SIZE_IN_LAT_LON	= 0.01D;
 	private static final float	BORDER_WIDTH				= 1f;

@@ -13,17 +13,23 @@
 
 package ch.hearc.corporations.view;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import ch.hearc.corporations.R;
+import ch.hearc.corporations.controller.AccountController;
+import ch.hearc.corporations.controller.DataLoader;
+import ch.hearc.corporations.controller.DataLoaderAdapter;
+import ch.hearc.corporations.model.Profile;
 import ch.hearc.corporations.model.Skill;
+import ch.hearc.corporations.model.SkillType;
 
 /**
  * @author Alexandre
@@ -31,7 +37,7 @@ import ch.hearc.corporations.model.Skill;
  */
 public class SkillFragment extends Fragment
 {
-	private Skill	skill;
+	private SkillType	skillType;
 	private View	view;
 
 	@Override
@@ -39,26 +45,61 @@ public class SkillFragment extends Fragment
 	{
 		// Inflate the layout for this fragment
 		view = inflater.inflate(R.layout.skill_fragment, container, false);
+		
+		final Skill skill = AccountController.getInstance().getProfile().getSkill(skillType);
+		
 		((TextView) view.findViewById(R.id.skill_name)).setText(skill.getType().getName());
+		
 		updateLevel();
-		((Button) view.findViewById(R.id.upgrade_skill)).setOnClickListener(new OnClickListener() {
+		
+		((Button) view.findViewById(R.id.upgrade_skill)).setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v)
 			{
-				Log.e("upgrade", skill.getType().getName());
+				AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
+				alertDialog.setTitle(getActivity().getResources().getString(R.string.improve_alert_dialog_title));
+				alertDialog.setMessage(String.format(getActivity().getResources().getString(R.string.improve_alert_dialog_message), skill.getName(), skill.getLevel(), skill.getPrice()));
+				alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, getActivity().getResources().getString(android.R.string.yes), new OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog, int which)
+					{
+						Profile profile = AccountController.getInstance().getProfile();
+						skill.upgrade();
+						DataLoader.getInstance().updateProfile(profile, new DataLoaderAdapter() {
+
+							@Override
+							public void profileUpdated(Profile profile)
+							{
+								SkillFragment.this.updateLevel();
+							}
+						});
+					}
+				});
+				alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getActivity().getResources().getString(android.R.string.no), new OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog, int which)
+					{
+						// Nothing to do 
+					}
+				});
+				alertDialog.show();
 			}
 		});
+		
 		return view;
 	}
 
-	public void setSkill(Skill skill)
+	public void setSkillType(SkillType skillType)
 	{
-		this.skill = skill;
+		this.skillType = skillType;
 	}
 
 	public void updateLevel()
 	{
-		((TextView) view.findViewById(R.id.skill_level)).setText(skill.getType().getName() + "level");
+		Skill skill = AccountController.getInstance().getProfile().getSkill(skillType);
+		((TextView) view.findViewById(R.id.skill_level)).setText(Integer.toString(skill.getLevel()));
 	}
 }

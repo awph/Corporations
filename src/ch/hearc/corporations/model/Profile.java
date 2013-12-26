@@ -104,4 +104,9 @@ public class Profile extends Player
 		return 0;
 	}
 
+	public Skill getSkill(SkillType skillType)
+	{
+		return skills[skillType.getNumber()];
+	}
+
 }
