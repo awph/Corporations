@@ -31,10 +31,64 @@ public class Profile extends Player
 	private LatLng	home;
 	private Skill[]	skills;
 
-	public Profile(String userID, int numberAllies, int numberTerritories, int rank, long currentMoney, long currentRevenue, long totalGain, int experiencePoints, LatLng home,
+	/**
+	 * @param currentMoney
+	 *            the currentMoney to set
+	 */
+	public void setCurrentMoney(long currentMoney)
+	{
+		this.currentMoney = currentMoney;
+	}
+
+	/**
+	 * @param currentRevenue
+	 *            the currentRevenue to set
+	 */
+	public void setCurrentRevenue(long currentRevenue)
+	{
+		this.currentRevenue = currentRevenue;
+	}
+
+	/**
+	 * @param totalGain
+	 *            the totalGain to set
+	 */
+	public void setTotalGain(long totalGain)
+	{
+		this.totalGain = totalGain;
+	}
+
+	/**
+	 * @param experiencePoints
+	 *            the experiencePoints to set
+	 */
+	public void setExperiencePoints(int experiencePoints)
+	{
+		this.experiencePoints = experiencePoints;
+	}
+
+	/**
+	 * @param home
+	 *            the home to set
+	 */
+	public void setHome(LatLng home)
+	{
+		this.home = home;
+	}
+
+	/**
+	 * @param skills
+	 *            the skills to set
+	 */
+	public void setSkills(Skill[] skills)
+	{
+		this.skills = skills;
+	}
+
+	public Profile(String userId, int numberAllies, int numberTerritories, int rank, long currentMoney, long currentRevenue, long totalGain, int experiencePoints, LatLng home,
 			int purchasePriceSkillLevel, int purchaseDistanceSkillLevel, int experienceLimitSkillLevel, int moneyLimitSkillLevel, int experienceQuantityFoundSkillLevel, int alliancePriceSkillLevel)
 	{
-		super(userID, rank, numberAllies, numberTerritories, false);
+		super(userId, rank, numberAllies, numberTerritories, false);
 		this.currentMoney = currentMoney;
 		this.currentRevenue = currentRevenue;
 		this.totalGain = totalGain;
@@ -49,6 +103,22 @@ public class Profile extends Player
 		this.skills[Skill.SKILL_ALLIANCE_PRICE] = new Skill(SkillType.alliancePrice, alliancePriceSkillLevel);
 	}
 
+	public Profile()
+	{
+		this(null, 0, 0, 0, 0, 0, 0, 0, null, 0, 0, 0, 0, 0, 0);
+	}
+
+	public Profile(Profile profile)
+	{
+		// We dont put the userid in constructor, because we know the name and we dont need to fetch it again
+		this(null, profile.numberAllies, profile.numberTerritories, profile.rank, profile.currentMoney, profile.currentRevenue, profile.totalGain, profile.experiencePoints, new LatLng(
+				profile.home.latitude, profile.home.longitude), profile.getSkill(SkillType.purchasePrice).getLevel(), profile.getSkill(SkillType.purchaseDistance).getLevel(), profile.getSkill(
+				SkillType.experienceLimit).getLevel(), profile.getSkill(SkillType.moneyLimit).getLevel(), profile.getSkill(SkillType.experienceQuantityFound).getLevel(), profile.getSkill(
+				SkillType.alliancePrice).getLevel());
+		this.userId = profile.userId;
+		this.name = profile.name;
+	}
+
 	@Override
 	public String toString()
 	{
@@ -61,9 +131,9 @@ public class Profile extends Player
 		return home;
 	}
 
-	public Skill[] getSkills()
+	public void setSkillLevel(SkillType skillType, int level)
 	{
-		return skills;
+		skills[skillType.getNumber()].setLevel(level);
 	}
 
 	/**

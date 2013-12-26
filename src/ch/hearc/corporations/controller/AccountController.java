@@ -62,17 +62,13 @@ public class AccountController
 
 	public Profile getProfile()
 	{
+		if (profile == null) profile = new Profile();
 		return profile;
 	}
 
 	public LatLng getHome()
 	{
-		return home;
-	}
-
-	public void setHome(LatLng home)
-	{
-		this.home = home;
+		return profile.getHome();
 	}
 
 	private AccountController()

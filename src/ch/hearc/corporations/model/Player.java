@@ -32,19 +32,24 @@ import ch.hearc.corporations.view.TerritoryInfoFragment.Callback;
  */
 public class Player
 {
-	private String			userID;
-	private String			name;
-	private int				rank;
-	private int				numberAllies;
-	private int				numberTerritories;
+	protected String		userId;
+	protected String		name;
+	protected int			rank;
+	protected int			numberAllies;
+	protected int			numberTerritories;
 	private boolean			ally;				// Alliance current logged
 												// player
 												// (profile) -> this player
 	private List<Territory>	territories;
 
+	public Player()
+	{
+		this(null, 0, 0, 0, false);
+	}
+
 	public Player(String userID, int rank, int numberAllies, int numberTerritories, boolean ally)
 	{
-		this.userID = userID;
+		this.userId = userID;
 		this.rank = rank;
 		this.numberAllies = numberAllies;
 		this.numberTerritories = numberTerritories;
@@ -56,9 +61,9 @@ public class Player
 	@Override
 	public String toString()
 	{
-		return "Player [userID=" + userID + ", name=" + name + ", rank=" + rank + ", numberAllies=" + numberAllies + ", nomberTerritories=" + numberTerritories + ", ally=" + ally + "]";
+		return "Player [userID=" + userId + ", name=" + name + ", rank=" + rank + ", numberAllies=" + numberAllies + ", nomberTerritories=" + numberTerritories + ", ally=" + ally + "]";
 	}
-	
+
 	/**
 	 * @return the rank
 	 */
@@ -68,7 +73,8 @@ public class Player
 	}
 
 	/**
-	 * @param rank the rank to set
+	 * @param rank
+	 *            the rank to set
 	 */
 	public void setRank(int rank)
 	{
@@ -84,7 +90,8 @@ public class Player
 	}
 
 	/**
-	 * @param ally the ally to set
+	 * @param ally
+	 *            the ally to set
 	 */
 	public void setAlly(boolean ally)
 	{
@@ -94,9 +101,28 @@ public class Player
 	/**
 	 * @return the userID
 	 */
-	public String getUserID()
+	public String getUserId()
 	{
-		return userID;
+		return userId;
+	}
+
+	/**
+	 * @param userID
+	 *            the userID to set
+	 */
+	public void setUserId(String userID)
+	{
+		this.userId = userID;
+		loadFullName();
+	}
+
+	/**
+	 * @param numberAllies
+	 *            the numberAllies to set
+	 */
+	public void setNumberAllies(int numberAllies)
+	{
+		this.numberAllies = numberAllies;
 	}
 
 	/**
@@ -116,7 +142,8 @@ public class Player
 	}
 
 	/**
-	 * @param numberTerritories the numberTerritories to set
+	 * @param numberTerritories
+	 *            the numberTerritories to set
 	 */
 	public void setNumberTerritories(int numberTerritories)
 	{
@@ -161,7 +188,8 @@ public class Player
 
 	private void loadFullName()
 	{
-		Request.newGraphPathRequest(null, userID, new Request.Callback() {
+		if (userId == null) return;
+		Request.newGraphPathRequest(null, userId, new Request.Callback() {
 
 			@Override
 			public void onCompleted(Response response)

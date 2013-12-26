@@ -24,7 +24,7 @@ import ch.hearc.corporations.CorporationsConfiguration;
 import ch.hearc.corporations.model.Player;
 import ch.hearc.corporations.model.Profile;
 import ch.hearc.corporations.model.PurchasableTerritory;
-import ch.hearc.corporations.model.Skill;
+import ch.hearc.corporations.model.SkillType;
 import ch.hearc.corporations.model.SpecialTerritory;
 import ch.hearc.corporations.model.Territory;
 import ch.hearc.corporations.model.Trip;
@@ -86,7 +86,7 @@ public class DataLoader
 		parameters.put(DataLoaderUtil.RequestParameters.PurchaseTerritory.KEY_WHAT, DataLoaderUtil.RequestParameters.PurchaseTerritory.WHAT);
 		parameters.put(DataLoaderUtil.RequestParameters.PurchaseTerritory.KEY_LATITUDE, String.format("%1$.4f", territory.getLatitude()));
 		parameters.put(DataLoaderUtil.RequestParameters.PurchaseTerritory.KEY_LONGITUDE, String.format("%1$.4f", territory.getLongitude()));
-		parameters.put(DataLoaderUtil.RequestParameters.PurchaseTerritory.KEY_OWNER, territory.getOwner().getUserID());
+		parameters.put(DataLoaderUtil.RequestParameters.PurchaseTerritory.KEY_OWNER, territory.getOwner().getUserId());
 		parameters.put(DataLoaderUtil.RequestParameters.PurchaseTerritory.KEY_PRICE, Integer.toString(territory.getSalePrice()));
 		request(parameters, ApiRequestType.territoryPurchasing, dataLoaderListener);
 	}
@@ -97,7 +97,7 @@ public class DataLoader
 		parameters.put(DataLoaderUtil.RequestParameters.CaptureTerritory.KEY_WHAT, DataLoaderUtil.RequestParameters.CaptureTerritory.WHAT);
 		parameters.put(DataLoaderUtil.RequestParameters.CaptureTerritory.KEY_LATITUDE, String.format("%1$.4f", territory.getLatitude()));
 		parameters.put(DataLoaderUtil.RequestParameters.CaptureTerritory.KEY_LONGITUDE, String.format("%1$.4f", territory.getLongitude()));
-		parameters.put(DataLoaderUtil.RequestParameters.CaptureTerritory.KEY_OWNER, territory.getOwner().getUserID());
+		parameters.put(DataLoaderUtil.RequestParameters.CaptureTerritory.KEY_OWNER, territory.getOwner().getUserId());
 		request(parameters, ApiRequestType.territoryCapturing, dataLoaderListener);
 	}
 
@@ -116,7 +116,7 @@ public class DataLoader
 	{
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put(DataLoaderUtil.RequestParameters.UpdateAlliance.KEY_WHAT, DataLoaderUtil.RequestParameters.UpdateAlliance.WHAT);
-		parameters.put(DataLoaderUtil.RequestParameters.UpdateAlliance.KEY_ALLY, player.getUserID());
+		parameters.put(DataLoaderUtil.RequestParameters.UpdateAlliance.KEY_ALLY, player.getUserId());
 		parameters.put(DataLoaderUtil.RequestParameters.UpdateAlliance.KEY_CREATE_OR_DELETE, player.isAlly() ? "0" : "1");
 		request(parameters, ApiRequestType.updateAlliance, dataLoaderListener);
 	}
@@ -139,13 +139,12 @@ public class DataLoader
 		parameters.put(DataLoaderUtil.RequestParameters.UpdateProfile.KEY_CURRENT_MONEY, Long.toString(profile.getCurrentMoney()));
 		parameters.put(DataLoaderUtil.RequestParameters.UpdateProfile.KEY_TOTAL_GAIN, Long.toString(profile.getTotalGain()));
 		parameters.put(DataLoaderUtil.RequestParameters.UpdateProfile.KEY_EXPERIENCE_POINTS, Integer.toString(profile.getExperiencePoints()));
-		parameters.put(DataLoaderUtil.RequestParameters.UpdateProfile.KEY_PURCHASE_PRICE_SKILL_LEVEL, Integer.toString(profile.getSkills()[Skill.SKILL_PURCHASE_PRICE].getLevel()));
-		parameters.put(DataLoaderUtil.RequestParameters.UpdateProfile.KEY_PURCHASE_DISTANCE_SKILL_LEVEL, Integer.toString(profile.getSkills()[Skill.SKILL_PURCHASE_DISTANCE].getLevel()));
-		parameters.put(DataLoaderUtil.RequestParameters.UpdateProfile.KEY_EXPERIENCE_LIMIT_SKILL_LEVEL, Integer.toString(profile.getSkills()[Skill.SKILL_EXPERIENCE_LIMIT].getLevel()));
-		parameters.put(DataLoaderUtil.RequestParameters.UpdateProfile.KEY_MONEY_LIMIT_SKILL_LEVEL, Integer.toString(profile.getSkills()[Skill.SKILL_MONEY_LIMIT].getLevel()));
-		parameters.put(DataLoaderUtil.RequestParameters.UpdateProfile.KEY_EXPERIENCE_QUANTITY_FOUND_SKILL_LEVEL,
-				Integer.toString(profile.getSkills()[Skill.SKILL_EXPERIENCE_QUANTITY_FOUND].getLevel()));
-		parameters.put(DataLoaderUtil.RequestParameters.UpdateProfile.KEY_ALLIANCE_PRICE_SKILL_LEVEL, Integer.toString(profile.getSkills()[Skill.SKILL_ALLIANCE_PRICE].getLevel()));
+		parameters.put(DataLoaderUtil.RequestParameters.UpdateProfile.KEY_PURCHASE_PRICE_SKILL_LEVEL, Integer.toString(profile.getSkill(SkillType.purchasePrice).getLevel()));
+		parameters.put(DataLoaderUtil.RequestParameters.UpdateProfile.KEY_PURCHASE_DISTANCE_SKILL_LEVEL, Integer.toString(profile.getSkill(SkillType.purchaseDistance).getLevel()));
+		parameters.put(DataLoaderUtil.RequestParameters.UpdateProfile.KEY_EXPERIENCE_LIMIT_SKILL_LEVEL, Integer.toString(profile.getSkill(SkillType.experienceLimit).getLevel()));
+		parameters.put(DataLoaderUtil.RequestParameters.UpdateProfile.KEY_MONEY_LIMIT_SKILL_LEVEL, Integer.toString(profile.getSkill(SkillType.moneyLimit).getLevel()));
+		parameters.put(DataLoaderUtil.RequestParameters.UpdateProfile.KEY_EXPERIENCE_QUANTITY_FOUND_SKILL_LEVEL, Integer.toString(profile.getSkill(SkillType.experienceQuantityFound).getLevel()));
+		parameters.put(DataLoaderUtil.RequestParameters.UpdateProfile.KEY_ALLIANCE_PRICE_SKILL_LEVEL, Integer.toString(profile.getSkill(SkillType.alliancePrice).getLevel()));
 		request(parameters, ApiRequestType.updateProfile, dataLoaderListener);
 	}
 
@@ -186,9 +185,11 @@ public class DataLoader
 
 	protected void requestFinished(JSONObject result, ApiRequestType apiRequestType, DataLoaderListener listener)
 	{
+		String status = null;
 		try
 		{
-			Log.e("status", result.getString("status"));
+			status = result.getString(DataLoaderUtil.ResultKeys.STATUS);
+			Log.e("status", result.getString(DataLoaderUtil.ResultKeys.STATUS));
 		}
 		catch (JSONException e)
 		{
@@ -219,13 +220,13 @@ public class DataLoader
 				}
 				break;
 			case profile:
-
+				updateProfile(result);
+				listener.profileFetched(null);
 				break;
 			case territoriesFetching:
 				try
 				{
 					List<Territory> territories = new ArrayList<Territory>();
-					Log.e("status", result.getString("status"));
 					JSONArray jsonArray = result.getJSONArray("results");
 					for (int i = 0; i < jsonArray.length(); ++i)
 					{
@@ -265,54 +266,22 @@ public class DataLoader
 
 				break;
 			case connection:
-				try
-				{
-					Log.e("status", result.getString("status"));
-					JSONObject jsonObject = result.getJSONObject("results");
-					String userId = jsonObject.getString("id");
-					int numberAllies = Integer.valueOf(jsonObject.getString("na"));
-					int numberTerritories = Integer.valueOf(jsonObject.getString("nt"));
-					int rank = Integer.valueOf(jsonObject.getString("r"));
-					int currentMoney = Integer.valueOf(jsonObject.getString("cm"));
-					int currentRevenue = Integer.valueOf(jsonObject.getString("cr"));
-					int totalGain = Integer.valueOf(jsonObject.getString("tg"));
-					int experiencePoints = Integer.valueOf(jsonObject.getString("ep"));
-					LatLng home = new LatLng(Double.valueOf(jsonObject.getString("hlat")), Double.valueOf(jsonObject.getString("hlng")));
-					int purchasePriceSkillLevel = Integer.valueOf(jsonObject.getString("ppl"));
-					int purchaseDistanceSkillLevel = Integer.valueOf(jsonObject.getString("pdl"));
-					int experienceLimitSkillLevel = Integer.valueOf(jsonObject.getString("ell"));
-					int moneyLimitSkillLevel = Integer.valueOf(jsonObject.getString("mll"));
-					int experienceQuantityFoundSkillLevel = Integer.valueOf(jsonObject.getString("eqfl"));
-					int alliancePriceSkillLevel = Integer.valueOf(jsonObject.getString("apl"));
-					Profile profile = new Profile(userId, numberAllies, numberTerritories, rank, currentMoney, currentRevenue, totalGain, experiencePoints, home, purchasePriceSkillLevel,
-							purchaseDistanceSkillLevel, experienceLimitSkillLevel, moneyLimitSkillLevel, experienceQuantityFoundSkillLevel, alliancePriceSkillLevel);
-					listener.connectionFinished(profile);
-				}
-				catch (JSONException e)
-				{
-					e.printStackTrace();
-				}
+				updateProfile(result);
+				listener.connectionFinished(null);
 				break;
 			case updateAlliance:
-				try
-				{
-					String status = result.getString("status");
-					int int_status = -1; // TODO: better
-					if (status.equals("OK"))
-						int_status = DataLoaderUtil.ResultKeys.StatusKey.OK;
-					else if (status.equals("ALREADY_EXISTS"))
-						int_status = DataLoaderUtil.ResultKeys.StatusKey.ALREADY_EXISTS;
-					else if (status.equals("DONT_EXISTS")) int_status = DataLoaderUtil.ResultKeys.StatusKey.DONT_EXISTS;
+				int int_status = -1; // TODO: better
+				if (status.equals("OK"))
+					int_status = DataLoaderUtil.ResultKeys.StatusKey.OK;
+				else if (status.equals("ALREADY_EXISTS"))
+					int_status = DataLoaderUtil.ResultKeys.StatusKey.ALREADY_EXISTS;
+				else if (status.equals("DONT_EXISTS")) int_status = DataLoaderUtil.ResultKeys.StatusKey.DONT_EXISTS;
 
-					listener.allianceUpdated(int_status);
-				}
-				catch (JSONException e)
-				{
-					e.printStackTrace();
-				}
+				listener.allianceUpdated(int_status);
 				break;
 			case updateProfile:
-
+				updateProfile(result);
+				listener.profileUpdated(null);
 				break;
 			case uploadTrip:
 
@@ -320,6 +289,50 @@ public class DataLoader
 
 			default:
 				break;
+		}
+	}
+
+	private void updateProfile(JSONObject jsonObject)
+	{
+		Profile profile = AccountController.getInstance().getProfile();
+		try
+		{
+			jsonObject = jsonObject.getJSONObject("results");
+			String userId = jsonObject.getString("id");
+			int numberAllies = Integer.valueOf(jsonObject.getString("na"));
+			int numberTerritories = Integer.valueOf(jsonObject.getString("nt"));
+			int rank = Integer.valueOf(jsonObject.getString("r"));
+			int currentMoney = Integer.valueOf(jsonObject.getString("cm"));
+			int currentRevenue = Integer.valueOf(jsonObject.getString("cr"));
+			int totalGain = Integer.valueOf(jsonObject.getString("tg"));
+			int experiencePoints = Integer.valueOf(jsonObject.getString("ep"));
+			LatLng home = new LatLng(Double.valueOf(jsonObject.getString("hlat")), Double.valueOf(jsonObject.getString("hlng")));
+			int purchasePriceSkillLevel = Integer.valueOf(jsonObject.getString("ppl"));
+			int purchaseDistanceSkillLevel = Integer.valueOf(jsonObject.getString("pdl"));
+			int experienceLimitSkillLevel = Integer.valueOf(jsonObject.getString("ell"));
+			int moneyLimitSkillLevel = Integer.valueOf(jsonObject.getString("mll"));
+			int experienceQuantityFoundSkillLevel = Integer.valueOf(jsonObject.getString("eqfl"));
+			int alliancePriceSkillLevel = Integer.valueOf(jsonObject.getString("apl"));
+
+			profile.setUserId(userId);
+			profile.setNumberAllies(numberAllies);
+			profile.setNumberTerritories(numberTerritories);
+			profile.setRank(rank);
+			profile.setCurrentMoney(currentMoney);
+			profile.setCurrentRevenue(currentRevenue);
+			profile.setTotalGain(totalGain);
+			profile.setExperiencePoints(experiencePoints);
+			profile.setHome(home);
+			profile.setSkillLevel(SkillType.purchasePrice, purchasePriceSkillLevel);
+			profile.setSkillLevel(SkillType.purchaseDistance, purchaseDistanceSkillLevel);
+			profile.setSkillLevel(SkillType.experienceLimit, experienceLimitSkillLevel);
+			profile.setSkillLevel(SkillType.moneyLimit, moneyLimitSkillLevel);
+			profile.setSkillLevel(SkillType.experienceQuantityFound, experienceQuantityFoundSkillLevel);
+			profile.setSkillLevel(SkillType.alliancePrice, alliancePriceSkillLevel);
+		}
+		catch (JSONException e)
+		{
+			Log.e(TAG, e.toString());
 		}
 	}
 
@@ -386,4 +399,6 @@ public class DataLoader
 
 		return jsonObject;
 	}
+
+	private static final String	TAG	= DataLoader.class.getSimpleName();
 }

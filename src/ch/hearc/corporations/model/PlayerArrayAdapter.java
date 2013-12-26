@@ -70,7 +70,7 @@ public class PlayerArrayAdapter extends ArrayAdapter<Player>
 		name.setText(player.getName());
 		numberTerritories.setText(Integer.toString(player.getNumberTerritories()));
 		Resources resources = Corporations.getAppContext().getResources();
-		if (player.getUserID().equals(AccountController.getInstance().getProfile().getUserID()))
+		if (player.getUserId().equals(AccountController.getInstance().getProfile().getUserId()))
 		{
 			rank.setTextColor(resources.getColor(R.color.green));
 			name.setTextColor(resources.getColor(R.color.green));

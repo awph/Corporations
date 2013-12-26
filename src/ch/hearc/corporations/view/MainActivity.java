@@ -20,7 +20,7 @@ import ch.hearc.corporations.R;
 import ch.hearc.corporations.controller.AccountController;
 import ch.hearc.corporations.controller.DataLoader;
 import ch.hearc.corporations.controller.DataLoaderAdapter;
-import ch.hearc.corporations.model.Profile;
+import ch.hearc.corporations.controller.Status;
 
 import com.facebook.Request;
 import com.facebook.Response;
@@ -167,10 +167,8 @@ public class MainActivity extends Activity
 						DataLoader.getInstance().loginToServer(session.getAccessToken(), location, new DataLoaderAdapter() {
 
 							@Override
-							public void connectionFinished(Profile profile)
+							public void connectionFinished(Status status)
 							{
-								AccountController.getInstance().setProfile(profile);
-								AccountController.getInstance().setHome(profile.getHome());
 								showFragment(TERRITORIES_FRAGMENT, false);
 							}
 						});

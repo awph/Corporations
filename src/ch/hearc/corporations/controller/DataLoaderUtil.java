@@ -204,6 +204,8 @@ public final class DataLoaderUtil
 		{
 		}
 
+		public static final String	STATUS	= "status";
+
 		public static final class StatusKey
 		{
 			public static final int	OK					= 0;

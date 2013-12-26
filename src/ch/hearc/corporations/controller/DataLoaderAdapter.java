@@ -16,7 +16,6 @@ package ch.hearc.corporations.controller;
 import java.util.List;
 
 import ch.hearc.corporations.model.Player;
-import ch.hearc.corporations.model.Profile;
 import ch.hearc.corporations.model.Territory;
 import ch.hearc.corporations.model.Trip;
 
@@ -31,7 +30,7 @@ public abstract class DataLoaderAdapter implements DataLoaderListener
 	{
 	}
 
-	public void profileFetched(Profile profile)
+	public void profileFetched(Status status)
 	{
 	}
 
@@ -51,7 +50,7 @@ public abstract class DataLoaderAdapter implements DataLoaderListener
 	{
 	}
 
-	public void connectionFinished(Profile profile)
+	public void connectionFinished(Status status)
 	{
 	}
 
@@ -59,7 +58,7 @@ public abstract class DataLoaderAdapter implements DataLoaderListener
 	{
 	}
 
-	public void profileUpdated(Profile profile)
+	public void profileUpdated(Status status)
 	{
 	}
 

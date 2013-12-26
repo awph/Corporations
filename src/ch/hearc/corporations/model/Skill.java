@@ -62,4 +62,9 @@ public class Skill
 		level++;
 	}
 
+	public void setLevel(int level)
+	{
+		this.level = level;
+	}
+
 }

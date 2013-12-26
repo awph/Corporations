@@ -61,7 +61,7 @@ public class TerritoryInfoFragment extends Fragment
 			Player owner = territory.getOwner();
 			if(owner != null)
 			{
-				profileView.setProfileId(owner.getUserID());
+				profileView.setProfileId(owner.getUserId());
 				profileView.setVisibility(View.VISIBLE);
 			}
 			else
@@ -94,7 +94,7 @@ public class TerritoryInfoFragment extends Fragment
 
 			setBackground(CorporationsConfiguration.BACKGROUND_TRANSPARENT_FREE);
 		}
-		else if (territory.getOwner().getUserID().equals(AccountController.getInstance().getFacebookID()))
+		else if (territory.getOwner().getUserId().equals(AccountController.getInstance().getFacebookID()))
 		{
 			infos.append("Revenue: " + Tools.formatMoney(((PurchasableTerritory) territory).getRevenue()));
 			infos.append("\nTotal gain: " + Tools.formatMoney(((PurchasableTerritory) territory).getTotalGain()));

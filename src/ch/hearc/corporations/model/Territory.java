@@ -90,7 +90,7 @@ public abstract class Territory implements Comparable<Territory>
 		this.polygon = null;
 		if (owner != null)
 		{
-			if (owner.getUserID().equals(AccountController.getInstance().getProfile().getUserID()))
+			if (owner.getUserId().equals(AccountController.getInstance().getProfile().getUserId()))
 				this.type = TerritoyType.Mine;
 			else if (owner.isAlly())
 				this.type = TerritoyType.Ally;

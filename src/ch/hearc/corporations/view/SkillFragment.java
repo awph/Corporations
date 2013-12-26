@@ -27,6 +27,7 @@ import ch.hearc.corporations.R;
 import ch.hearc.corporations.controller.AccountController;
 import ch.hearc.corporations.controller.DataLoader;
 import ch.hearc.corporations.controller.DataLoaderAdapter;
+import ch.hearc.corporations.controller.Status;
 import ch.hearc.corporations.model.Profile;
 import ch.hearc.corporations.model.Skill;
 import ch.hearc.corporations.model.SkillType;
@@ -38,20 +39,20 @@ import ch.hearc.corporations.model.SkillType;
 public class SkillFragment extends Fragment
 {
 	private SkillType	skillType;
-	private View	view;
+	private View		view;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
 		// Inflate the layout for this fragment
 		view = inflater.inflate(R.layout.skill_fragment, container, false);
-		
+
 		final Skill skill = AccountController.getInstance().getProfile().getSkill(skillType);
-		
+
 		((TextView) view.findViewById(R.id.skill_name)).setText(skill.getType().getName());
-		
+
 		updateLevel();
-		
+
 		((Button) view.findViewById(R.id.upgrade_skill)).setOnClickListener(new View.OnClickListener() {
 
 			@Override
@@ -65,14 +66,15 @@ public class SkillFragment extends Fragment
 					@Override
 					public void onClick(DialogInterface dialog, int which)
 					{
-						Profile profile = AccountController.getInstance().getProfile();
-						skill.upgrade();
+						Profile profile = new Profile(AccountController.getInstance().getProfile());
+						profile.getSkill(skill.getType()).upgrade();
 						DataLoader.getInstance().updateProfile(profile, new DataLoaderAdapter() {
 
 							@Override
-							public void profileUpdated(Profile profile)
+							public void profileUpdated(Status status)
 							{
 								SkillFragment.this.updateLevel();
+
 							}
 						});
 					}
@@ -82,13 +84,13 @@ public class SkillFragment extends Fragment
 					@Override
 					public void onClick(DialogInterface dialog, int which)
 					{
-						// Nothing to do 
+						// Nothing to do
 					}
 				});
 				alertDialog.show();
 			}
 		});
-		
+
 		return view;
 	}
 
