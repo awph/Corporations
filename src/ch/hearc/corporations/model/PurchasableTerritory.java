@@ -13,6 +13,15 @@
 
 package ch.hearc.corporations.model;
 
+import java.util.List;
+
+import ch.hearc.corporations.controller.AccountController;
+import ch.hearc.corporations.controller.DataLoader;
+import ch.hearc.corporations.controller.DataLoaderAdapter;
+import ch.hearc.corporations.controller.DataLoaderListener;
+import ch.hearc.corporations.controller.Status;
+import ch.hearc.corporations.view.TerritoryInfoFragment.Callback;
+
 /**
  * @author Alexandre
  * 
@@ -31,9 +40,9 @@ public class PurchasableTerritory extends Territory
 	|*							Constructors							*|
 	\*------------------------------------------------------------------*/
 
-	public PurchasableTerritory(double latitude, double longitude, Player owner, long timeOwned, int salePrice, int purchasingPrice)
+	public PurchasableTerritory(double latitude, double longitude, Player owner, long timeOwned, int salePrice, int purchasingPrice, int revenue)
 	{
-		super(latitude, longitude, owner, timeOwned);
+		super(latitude, longitude, owner, timeOwned, revenue);
 		this.salePrice = salePrice;
 		this.purchasingPrice = purchasingPrice;
 	}
@@ -42,9 +51,29 @@ public class PurchasableTerritory extends Territory
 	|*							Public Methods							*|
 	\*------------------------------------------------------------------*/
 
-	public void buy()
+	public boolean buy(final Callback callback)
 	{
+		boolean canBuyTerritory = AccountController.getInstance().getProfile().getCurrentMoney() >= salePrice;// TODO
+																												// border
+																												// territory
+		if (canBuyTerritory)
+		{
+			DataLoader.getInstance().purchaseTerritory(this, new DataLoaderAdapter() {
 
+				@Override
+				public void territoryPurchased(PurchasableTerritory territory)
+				{
+					PurchasableTerritory.this.salePrice = territory.salePrice;
+					PurchasableTerritory.this.purchasingPrice = territory.purchasingPrice;
+					PurchasableTerritory.this.revenue = territory.revenue;
+					PurchasableTerritory.this.timeOwned = territory.timeOwned;
+					PurchasableTerritory.this.owner = territory.owner;
+					PurchasableTerritory.this.updateType();
+					callback.update();
+				}
+			});
+		}
+		return canBuyTerritory;
 	}
 
 	public void changePrice()

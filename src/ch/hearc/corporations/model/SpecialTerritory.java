@@ -13,6 +13,9 @@
 
 package ch.hearc.corporations.model;
 
+import ch.hearc.corporations.controller.DataLoader;
+import ch.hearc.corporations.controller.DataLoaderAdapter;
+import ch.hearc.corporations.view.TerritoryInfoFragment.Callback;
 
 /**
  * @author Alexandre
@@ -24,17 +27,33 @@ public class SpecialTerritory extends Territory
 	|*							Constructors							*|
 	\*------------------------------------------------------------------*/
 
-	public SpecialTerritory(double latitude, double longitude, Player owner, long timeOwned)
+	public SpecialTerritory(double latitude, double longitude, Player owner, long timeOwned, int revenue)
 	{
-		super(latitude, longitude, owner, timeOwned);
+		super(latitude, longitude, owner, timeOwned, revenue);
 	}
 
 	/*------------------------------------------------------------------*\
 	|*							Public Methods							*|
 	\*------------------------------------------------------------------*/
 
-	public void capture()
+	public boolean capture(final Callback callback)
 	{
+		boolean canCapture = true; // TODO: check position
+		if (canCapture)
+		{
+			DataLoader.getInstance().captureTerritory(this, new DataLoaderAdapter() {
 
+				@Override
+				public void territoryCaptured(SpecialTerritory territory)
+				{
+					SpecialTerritory.this.revenue = territory.revenue;
+					SpecialTerritory.this.timeOwned = territory.timeOwned;
+					SpecialTerritory.this.owner = territory.owner;
+					SpecialTerritory.this.updateType();
+					callback.update();
+				}
+			});
+		}
+		return canCapture;
 	}
 }

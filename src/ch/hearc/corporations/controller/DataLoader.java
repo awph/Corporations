@@ -86,7 +86,7 @@ public class DataLoader
 		parameters.put(DataLoaderUtil.RequestParameters.PurchaseTerritory.KEY_WHAT, DataLoaderUtil.RequestParameters.PurchaseTerritory.WHAT);
 		parameters.put(DataLoaderUtil.RequestParameters.PurchaseTerritory.KEY_LATITUDE, String.format("%1$.4f", territory.getLatitude()));
 		parameters.put(DataLoaderUtil.RequestParameters.PurchaseTerritory.KEY_LONGITUDE, String.format("%1$.4f", territory.getLongitude()));
-		parameters.put(DataLoaderUtil.RequestParameters.PurchaseTerritory.KEY_OWNER, territory.getOwner().getUserId());
+		parameters.put(DataLoaderUtil.RequestParameters.PurchaseTerritory.KEY_OWNER, (territory.getOwner() != null ? territory.getOwner().getUserId(): "-1"));
 		parameters.put(DataLoaderUtil.RequestParameters.PurchaseTerritory.KEY_PRICE, Integer.toString(territory.getSalePrice()));
 		request(parameters, ApiRequestType.territoryPurchasing, dataLoaderListener);
 	}
@@ -193,7 +193,7 @@ public class DataLoader
 		}
 		catch (JSONException e)
 		{
-			e.printStackTrace();
+			Log.e(TAG, e.getMessage());
 		}
 		switch (apiRequestType)
 		{
@@ -216,7 +216,7 @@ public class DataLoader
 				}
 				catch (JSONException e)
 				{
-					e.printStackTrace();
+					Log.e(TAG, e.getMessage());
 				}
 				break;
 			case profile:
@@ -235,17 +235,18 @@ public class DataLoader
 						Boolean ally = jsonObject.getString("a").equals("1");
 						Boolean special = jsonObject.getString("s").equals("1");
 						long timeOwned = Long.valueOf(jsonObject.getString("t"));
+						int revenue = Integer.valueOf(jsonObject.getString("r"));
 						Player player = PlayersManager.getInstance().createOrGetPlayerForUserID(ownerUserId, ally);
 						double latitude = Double.valueOf(jsonObject.getString("la"));
 						double longitude = Double.valueOf(jsonObject.getString("lo"));
 						Territory territory;
 						if (special)
-							territory = new SpecialTerritory(latitude, longitude, player, timeOwned);
+							territory = new SpecialTerritory(latitude, longitude, player, timeOwned, revenue);
 						else
 						{
 							int salePrice = Integer.valueOf(jsonObject.getString("sp"));
 							int purchasingPrice = Integer.valueOf(jsonObject.getString("pp"));
-							territory = new PurchasableTerritory(latitude, longitude, player, timeOwned, salePrice, purchasingPrice);
+							territory = new PurchasableTerritory(latitude, longitude, player, timeOwned, salePrice, purchasingPrice, revenue);
 						}
 						territories.add(territory);
 					}
@@ -253,17 +254,51 @@ public class DataLoader
 				}
 				catch (JSONException e)
 				{
-					e.printStackTrace();
+					Log.e(TAG, e.getMessage());
 				}
 				break;
 			case trips:
 
 				break;
 			case territoryPurchasing:
-
+				try
+				{
+					JSONObject jsonObject = result.getJSONObject("results");
+					String ownerUserId = jsonObject.getString("o");
+					Boolean ally = jsonObject.getString("a").equals("1");
+					long timeOwned = Long.valueOf(jsonObject.getString("t"));
+					Player player = PlayersManager.getInstance().createOrGetPlayerForUserID(ownerUserId, ally);
+					double latitude = Double.valueOf(jsonObject.getString("la"));
+					double longitude = Double.valueOf(jsonObject.getString("lo"));
+					int revenue = Integer.valueOf(jsonObject.getString("r"));
+					int salePrice = Integer.valueOf(jsonObject.getString("sp"));
+					int purchasingPrice = Integer.valueOf(jsonObject.getString("pp"));
+					PurchasableTerritory territory = new PurchasableTerritory(latitude, longitude, player, timeOwned, salePrice, purchasingPrice, revenue);
+					listener.territoryPurchased(territory);
+				}
+				catch (JSONException e)
+				{
+					Log.e(TAG, e.getMessage());
+				}
 				break;
 			case territoryCapturing:
-
+				try
+				{
+					JSONObject jsonObject = result.getJSONObject("results");
+					String ownerUserId = jsonObject.getString("o");
+					Boolean ally = jsonObject.getString("a").equals("1");
+					long timeOwned = Long.valueOf(jsonObject.getString("t"));
+					Player player = PlayersManager.getInstance().createOrGetPlayerForUserID(ownerUserId, ally);
+					double latitude = Double.valueOf(jsonObject.getString("la"));
+					double longitude = Double.valueOf(jsonObject.getString("lo"));
+					int revenue = Integer.valueOf(jsonObject.getString("r"));
+					SpecialTerritory territory = new SpecialTerritory(latitude, longitude, player, timeOwned, revenue);
+					listener.territoryCaptured(territory);
+				}
+				catch (JSONException e)
+				{
+					Log.e(TAG, e.getMessage());
+				}
 				break;
 			case connection:
 				updateProfile(result);

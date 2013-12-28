@@ -21,5 +21,7 @@
     <string name="money_limit_skill_name">Limite d\'argent possédé</string>
     <string name="experience_quantity_found_skill_name">Points d\'expérience trouvé lors des déplacements</string>
     <string name="alliance_price_skill_name">Prix d\'une alliance</string>
+    <string name="not_in_zone_alert_dialog_title">Not in zone</string>
+    <string name="not_in_zone_alert_dialog_message">You are not in the territory, so you can\'t capture it!</string>
 
 </resources>

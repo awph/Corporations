@@ -1,7 +1,9 @@
 package ch.hearc.corporations.view;
 
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
@@ -71,18 +73,11 @@ public class TerritoryInfoFragment extends Fragment
 
 	public boolean updateTerritoryInfo(Territory territory)
 	{
+		if (this.territory != null) this.territory.setHighlighted(false);
 		if (!displayed || !territory.equals(this.territory))
 		{
 			displayed = true;
 			this.territory = territory;
-			Player owner = territory.getOwner();
-			if (owner != null)
-			{
-				profileView.setProfileId(owner.getUserId());
-				profileView.setVisibility(View.VISIBLE);
-			}
-			else
-				profileView.setVisibility(View.GONE);
 			loadInfo();
 		}
 		else
@@ -97,8 +92,16 @@ public class TerritoryInfoFragment extends Fragment
 
 	private void loadInfo()
 	{
+		Player owner = territory.getOwner();
+		if (owner != null)
+		{
+			profileView.setProfileId(owner.getUserId());
+			profileView.setVisibility(View.VISIBLE);
+		}
+		else
+			profileView.setVisibility(View.GONE);
 		StringBuilder infos = new StringBuilder();
-		if (territory.getOwner() == null)
+		if (owner == null)
 		{
 			if (territory instanceof PurchasableTerritory)
 			{
@@ -115,7 +118,7 @@ public class TerritoryInfoFragment extends Fragment
 
 			setBackground(CorporationsConfiguration.BACKGROUND_TRANSPARENT_FREE);
 		}
-		else if (territory.getOwner().getUserId().equals(AccountController.getInstance().getFacebookID()))
+		else if (owner.getUserId().equals(AccountController.getInstance().getFacebookID()))
 		{
 			infos.append("Revenue: " + Tools.formatMoney(territory.getRevenue()));
 			infos.append("\nTotal gain: " + Tools.formatMoney(territory.getTotalGain()));
@@ -136,8 +139,8 @@ public class TerritoryInfoFragment extends Fragment
 		}
 		else
 		{
-			infos.append("Owner: " + territory.getOwner().getName());
-			infos.append("\nAlly: " + (territory.getOwner().isAlly() ? "Yes" : "No"));
+			infos.append("Owner: " + owner.getName());
+			infos.append("\nAlly: " + (owner.isAlly() ? "Yes" : "No"));
 			infos.append("\nRevenue: " + Tools.formatMoney(territory.getRevenue()));
 			if (territory instanceof PurchasableTerritory)
 			{
@@ -148,7 +151,7 @@ public class TerritoryInfoFragment extends Fragment
 			{
 				setCaptureButton();
 			}
-			if (territory.getOwner().isAlly())
+			if (owner.isAlly())
 			{
 				setBackground(CorporationsConfiguration.BACKGROUND_TRANSPARENT_ALLY);
 				setAskAllianceButton(true);
@@ -164,7 +167,7 @@ public class TerritoryInfoFragment extends Fragment
 
 	private void hideButton(Button button)
 	{
-		button.setVisibility(View.INVISIBLE);
+		button.setVisibility(View.GONE);
 	}
 
 	private void showButton(Button button)
@@ -216,7 +219,28 @@ public class TerritoryInfoFragment extends Fragment
 			@Override
 			public void onClick(View arg0)
 			{
-				((SpecialTerritory) territory).capture();
+				if (!((SpecialTerritory) territory).capture(new Callback() {
+
+					@Override
+					public void update()
+					{
+						TerritoryInfoFragment.this.loadInfo();
+					}
+				}))
+				{
+					AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
+					alertDialog.setTitle(getActivity().getResources().getString(R.string.not_in_zone_alert_dialog_title));
+					alertDialog.setMessage(getActivity().getResources().getString(R.string.not_in_zone_alert_dialog_message));
+					alertDialog.setButton(DialogInterface.BUTTON_NEUTRAL, getActivity().getResources().getString(android.R.string.ok), new DialogInterface.OnClickListener() {
+
+						@Override
+						public void onClick(DialogInterface dialog, int which)
+						{
+							// nothing
+						}
+					});
+					alertDialog.show();
+				}
 			}
 		});
 	}
@@ -232,7 +256,28 @@ public class TerritoryInfoFragment extends Fragment
 				@Override
 				public void onClick(View arg0)
 				{
-					((PurchasableTerritory) territory).buy();
+					if (!((PurchasableTerritory) territory).buy(new Callback() {
+
+						@Override
+						public void update()
+						{
+							TerritoryInfoFragment.this.loadInfo();
+						}
+					}))
+					{
+						AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
+						alertDialog.setTitle(getActivity().getResources().getString(R.string.not_in_zone_alert_dialog_title));
+						alertDialog.setMessage(getActivity().getResources().getString(R.string.not_in_zone_alert_dialog_message));
+						alertDialog.setButton(DialogInterface.BUTTON_NEUTRAL, getActivity().getResources().getString(android.R.string.ok), new DialogInterface.OnClickListener() {
+
+							@Override
+							public void onClick(DialogInterface dialog, int which)
+							{
+								// nothing
+							}
+						});
+						alertDialog.show();
+					}
 				}
 			});
 		}

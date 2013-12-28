@@ -16,6 +16,8 @@ package ch.hearc.corporations.controller;
 import java.util.List;
 
 import ch.hearc.corporations.model.Player;
+import ch.hearc.corporations.model.PurchasableTerritory;
+import ch.hearc.corporations.model.SpecialTerritory;
 import ch.hearc.corporations.model.Territory;
 import ch.hearc.corporations.model.Trip;
 
@@ -42,11 +44,11 @@ public abstract class DataLoaderAdapter implements DataLoaderListener
 	{
 	}
 
-	public void territoryPurchased(Territory territory)
+	public void territoryPurchased(PurchasableTerritory territory)
 	{
 	}
 
-	public void territoryCaptured(Territory territory)
+	public void territoryCaptured(SpecialTerritory territory)
 	{
 	}
 

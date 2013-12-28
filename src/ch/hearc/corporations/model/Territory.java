@@ -13,13 +13,14 @@ import com.google.android.gms.maps.model.PolygonOptions;
 
 public abstract class Territory implements Comparable<Territory>
 {
-	
+
 	/*------------------------------------------------------------------*\
 	|*							Protected Attributes					*|
 	\*------------------------------------------------------------------*/
 
 	protected int				revenue;
 	protected long				timeOwned;
+	protected Player			owner;
 
 	/*------------------------------------------------------------------*\
 	|*							Private Attributes						*|
@@ -28,7 +29,6 @@ public abstract class Territory implements Comparable<Territory>
 	private double[]			latitudes;
 	private double[]			longitudes;
 	private TerritoyType		type;
-	private Player				owner;
 	private float				borderWidth;
 	private Polygon				polygon;
 	private PolygonOptions		polygonOptions;
@@ -55,25 +55,13 @@ public abstract class Territory implements Comparable<Territory>
 	|*							Constructors							*|
 	\*------------------------------------------------------------------*/
 
-	public Territory(double latitude, double longitude, Player owner, long timeOwned)
+	public Territory(double latitude, double longitude, Player owner, long timeOwned, int revenue)
 	{
 		this.owner = owner;
 		this.timeOwned = timeOwned;
+		this.revenue = revenue;
 		this.polygon = null;
-		if (owner != null)
-		{
-			if (owner.getUserId().equals(AccountController.getInstance().getProfile().getUserId()))
-				this.type = TerritoyType.Mine;
-			else if (owner.isAlly())
-				this.type = TerritoyType.Ally;
-			else
-				this.type = TerritoyType.Enemy;
-
-			owner.addTerritory(this);
-		}
-		else
-			this.type = TerritoyType.Free;
-
+		updateType();
 		latitudes = new double[5];
 		longitudes = new double[5];
 
@@ -155,12 +143,21 @@ public abstract class Territory implements Comparable<Territory>
 		return (latitude < latitudes[TOP_LEFT] && latitude > latitudes[BOTTOM_LEFT] && longitude > longitudes[TOP_LEFT] && longitude < longitudes[TOP_RIGHT]);
 	}
 
-	public void updateAlliance()
+	public void updateType()
 	{
-		if (owner.isAlly())
-			this.type = TerritoyType.Ally;
+		if (owner != null)
+		{
+			if (owner.getUserId().equals(AccountController.getInstance().getProfile().getUserId()))
+				this.type = TerritoyType.Mine;
+			else if (owner.isAlly())
+				this.type = TerritoyType.Ally;
+			else
+				this.type = TerritoyType.Enemy;
+
+			owner.addTerritory(this);
+		}
 		else
-			this.type = TerritoyType.Enemy;
+			this.type = TerritoyType.Free;
 		if (polygon != null) polygon.setFillColor(this.type.getColor(this instanceof SpecialTerritory));
 	}
 
@@ -345,6 +342,9 @@ public abstract class Territory implements Comparable<Territory>
 
 	public void setHighlighted(boolean highlighted)
 	{
-		polygon.setStrokeWidth(highlighted ? BORDER_WIDTH_HIGHLIGHTED : borderWidth);
+		if (!highlighted && type == TerritoyType.Free)
+			polygon.remove();
+		else
+			polygon.setStrokeWidth(highlighted ? BORDER_WIDTH_HIGHLIGHTED : borderWidth);
 	}
 }

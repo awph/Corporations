@@ -94,7 +94,7 @@ public class Player
 					callback.update();
 					for (Territory territory : territories)
 						if (territory != null) // TODO: WTF
-							territory.updateAlliance();
+							territory.updateType();
 				}
 			}
 		});

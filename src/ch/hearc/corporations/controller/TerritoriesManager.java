@@ -59,7 +59,7 @@ public class TerritoriesManager
 	{
 		for (int i = 0; i < 10; ++i)
 			for (int j = 0; j < 10; ++j)
-				this.territories.add(new PurchasableTerritory(currentLocation.latitude + (i - 5) * 0.01D, currentLocation.longitude + (j - 5) * 0.01D, new Player("0", 0, 0, 0, true), 0, 0, 0));
+				this.territories.add(new PurchasableTerritory(currentLocation.latitude + (i - 5) * 0.01D, currentLocation.longitude + (j - 5) * 0.01D, new Player("0", 0, 0, 0, true), 0, 0, 0, 0));
 
 	}
 
@@ -70,7 +70,7 @@ public class TerritoriesManager
 			if (territory.isInBounds(location.latitude, location.longitude)) return territory;
 		}
 
-		Territory territory = new PurchasableTerritory(location.latitude, location.longitude, null, 0, 0, 0);
+		Territory territory = new PurchasableTerritory(location.latitude, location.longitude, null, 0, 1000, 0, 0);
 		if (territory.getPolygon() == null) territory.setMap(map);
 		return territory;
 	}
