@@ -23,7 +23,10 @@ import ch.hearc.corporations.model.Territory;
 
 public class TerritoryInfoFragment extends Fragment
 {
-	public static final String						TAG					= TerritoryInfoFragment.class.getSimpleName();
+
+	/*------------------------------------------------------------------*\
+	|*							Private Attributes						*|
+	\*------------------------------------------------------------------*/
 
 	private RoundedFacebookProfilePictureImageView	profileView;
 	private TextView								infoTextView;
@@ -32,6 +35,16 @@ public class TerritoryInfoFragment extends Fragment
 	private View									view;
 	private Territory								territory;
 	private boolean									displayed;
+
+	/*------------------------------*\
+	|*			  Static			*|
+	\*------------------------------*/
+
+	public static final String						TAG	= TerritoryInfoFragment.class.getSimpleName();
+
+	/*------------------------------*\
+	|*			  Interface			*|
+	\*------------------------------*/
 
 	public interface Callback
 	{
@@ -52,6 +65,10 @@ public class TerritoryInfoFragment extends Fragment
 		return view;
 	}
 
+	/*------------------------------------------------------------------*\
+	|*							Public Methods							*|
+	\*------------------------------------------------------------------*/
+
 	public boolean updateTerritoryInfo(Territory territory)
 	{
 		if (!displayed || !territory.equals(this.territory))
@@ -59,7 +76,7 @@ public class TerritoryInfoFragment extends Fragment
 			displayed = true;
 			this.territory = territory;
 			Player owner = territory.getOwner();
-			if(owner != null)
+			if (owner != null)
 			{
 				profileView.setProfileId(owner.getUserId());
 				profileView.setVisibility(View.VISIBLE);
@@ -73,6 +90,10 @@ public class TerritoryInfoFragment extends Fragment
 
 		return displayed;
 	}
+
+	/*------------------------------------------------------------------*\
+	|*							Private Methods							*|
+	\*------------------------------------------------------------------*/
 
 	private void loadInfo()
 	{
@@ -96,8 +117,8 @@ public class TerritoryInfoFragment extends Fragment
 		}
 		else if (territory.getOwner().getUserId().equals(AccountController.getInstance().getFacebookID()))
 		{
-			infos.append("Revenue: " + Tools.formatMoney(((PurchasableTerritory) territory).getRevenue()));
-			infos.append("\nTotal gain: " + Tools.formatMoney(((PurchasableTerritory) territory).getTotalGain()));
+			infos.append("Revenue: " + Tools.formatMoney(territory.getRevenue()));
+			infos.append("\nTotal gain: " + Tools.formatMoney(territory.getTotalGain()));
 			if (territory instanceof PurchasableTerritory)
 			{
 				infos.append("\nPurchasing price: " + Tools.formatMoney(((PurchasableTerritory) territory).getPurchasingPrice()));

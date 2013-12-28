@@ -19,21 +19,50 @@ package ch.hearc.corporations.model;
  */
 public class Skill
 {
+	/*------------------------------------------------------------------*\
+	|*							Public Attributes						*|
+	\*------------------------------------------------------------------*/
+
+	/*------------------------------*\
+	|*			  Static			*|
+	\*------------------------------*/
+
 	public static final int	SKILL_PURCHASE_PRICE			= 0;
 	public static final int	SKILL_PURCHASE_DISTANCE			= 1;
 	public static final int	SKILL_EXPERIENCE_LIMIT			= 2;
 	public static final int	SKILL_MONEY_LIMIT				= 3;
 	public static final int	SKILL_EXPERIENCE_QUANTITY_FOUND	= 4;
 	public static final int	SKILL_ALLIANCE_PRICE			= 5;
-	
-	private SkillType	type;
-	private int			level;
+
+	/*------------------------------------------------------------------*\
+	|*							Private Attributes						*|
+	\*------------------------------------------------------------------*/
+
+	private SkillType		type;
+	private int				level;
+
+	/*------------------------------------------------------------------*\
+	|*							Constructors							*|
+	\*------------------------------------------------------------------*/
 
 	public Skill(SkillType type, int level)
 	{
 		this.type = type;
 		this.level = level;
 	}
+
+	/*------------------------------------------------------------------*\
+	|*							Public Methods							*|
+	\*------------------------------------------------------------------*/
+
+	public void upgrade()
+	{
+		level++;
+	}
+
+	/*------------------------------*\
+	|*				Get				*|
+	\*------------------------------*/
 
 	public SkillType getType()
 	{
@@ -45,22 +74,15 @@ public class Skill
 		return level;
 	}
 
-	public Object getName()
+	public int getPrice()
 	{
 		// TODO Auto-generated method stub
-		return null;
+		return 0;
 	}
 
-	public Object getPrice()
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public void upgrade()
-	{
-		level++;
-	}
+	/*------------------------------*\
+	|*				Set				*|
+	\*------------------------------*/
 
 	public void setLevel(int level)
 	{

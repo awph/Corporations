@@ -34,7 +34,16 @@ import ch.hearc.corporations.controller.AccountController;
  */
 public class PlayerArrayAdapter extends ArrayAdapter<Player>
 {
+
+	/*------------------------------------------------------------------*\
+	|*							Private Attributs						*|
+	\*------------------------------------------------------------------*/
+
 	private List<Player>	players;
+
+	/*------------------------------------------------------------------*\
+	|*							Constructors							*|
+	\*------------------------------------------------------------------*/
 
 	public PlayerArrayAdapter(Context context, List<Player> players)
 	{
@@ -51,6 +60,10 @@ public class PlayerArrayAdapter extends ArrayAdapter<Player>
 		});
 		this.players = players;
 	}
+
+	/*------------------------------------------------------------------*\
+	|*							Public Methods							*|
+	\*------------------------------------------------------------------*/
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent)

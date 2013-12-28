@@ -60,7 +60,7 @@ public class SkillFragment extends Fragment
 			{
 				AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
 				alertDialog.setTitle(getActivity().getResources().getString(R.string.improve_alert_dialog_title));
-				alertDialog.setMessage(String.format(getActivity().getResources().getString(R.string.improve_alert_dialog_message), skill.getName(), skill.getLevel(), skill.getPrice()));
+				alertDialog.setMessage(String.format(getActivity().getResources().getString(R.string.improve_alert_dialog_message), skill.getType().getName(), skill.getLevel(), skill.getPrice()));
 				alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, getActivity().getResources().getString(android.R.string.yes), new OnClickListener() {
 
 					@Override

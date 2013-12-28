@@ -13,15 +13,23 @@
 
 package ch.hearc.corporations.model;
 
-
 /**
  * @author Alexandre
  * 
  */
 public class PurchasableTerritory extends Territory
 {
+
+	/*------------------------------------------------------------------*\
+	|*							Private Attributes						*|
+	\*------------------------------------------------------------------*/
+
 	private int	salePrice;
 	private int	purchasingPrice;
+
+	/*------------------------------------------------------------------*\
+	|*							Constructors							*|
+	\*------------------------------------------------------------------*/
 
 	public PurchasableTerritory(double latitude, double longitude, Player owner, long timeOwned, int salePrice, int purchasingPrice)
 	{
@@ -29,6 +37,25 @@ public class PurchasableTerritory extends Territory
 		this.salePrice = salePrice;
 		this.purchasingPrice = purchasingPrice;
 	}
+
+	/*------------------------------------------------------------------*\
+	|*							Public Methods							*|
+	\*------------------------------------------------------------------*/
+
+	public void buy()
+	{
+
+	}
+
+	public void changePrice()
+	{
+		// TODO Auto-generated method stub
+
+	}
+
+	/*------------------------------*\
+	|*				Get				*|
+	\*------------------------------*/
 
 	/**
 	 * @return the salePrice
@@ -44,16 +71,5 @@ public class PurchasableTerritory extends Territory
 	public int getPurchasingPrice()
 	{
 		return purchasingPrice;
-	}
-
-	public void buy()
-	{
-
-	}
-
-	public void changePrice()
-	{
-		// TODO Auto-generated method stub
-
 	}
 }

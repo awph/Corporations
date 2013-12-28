@@ -13,63 +13,29 @@ import com.google.android.gms.maps.model.PolygonOptions;
 
 public abstract class Territory implements Comparable<Territory>
 {
-	protected int			revenue;
-	private TerritoyType	type;
-	private Player			owner;
-	protected long			timeOwned;
+	
+	/*------------------------------------------------------------------*\
+	|*							Protected Attributes					*|
+	\*------------------------------------------------------------------*/
 
-	private double[]		latitudes;
-	private double[]		longitudes;
+	protected int				revenue;
+	protected long				timeOwned;
 
-	/**
-	 * @return the type
-	 */
-	public TerritoyType getType()
-	{
-		return type;
-	}
+	/*------------------------------------------------------------------*\
+	|*							Private Attributes						*|
+	\*------------------------------------------------------------------*/
 
-	/**
-	 * @return the revenue
-	 */
-	public int getRevenue()
-	{
-		return revenue;
-	}
-
-	/**
-	 * @return the owner
-	 */
-	public Player getOwner()
-	{
-		return owner;
-	}
-
-	/**
-	 * @return the timeOwned
-	 */
-	public long getTimeOwned()
-	{
-		return timeOwned;
-	}
-
-	public long getTotalGain()
-	{
-		return timeOwned * revenue;
-	}
-
-	public double getLatitude()
-	{
-		return latitudes[CENTER];
-	}
-
-	public double getLongitude()
-	{
-		return longitudes[CENTER];
-	}
-
+	private double[]			latitudes;
+	private double[]			longitudes;
+	private TerritoyType		type;
+	private Player				owner;
+	private float				borderWidth;
 	private Polygon				polygon;
 	private PolygonOptions		polygonOptions;
+
+	/*------------------------------*\
+	|*			  Static			*|
+	\*------------------------------*/
 
 	private static final int	TOP_LEFT					= 0;
 	private static final int	TOP_RIGHT					= 1;
@@ -81,7 +47,13 @@ public abstract class Territory implements Comparable<Territory>
 	private static final int	TERRITORY_SIZE_IN_METER		= 5000;
 	private static final double	TERRITORY_SIZE_IN_LAT_LON	= 0.01D;
 	private static final float	BORDER_WIDTH				= 1f;
-	public static final int		BORDER_COLOR				= Color.argb(150, 0, 0, 0);
+	private static final float	BORDER_WIDTH_HIGHLIGHTED	= 5f;
+	private static final float	BORDER_WIDTH_SPECIAL		= 2f;
+	private static final int	BORDER_COLOR				= Color.argb(150, 0, 0, 0);
+
+	/*------------------------------------------------------------------*\
+	|*							Constructors							*|
+	\*------------------------------------------------------------------*/
 
 	public Territory(double latitude, double longitude, Player owner, long timeOwned)
 	{
@@ -112,6 +84,8 @@ public abstract class Territory implements Comparable<Territory>
 		}
 
 		boolean simple = true;
+		boolean isSpecial = this instanceof SpecialTerritory;
+		borderWidth = isSpecial ? BORDER_WIDTH_SPECIAL : BORDER_WIDTH;
 		if (simple)
 		{
 			double topLatitude = getTopLatitudeTerritoryForLatitude2(latitude);
@@ -134,7 +108,7 @@ public abstract class Territory implements Comparable<Territory>
 
 			polygonOptions = new PolygonOptions()
 					.add(new LatLng(latitudes[TOP_LEFT], longitudes[TOP_LEFT]), new LatLng(latitudes[TOP_RIGHT], longitudes[TOP_RIGHT]), new LatLng(latitudes[BOTTOM_RIGHT], longitudes[BOTTOM_RIGHT]),
-							new LatLng(latitudes[BOTTOM_LEFT], longitudes[BOTTOM_LEFT])).strokeColor(BORDER_COLOR).fillColor(type.getColor()).strokeWidth(BORDER_WIDTH);
+							new LatLng(latitudes[BOTTOM_LEFT], longitudes[BOTTOM_LEFT])).strokeColor(BORDER_COLOR).fillColor(type.getColor(isSpecial)).strokeWidth(borderWidth);
 		}
 		else
 		{
@@ -161,7 +135,7 @@ public abstract class Territory implements Comparable<Territory>
 
 			polygonOptions = new PolygonOptions()
 					.add(new LatLng(latitudes[TOP_LEFT], longitudes[TOP_LEFT]), new LatLng(latitudes[TOP_RIGHT], longitudes[TOP_RIGHT]), new LatLng(latitudes[BOTTOM_RIGHT], longitudes[BOTTOM_RIGHT]),
-							new LatLng(latitudes[BOTTOM_LEFT], longitudes[BOTTOM_LEFT])).strokeColor(BORDER_COLOR).fillColor(type.getColor()).strokeWidth(BORDER_WIDTH);
+							new LatLng(latitudes[BOTTOM_LEFT], longitudes[BOTTOM_LEFT])).strokeColor(BORDER_COLOR).fillColor(type.getColor(isSpecial)).strokeWidth(borderWidth);
 		}
 
 		// Log.d("Log : Territory", points[CENTER].toString());
@@ -172,9 +146,22 @@ public abstract class Territory implements Comparable<Territory>
 		// - points[CENTER].longitude));
 	}
 
+	/*------------------------------------------------------------------*\
+	|*							Public Methods							*|
+	\*------------------------------------------------------------------*/
+
 	public boolean isInBounds(double latitude, double longitude)
 	{
 		return (latitude < latitudes[TOP_LEFT] && latitude > latitudes[BOTTOM_LEFT] && longitude > longitudes[TOP_LEFT] && longitude < longitudes[TOP_RIGHT]);
+	}
+
+	public void updateAlliance()
+	{
+		if (owner.isAlly())
+			this.type = TerritoyType.Ally;
+		else
+			this.type = TerritoyType.Enemy;
+		if (polygon != null) polygon.setFillColor(this.type.getColor(this instanceof SpecialTerritory));
 	}
 
 	@Override
@@ -185,6 +172,27 @@ public abstract class Territory implements Comparable<Territory>
 		double distanceToLatLng2 = Math.pow(currentLocation.latitude - second.latitudes[CENTER], 2) + Math.pow(currentLocation.longitude - second.longitudes[CENTER], 2);
 		return Double.compare(distanceToLatLng1, distanceToLatLng2);
 	}
+
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (getClass() != obj.getClass()) return false;
+		Territory other = (Territory) obj;
+		Log.d("Log : Territory", "" + (int) ((latitudes[CENTER] + longitudes[CENTER]) / TERRITORY_SIZE_IN_LAT_LON / 0.1));
+		return (int) ((latitudes[CENTER] + longitudes[CENTER]) / TERRITORY_SIZE_IN_LAT_LON / 0.1) == (int) ((other.latitudes[CENTER] + other.longitudes[CENTER]) / TERRITORY_SIZE_IN_LAT_LON / 0.1);
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return (int) ((latitudes[CENTER] + longitudes[CENTER]) / TERRITORY_SIZE_IN_LAT_LON / 0.1);
+	}
+
+	/*------------------------------------------------------------------*\
+	|*							Private Methods							*|
+	\*------------------------------------------------------------------*/
 
 	private double getLeftLongitudeTerritoryForLatitudeAndLongitude2(double longitude)
 	{
@@ -252,6 +260,78 @@ public abstract class Territory implements Comparable<Territory>
 		return delta;
 	}
 
+	/*------------------------------*\
+	|*				Get				*|
+	\*------------------------------*/
+
+	/**
+	 * @return the revenue
+	 */
+	public int getRevenue()
+	{
+		return revenue;
+	}
+
+	/**
+	 * @return the timeOwned
+	 */
+	public long getTimeOwned()
+	{
+		return timeOwned;
+	}
+
+	/**
+	 * @return the center's latitude
+	 */
+	public double getLatitude()
+	{
+		return latitudes[CENTER];
+	}
+
+	/**
+	 * @return the center's longitude
+	 */
+	public double getLongitude()
+	{
+		return longitudes[CENTER];
+	}
+
+	/**
+	 * @return the type
+	 */
+	public TerritoyType getType()
+	{
+		return type;
+	}
+
+	/**
+	 * @return the owner
+	 */
+	public Player getOwner()
+	{
+		return owner;
+	}
+
+	/**
+	 * @return the amount of money earned since capturing date
+	 */
+	public long getTotalGain()
+	{
+		return timeOwned * revenue;
+	}
+
+	/**
+	 * @return the polygon
+	 */
+	public Polygon getPolygon()
+	{
+		return polygon;
+	}
+
+	/*------------------------------*\
+	|*				Set				*|
+	\*------------------------------*/
+
 	public void setMap(GoogleMap map)
 	{
 		polygon = map.addPolygon(polygonOptions);
@@ -263,42 +343,8 @@ public abstract class Territory implements Comparable<Territory>
 		polygon.setVisible(visible);
 	}
 
-	/**
-	 * @return the polygon
-	 */
-	public Polygon getPolygon()
-	{
-		return polygon;
-	}
-
-	@Override
-	public boolean equals(Object obj)
-	{
-		if (this == obj) return true;
-		if (obj == null) return false;
-		if (getClass() != obj.getClass()) return false;
-		Territory other = (Territory) obj;
-		Log.d("Log : Territory", "" + (int) ((latitudes[CENTER] + longitudes[CENTER]) / TERRITORY_SIZE_IN_LAT_LON / 0.1));
-		return (int) ((latitudes[CENTER] + longitudes[CENTER]) / TERRITORY_SIZE_IN_LAT_LON / 0.1) == (int) ((other.latitudes[CENTER] + other.longitudes[CENTER]) / TERRITORY_SIZE_IN_LAT_LON / 0.1);
-	}
-
-	@Override
-	public int hashCode()
-	{
-		return (int) ((latitudes[CENTER] + longitudes[CENTER]) / TERRITORY_SIZE_IN_LAT_LON / 0.1);
-	}
-
 	public void setHighlighted(boolean highlighted)
 	{
-		polygon.setStrokeWidth(highlighted ? 5f : 1f);
-	}
-
-	public void updateAlliance()
-	{
-		if (owner.isAlly())
-			this.type = TerritoyType.Ally;
-		else
-			this.type = TerritoyType.Enemy;
-		if (polygon != null) polygon.setFillColor(this.type.getColor());
+		polygon.setStrokeWidth(highlighted ? BORDER_WIDTH_HIGHLIGHTED : borderWidth);
 	}
 }

@@ -11,14 +11,26 @@ public enum SkillType
 			Corporations.getAppContext().getResources().getString(R.string.money_limit_skill_name), 3), experienceQuantityFound(Corporations.getAppContext().getResources()
 			.getString(R.string.experience_quantity_found_skill_name), 4), alliancePrice(Corporations.getAppContext().getResources().getString(R.string.alliance_price_skill_name), 5);
 
+	/*------------------------------------------------------------------*\
+	|*							Private Attributes						*|
+	\*------------------------------------------------------------------*/
+
 	private String	name;
 	private int		number;
+
+	/*------------------------------------------------------------------*\
+	|*							Constructors							*|
+	\*------------------------------------------------------------------*/
 
 	private SkillType(String name, int number)
 	{
 		this.name = name;
 		this.number = number;
 	}
+
+	/*------------------------------*\
+	|*				Get				*|
+	\*------------------------------*/
 
 	public String getName()
 	{
