@@ -1,12 +1,15 @@
 package ch.hearc.corporations.model;
 
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.location.Location;
 import android.util.Log;
 import ch.hearc.corporations.controller.AccountController;
 import ch.hearc.corporations.view.TerritoriesFragment;
 
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
@@ -137,6 +140,41 @@ public abstract class Territory implements Comparable<Territory>
 	/*------------------------------------------------------------------*\
 	|*							Public Methods							*|
 	\*------------------------------------------------------------------*/
+
+	/**
+	 * Check if the current territory is in water. Check the four pixels in each corner, and if in each corner at least one pixel is blue the territory is in water.
+	 * @param projection a projection object for convert from/to screen coordinates to/from map coordinates  
+	 * @param bitmap a image a the map
+	 * @return true if territory is in water
+	 */
+	public boolean isInWater(Projection projection, Bitmap bitmap)
+	{
+		int WATER = 0x00ADCEFF;
+		Point point = projection.toScreenLocation(new LatLng(latitudes[TOP_LEFT], longitudes[TOP_LEFT]));
+		int width = bitmap.getWidth();
+		int height = bitmap.getHeight();
+		int x = point.x < 0 ? 0 : point.x < width ? point.x : width;
+		int y = point.y < 0 ? 0 : point.y < height ? point.y : height;
+		if (!((bitmap.getPixel(x, y) & 0x00FFFFFF) == WATER || (bitmap.getPixel(x + 1, y) & 0x00FFFFFF) == WATER || (bitmap.getPixel(x, y + 1) & 0x00FFFFFF) == WATER || (bitmap.getPixel(x + 1, y + 1) & 0x00FFFFFF) == WATER))
+			return false;
+		point = projection.toScreenLocation(new LatLng(latitudes[TOP_RIGHT], longitudes[TOP_RIGHT]));
+		x = point.x < 0 ? 0 : point.x < width ? point.x : width;
+		y = point.y < 0 ? 0 : point.y < height ? point.y : height;
+		if (!((bitmap.getPixel(x, y) & 0x00FFFFFF) == WATER || (bitmap.getPixel(x - 1, y) & 0x00FFFFFF) == WATER || (bitmap.getPixel(x, y + 1) & 0x00FFFFFF) == WATER || (bitmap.getPixel(x - 1, y + 1) & 0x00FFFFFF) == WATER))
+			return false;
+		point = projection.toScreenLocation(new LatLng(latitudes[BOTTOM_RIGHT], longitudes[BOTTOM_RIGHT]));
+		x = point.x < 0 ? 0 : point.x < width ? point.x : width;
+		y = point.y < 0 ? 0 : point.y < height ? point.y : height;
+		if (!((bitmap.getPixel(x, y) & 0x00FFFFFF) == WATER || (bitmap.getPixel(x - 1, y) & 0x00FFFFFF) == WATER || (bitmap.getPixel(x, y - 1) & 0x00FFFFFF) == WATER || (bitmap.getPixel(x - 1, y - 1) & 0x00FFFFFF) == WATER))
+			return false;
+		point = projection.toScreenLocation(new LatLng(latitudes[BOTTOM_LEFT], longitudes[BOTTOM_LEFT]));
+		x = point.x < 0 ? 0 : point.x < width ? point.x : width;
+		y = point.y < 0 ? 0 : point.y < height ? point.y : height;
+		if (!((bitmap.getPixel(x, y) & 0x00FFFFFF) == WATER || (bitmap.getPixel(x + 1, y) & 0x00FFFFFF) == WATER || (bitmap.getPixel(x, y - 1) & 0x00FFFFFF) == WATER || (bitmap.getPixel(x + 1, y - 1) & 0x00FFFFFF) == WATER))
+			return false;
+
+		return true;
+	}
 
 	public boolean isInBounds(double latitude, double longitude)
 	{
@@ -332,6 +370,7 @@ public abstract class Territory implements Comparable<Territory>
 	public void setMap(GoogleMap map)
 	{
 		polygon = map.addPolygon(polygonOptions);
+		polygon.setVisible(false);
 		polygonOptions = null;
 	}
 

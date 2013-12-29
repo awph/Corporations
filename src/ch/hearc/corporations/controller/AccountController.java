@@ -3,29 +3,65 @@ package ch.hearc.corporations.controller;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 
-import com.google.android.gms.maps.model.LatLng;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.provider.Settings.Secure;
-
 import ch.hearc.corporations.Corporations;
 import ch.hearc.corporations.model.Profile;
 import ch.hearc.corporations.security.Encrypt;
 
+import com.google.android.gms.maps.model.LatLng;
+
 public class AccountController
 {
-	private static final String			PREFERENCES_FILENAME	= "CorporationsPref";
-	private static final String			FACEBOOK_ID_KEY			= "kFacebookId";
-	private static final String			HOME_LAT_KEY			= "kLatHome";
-	private static final String			HOME_LNG_KEY			= "kLngHome";
 
-	private static AccountController	instance				= null;
+	/*------------------------------------------------------------------*\
+	|*							Private Attributes						*|
+	\*------------------------------------------------------------------*/
+
 	private String						facebookID;
 	private String						deviceID;
 	private String						identifier;
 	private LatLng						home;
 	private Profile						profile;
+	private ProfileInfoDisplayer		profileInfoDisplayer;
+
+	/*------------------------------*\
+	|*			  Static			*|
+	\*------------------------------*/
+
+	private static AccountController	instance				= null;
+
+	private static final String			PREFERENCES_FILENAME	= "CorporationsPref";
+	private static final String			FACEBOOK_ID_KEY			= "kFacebookId";
+	private static final String			HOME_LAT_KEY			= "kLatHome";
+	private static final String			HOME_LNG_KEY			= "kLngHome";
+
+	/*------------------------------*\
+	|*			  Interface			*|
+	\*------------------------------*/
+
+	public interface ProfileInfoDisplayer
+	{
+		void updateProfileInfo();
+	}
+
+	/*------------------------------------------------------------------*\
+	|*							Constructors							*|
+	\*------------------------------------------------------------------*/
+
+	private AccountController()
+	{
+		profile = null;
+		// http://android-developers.blogspot.in/2011/03/identifying-app-installations.html
+		deviceID = Secure.getString(Corporations.getAppContext().getContentResolver(), Secure.ANDROID_ID);
+		restoreFacebookID();
+		generateIdentifier();
+	}
+
+	/*------------------------------------------------------------------*\
+	|*							Public Methods							*|
+	\*------------------------------------------------------------------*/
 
 	public static AccountController getInstance()
 	{
@@ -38,47 +74,21 @@ public class AccountController
 		return this.facebookID.equals(facebookID);
 	}
 
-	public String getIdentifier()
+	public void updateProfile()
 	{
-		return identifier;
+		DataLoader.getInstance().getProfile(new DataLoaderAdapter() {
+
+			@Override
+			public void profileFetched(Status status)
+			{
+				profileInfoDisplayer.updateProfileInfo();
+			}
+		});
 	}
 
-	public String getFacebookID()
-	{
-		return facebookID;
-	}
-
-	public void setFacebookID(String facebookID)
-	{
-		this.facebookID = facebookID;
-		generateIdentifier();
-		saveAccount();
-	}
-
-	public void setProfile(Profile profile)
-	{
-		this.profile = profile;
-	}
-
-	public Profile getProfile()
-	{
-		if (profile == null) profile = new Profile();
-		return profile;
-	}
-
-	public LatLng getHome()
-	{
-		return profile.getHome();
-	}
-
-	private AccountController()
-	{
-		profile = null;
-		// http://android-developers.blogspot.in/2011/03/identifying-app-installations.html
-		deviceID = Secure.getString(Corporations.getAppContext().getContentResolver(), Secure.ANDROID_ID);
-		restoreFacebookID();
-		generateIdentifier();
-	}
+	/*------------------------------------------------------------------*\
+	|*							Private Methods							*|
+	\*------------------------------------------------------------------*/
 
 	private void restoreFacebookID()
 	{
@@ -124,4 +134,55 @@ public class AccountController
 			}
 		}
 	}
+
+	/*------------------------------*\
+	|*				Get				*|
+	\*------------------------------*/
+
+	public String getIdentifier()
+	{
+		return identifier;
+	}
+
+	public String getFacebookID()
+	{
+		return facebookID;
+	}
+
+	public Profile getProfile()
+	{
+		if (profile == null) profile = new Profile();
+		return profile;
+	}
+
+	public LatLng getHome()
+	{
+		return profile.getHome();
+	}
+
+	/*------------------------------*\
+	|*				Set				*|
+	\*------------------------------*/
+
+	/**
+	 * @param profileInfoDisplayer
+	 *            the profileInfoDisplayer to set
+	 */
+	public void setProfileInfoDisplayer(ProfileInfoDisplayer profileInfoDisplayer)
+	{
+		this.profileInfoDisplayer = profileInfoDisplayer;
+	}
+
+	public void setFacebookID(String facebookID)
+	{
+		this.facebookID = facebookID;
+		generateIdentifier();
+		saveAccount();
+	}
+
+	public void setProfile(Profile profile)
+	{
+		this.profile = profile;
+	}
+
 }

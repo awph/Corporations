@@ -1,9 +1,7 @@
 package ch.hearc.corporations.view;
 
 import android.annotation.TargetApi;
-import android.app.AlertDialog;
 import android.app.Fragment;
-import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
@@ -73,6 +71,7 @@ public class TerritoryInfoFragment extends Fragment
 
 	public boolean updateTerritoryInfo(Territory territory)
 	{
+		territory.setVisible(true);
 		if (this.territory != null) this.territory.setHighlighted(false);
 		if (!displayed || !territory.equals(this.territory))
 		{
@@ -228,18 +227,8 @@ public class TerritoryInfoFragment extends Fragment
 					}
 				}))
 				{
-					AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
-					alertDialog.setTitle(getActivity().getResources().getString(R.string.not_in_zone_alert_dialog_title));
-					alertDialog.setMessage(getActivity().getResources().getString(R.string.not_in_zone_alert_dialog_message));
-					alertDialog.setButton(DialogInterface.BUTTON_NEUTRAL, getActivity().getResources().getString(android.R.string.ok), new DialogInterface.OnClickListener() {
-
-						@Override
-						public void onClick(DialogInterface dialog, int which)
-						{
-							// nothing
-						}
-					});
-					alertDialog.show();
+					Tools.showInfoAlertDialog(getActivity(), getActivity().getResources().getString(R.string.not_in_zone_alert_dialog_title),
+							getActivity().getResources().getString(R.string.not_in_zone_alert_dialog_message));
 				}
 			}
 		});
@@ -265,18 +254,8 @@ public class TerritoryInfoFragment extends Fragment
 						}
 					}))
 					{
-						AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
-						alertDialog.setTitle(getActivity().getResources().getString(R.string.not_in_zone_alert_dialog_title));
-						alertDialog.setMessage(getActivity().getResources().getString(R.string.not_in_zone_alert_dialog_message));
-						alertDialog.setButton(DialogInterface.BUTTON_NEUTRAL, getActivity().getResources().getString(android.R.string.ok), new DialogInterface.OnClickListener() {
-
-							@Override
-							public void onClick(DialogInterface dialog, int which)
-							{
-								// nothing
-							}
-						});
-						alertDialog.show();
+						Tools.showInfoAlertDialog(getActivity(), getActivity().getResources().getString(R.string.not_enough_money_alert_dialog_title),
+								getActivity().getResources().getString(R.string.not_enough_money_alert_dialog_message));
 					}
 				}
 			});

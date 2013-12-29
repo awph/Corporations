@@ -150,7 +150,7 @@ public final class DataLoaderUtil
 			public static final String	PDL						= "pdl";
 			public static final String	ELL						= "ell";
 			public static final String	MLL						= "mll";
-			public static final String	EGFL					= "egfl";
+			public static final String	EQFL					= "eqfl";
 			public static final String	APL						= "apl";
 		}
 
@@ -162,7 +162,7 @@ public final class DataLoaderUtil
 			public static final String	MONEY		= "m";
 		}
 
-		public static final class Territories
+		public static class Territories
 		{
 			public static final String	OWNER			= "o";
 			public static final String	ALLY			= "a";
@@ -175,16 +175,11 @@ public final class DataLoaderUtil
 			public static final String	LONGITUDE		= "lo";
 		}
 
-		public static class PurchaseTerritory
+		public static final class PurchaseTerritory extends Territories
 		{
-			public static final String	OWNER		= "o";
-			public static final String	ALLY		= "a";
-			public static final String	REVENUE		= "r";
-			public static final String	LATITUDE	= "la";
-			public static final String	LONGITUDE	= "lo";
 		}
 
-		public static final class CaptureTerritory extends PurchaseTerritory
+		public static final class CaptureTerritory extends Territories
 		{
 		}
 
@@ -205,6 +200,7 @@ public final class DataLoaderUtil
 		}
 
 		public static final String	STATUS	= "status";
+		public static final String	RESULTS	= "results";
 
 		public static final class StatusKey
 		{

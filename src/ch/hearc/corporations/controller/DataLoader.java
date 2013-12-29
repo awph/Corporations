@@ -55,7 +55,7 @@ public class DataLoader
 		request(parameters, ApiRequestType.leaderboard, dataLoaderListener);
 	}
 
-	public void getProfile(LatLng coordinate, DataLoaderListener dataLoaderListener)
+	public void getProfile(DataLoaderListener dataLoaderListener)
 	{
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put(DataLoaderUtil.RequestParameters.Profile.KEY_WHAT, DataLoaderUtil.RequestParameters.Profile.WHAT);
@@ -86,7 +86,7 @@ public class DataLoader
 		parameters.put(DataLoaderUtil.RequestParameters.PurchaseTerritory.KEY_WHAT, DataLoaderUtil.RequestParameters.PurchaseTerritory.WHAT);
 		parameters.put(DataLoaderUtil.RequestParameters.PurchaseTerritory.KEY_LATITUDE, String.format("%1$.4f", territory.getLatitude()));
 		parameters.put(DataLoaderUtil.RequestParameters.PurchaseTerritory.KEY_LONGITUDE, String.format("%1$.4f", territory.getLongitude()));
-		parameters.put(DataLoaderUtil.RequestParameters.PurchaseTerritory.KEY_OWNER, (territory.getOwner() != null ? territory.getOwner().getUserId(): "-1"));
+		parameters.put(DataLoaderUtil.RequestParameters.PurchaseTerritory.KEY_OWNER, (territory.getOwner() != null ? territory.getOwner().getUserId() : "-1"));
 		parameters.put(DataLoaderUtil.RequestParameters.PurchaseTerritory.KEY_PRICE, Integer.toString(territory.getSalePrice()));
 		request(parameters, ApiRequestType.territoryPurchasing, dataLoaderListener);
 	}
@@ -201,7 +201,7 @@ public class DataLoader
 				try
 				{
 					List<Player> players = new ArrayList<Player>();
-					JSONArray jsonArray = result.getJSONArray("results");
+					JSONArray jsonArray = result.getJSONArray(DataLoaderUtil.ResultKeys.RESULTS);
 					for (int i = 0; i < jsonArray.length(); ++i)
 					{
 						JSONObject jsonObject = jsonArray.getJSONObject(i);
@@ -227,25 +227,25 @@ public class DataLoader
 				try
 				{
 					List<Territory> territories = new ArrayList<Territory>();
-					JSONArray jsonArray = result.getJSONArray("results");
+					JSONArray jsonArray = result.getJSONArray(DataLoaderUtil.ResultKeys.RESULTS);
 					for (int i = 0; i < jsonArray.length(); ++i)
 					{
 						JSONObject jsonObject = jsonArray.getJSONObject(i);
-						String ownerUserId = jsonObject.getString("o");
-						Boolean ally = jsonObject.getString("a").equals("1");
-						Boolean special = jsonObject.getString("s").equals("1");
-						long timeOwned = Long.valueOf(jsonObject.getString("t"));
-						int revenue = Integer.valueOf(jsonObject.getString("r"));
+						String ownerUserId = jsonObject.getString(DataLoaderUtil.ResultKeys.Territories.OWNER);
+						Boolean ally = jsonObject.getString(DataLoaderUtil.ResultKeys.Territories.ALLY).equals("1");
+						Boolean special = jsonObject.getString(DataLoaderUtil.ResultKeys.Territories.SPECIAL).equals("1");
+						long timeOwned = Long.valueOf(jsonObject.getString(DataLoaderUtil.ResultKeys.Territories.OWNED_TIME));
+						int revenue = Integer.valueOf(jsonObject.getString(DataLoaderUtil.ResultKeys.Territories.REVENUE));
 						Player player = PlayersManager.getInstance().createOrGetPlayerForUserID(ownerUserId, ally);
-						double latitude = Double.valueOf(jsonObject.getString("la"));
-						double longitude = Double.valueOf(jsonObject.getString("lo"));
+						double latitude = Double.valueOf(jsonObject.getString(DataLoaderUtil.ResultKeys.Territories.LATITUDE));
+						double longitude = Double.valueOf(jsonObject.getString(DataLoaderUtil.ResultKeys.Territories.LONGITUDE));
 						Territory territory;
 						if (special)
 							territory = new SpecialTerritory(latitude, longitude, player, timeOwned, revenue);
 						else
 						{
-							int salePrice = Integer.valueOf(jsonObject.getString("sp"));
-							int purchasingPrice = Integer.valueOf(jsonObject.getString("pp"));
+							int salePrice = Integer.valueOf(jsonObject.getString(DataLoaderUtil.ResultKeys.Territories.SALE_PRICE));
+							int purchasingPrice = Integer.valueOf(jsonObject.getString(DataLoaderUtil.ResultKeys.Territories.PURCHASE_PRICE));
 							territory = new PurchasableTerritory(latitude, longitude, player, timeOwned, salePrice, purchasingPrice, revenue);
 						}
 						territories.add(territory);
@@ -263,16 +263,16 @@ public class DataLoader
 			case territoryPurchasing:
 				try
 				{
-					JSONObject jsonObject = result.getJSONObject("results");
-					String ownerUserId = jsonObject.getString("o");
-					Boolean ally = jsonObject.getString("a").equals("1");
-					long timeOwned = Long.valueOf(jsonObject.getString("t"));
+					JSONObject jsonObject = result.getJSONObject(DataLoaderUtil.ResultKeys.RESULTS);
+					String ownerUserId = jsonObject.getString(DataLoaderUtil.ResultKeys.PurchaseTerritory.OWNER);
+					Boolean ally = jsonObject.getString(DataLoaderUtil.ResultKeys.PurchaseTerritory.ALLY).equals("1");
+					long timeOwned = Long.valueOf(jsonObject.getString(DataLoaderUtil.ResultKeys.PurchaseTerritory.OWNED_TIME));
 					Player player = PlayersManager.getInstance().createOrGetPlayerForUserID(ownerUserId, ally);
-					double latitude = Double.valueOf(jsonObject.getString("la"));
-					double longitude = Double.valueOf(jsonObject.getString("lo"));
-					int revenue = Integer.valueOf(jsonObject.getString("r"));
-					int salePrice = Integer.valueOf(jsonObject.getString("sp"));
-					int purchasingPrice = Integer.valueOf(jsonObject.getString("pp"));
+					double latitude = Double.valueOf(jsonObject.getString(DataLoaderUtil.ResultKeys.PurchaseTerritory.LATITUDE));
+					double longitude = Double.valueOf(jsonObject.getString(DataLoaderUtil.ResultKeys.PurchaseTerritory.LONGITUDE));
+					int revenue = Integer.valueOf(jsonObject.getString(DataLoaderUtil.ResultKeys.PurchaseTerritory.REVENUE));
+					int salePrice = Integer.valueOf(jsonObject.getString(DataLoaderUtil.ResultKeys.PurchaseTerritory.SALE_PRICE));
+					int purchasingPrice = Integer.valueOf(jsonObject.getString(DataLoaderUtil.ResultKeys.PurchaseTerritory.PURCHASE_PRICE));
 					PurchasableTerritory territory = new PurchasableTerritory(latitude, longitude, player, timeOwned, salePrice, purchasingPrice, revenue);
 					listener.territoryPurchased(territory);
 				}
@@ -284,14 +284,14 @@ public class DataLoader
 			case territoryCapturing:
 				try
 				{
-					JSONObject jsonObject = result.getJSONObject("results");
-					String ownerUserId = jsonObject.getString("o");
-					Boolean ally = jsonObject.getString("a").equals("1");
-					long timeOwned = Long.valueOf(jsonObject.getString("t"));
+					JSONObject jsonObject = result.getJSONObject(DataLoaderUtil.ResultKeys.RESULTS);
+					String ownerUserId = jsonObject.getString(DataLoaderUtil.ResultKeys.CaptureTerritory.OWNER);
+					Boolean ally = jsonObject.getString(DataLoaderUtil.ResultKeys.CaptureTerritory.ALLY).equals("1");
+					long timeOwned = Long.valueOf(jsonObject.getString(DataLoaderUtil.ResultKeys.CaptureTerritory.OWNED_TIME));
 					Player player = PlayersManager.getInstance().createOrGetPlayerForUserID(ownerUserId, ally);
-					double latitude = Double.valueOf(jsonObject.getString("la"));
-					double longitude = Double.valueOf(jsonObject.getString("lo"));
-					int revenue = Integer.valueOf(jsonObject.getString("r"));
+					double latitude = Double.valueOf(jsonObject.getString(DataLoaderUtil.ResultKeys.CaptureTerritory.LATITUDE));
+					double longitude = Double.valueOf(jsonObject.getString(DataLoaderUtil.ResultKeys.CaptureTerritory.LONGITUDE));
+					int revenue = Integer.valueOf(jsonObject.getString(DataLoaderUtil.ResultKeys.CaptureTerritory.REVENUE));
 					SpecialTerritory territory = new SpecialTerritory(latitude, longitude, player, timeOwned, revenue);
 					listener.territoryCaptured(territory);
 				}
@@ -332,22 +332,22 @@ public class DataLoader
 		Profile profile = AccountController.getInstance().getProfile();
 		try
 		{
-			jsonObject = jsonObject.getJSONObject("results");
-			String userId = jsonObject.getString("id");
-			int numberAllies = Integer.valueOf(jsonObject.getString("na"));
-			int numberTerritories = Integer.valueOf(jsonObject.getString("nt"));
-			int rank = Integer.valueOf(jsonObject.getString("r"));
-			int currentMoney = Integer.valueOf(jsonObject.getString("cm"));
-			int currentRevenue = Integer.valueOf(jsonObject.getString("cr"));
-			int totalGain = Integer.valueOf(jsonObject.getString("tg"));
-			int experiencePoints = Integer.valueOf(jsonObject.getString("ep"));
-			LatLng home = new LatLng(Double.valueOf(jsonObject.getString("hlat")), Double.valueOf(jsonObject.getString("hlng")));
-			int purchasePriceSkillLevel = Integer.valueOf(jsonObject.getString("ppl"));
-			int purchaseDistanceSkillLevel = Integer.valueOf(jsonObject.getString("pdl"));
-			int experienceLimitSkillLevel = Integer.valueOf(jsonObject.getString("ell"));
-			int moneyLimitSkillLevel = Integer.valueOf(jsonObject.getString("mll"));
-			int experienceQuantityFoundSkillLevel = Integer.valueOf(jsonObject.getString("eqfl"));
-			int alliancePriceSkillLevel = Integer.valueOf(jsonObject.getString("apl"));
+			jsonObject = jsonObject.getJSONObject(DataLoaderUtil.ResultKeys.RESULTS);
+			String userId = jsonObject.getString(DataLoaderUtil.ResultKeys.Profile.USER_ID);
+			int numberAllies = Integer.valueOf(jsonObject.getString(DataLoaderUtil.ResultKeys.Profile.NUMBER_OF_ALLIANCE));
+			int numberTerritories = Integer.valueOf(jsonObject.getString(DataLoaderUtil.ResultKeys.Profile.NUMBER_OF_TERRITORIES));
+			int rank = Integer.valueOf(jsonObject.getString(DataLoaderUtil.ResultKeys.Profile.RANK));
+			int currentMoney = Integer.valueOf(jsonObject.getString(DataLoaderUtil.ResultKeys.Profile.CURRENT_MONEY));
+			int currentRevenue = Integer.valueOf(jsonObject.getString(DataLoaderUtil.ResultKeys.Profile.CURRENT_REVENUE));
+			int totalGain = Integer.valueOf(jsonObject.getString(DataLoaderUtil.ResultKeys.Profile.TOTAL_GAIN));
+			int experiencePoints = Integer.valueOf(jsonObject.getString(DataLoaderUtil.ResultKeys.Profile.EXPERIENCE_POINTS));
+			LatLng home = new LatLng(Double.valueOf(jsonObject.getString(DataLoaderUtil.ResultKeys.Profile.HOME_LAT)), Double.valueOf(jsonObject.getString(DataLoaderUtil.ResultKeys.Profile.HOME_LNG)));
+			int purchasePriceSkillLevel = Integer.valueOf(jsonObject.getString(DataLoaderUtil.ResultKeys.Profile.PPL));
+			int purchaseDistanceSkillLevel = Integer.valueOf(jsonObject.getString(DataLoaderUtil.ResultKeys.Profile.PDL));
+			int experienceLimitSkillLevel = Integer.valueOf(jsonObject.getString(DataLoaderUtil.ResultKeys.Profile.ELL));
+			int moneyLimitSkillLevel = Integer.valueOf(jsonObject.getString(DataLoaderUtil.ResultKeys.Profile.MLL));
+			int experienceQuantityFoundSkillLevel = Integer.valueOf(jsonObject.getString(DataLoaderUtil.ResultKeys.Profile.EQFL));
+			int alliancePriceSkillLevel = Integer.valueOf(jsonObject.getString(DataLoaderUtil.ResultKeys.Profile.APL));
 
 			profile.setUserId(userId);
 			profile.setNumberAllies(numberAllies);

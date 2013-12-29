@@ -2,6 +2,8 @@ package ch.hearc.corporations.view;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -52,6 +54,8 @@ public class MainActivity extends Activity
 															};
 	LocationClient					locationClient;
 
+	private static final long		FIVE_MINUTES			= 300000;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -59,6 +63,8 @@ public class MainActivity extends Activity
 		uiHelper = new UiLifecycleHelper(this, callback);
 		uiHelper.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
+
+		getActionBar().hide();
 
 		FragmentManager fm = getFragmentManager();
 		fragments[LOGIN_FRAGMENT] = fm.findFragmentById(R.id.loginFragment);
@@ -71,8 +77,16 @@ public class MainActivity extends Activity
 		}
 		transaction.show(fragments[LOGIN_FRAGMENT]);
 		transaction.commit();
-
-		getActionBar().hide();
+		
+		Timer timer = new Timer("profile updater");
+		timer.schedule(new TimerTask() {
+			
+			@Override
+			public void run()
+			{
+				AccountController.getInstance().updateProfile();
+			}
+		}, FIVE_MINUTES, FIVE_MINUTES);
 	}
 
 	private void showFragment(int fragmentIndex, boolean addToBackStack)

@@ -23,5 +23,9 @@
     <string name="alliance_price_skill_name">Prix d\'une alliance</string>
     <string name="not_in_zone_alert_dialog_title">Not in zone</string>
     <string name="not_in_zone_alert_dialog_message">You are not in the territory, so you can\'t capture it!</string>
+    <string name="in_water_alert_dialog_title">In water</string>
+    <string name="in_water_alert_dialog_message">You can\'t buy a territoty in a water area!</string>
+    <string name="not_enough_money_alert_dialog_title">Not enough money</string>
+    <string name="not_enough_money_alert_dialog_message">You don\'t have enough money for buy this territory!</string>
 
 </resources>

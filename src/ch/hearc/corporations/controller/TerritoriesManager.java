@@ -74,5 +74,4 @@ public class TerritoriesManager
 		if (territory.getPolygon() == null) territory.setMap(map);
 		return territory;
 	}
-
 }

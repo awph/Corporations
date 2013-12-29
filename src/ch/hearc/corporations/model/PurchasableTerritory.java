@@ -13,13 +13,9 @@
 
 package ch.hearc.corporations.model;
 
-import java.util.List;
-
 import ch.hearc.corporations.controller.AccountController;
 import ch.hearc.corporations.controller.DataLoader;
 import ch.hearc.corporations.controller.DataLoaderAdapter;
-import ch.hearc.corporations.controller.DataLoaderListener;
-import ch.hearc.corporations.controller.Status;
 import ch.hearc.corporations.view.TerritoryInfoFragment.Callback;
 
 /**
@@ -69,6 +65,7 @@ public class PurchasableTerritory extends Territory
 					PurchasableTerritory.this.timeOwned = territory.timeOwned;
 					PurchasableTerritory.this.owner = territory.owner;
 					PurchasableTerritory.this.updateType();
+					AccountController.getInstance().updateProfile();
 					callback.update();
 				}
 			});

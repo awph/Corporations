@@ -13,6 +13,7 @@
 
 package ch.hearc.corporations.model;
 
+import ch.hearc.corporations.controller.AccountController;
 import ch.hearc.corporations.controller.DataLoader;
 import ch.hearc.corporations.controller.DataLoaderAdapter;
 import ch.hearc.corporations.view.TerritoryInfoFragment.Callback;
@@ -50,6 +51,7 @@ public class SpecialTerritory extends Territory
 					SpecialTerritory.this.timeOwned = territory.timeOwned;
 					SpecialTerritory.this.owner = territory.owner;
 					SpecialTerritory.this.updateType();
+					AccountController.getInstance().updateProfile();
 					callback.update();
 				}
 			});
