@@ -10,6 +10,8 @@
     <string name="action_logout">Logout</string>
     <string name="action_leaderboard">Classement</string>
     <string name="title_activity_leaderboard">Leaderboard</string>
+    <string name="title_activity_trip">Trips</string>
+    <string name="title_activity_trip_detail">Details of the trip</string>
     <string name="action_refresh">Refresh</string>
     <string name="icon_description">Icon of the application</string>
     <string name="upgrade_skill">+</string>
@@ -27,5 +29,18 @@
     <string name="in_water_alert_dialog_message">You can\'t buy a territoty in a water area!</string>
     <string name="not_enough_money_alert_dialog_title">Not enough money</string>
     <string name="not_enough_money_alert_dialog_message">You don\'t have enough money for buy this territory!</string>
+    <string name="alliance_update_error_message">An error occurred during the alliance</string>
+    <string name="unalliance_update_error_message">An error occurred during the alliance revocation</string>
+    <string name="sale_price">Sale price: %s</string>
+    <string name="revenue">Revenue: %s</string>
+    <string name="total_gain">Total gain: %s</string>
+    <string name="purchasing_price">Purchasing price: %s</string>
+    <string name="owner">Owner: %s</string>
+    <string name="ally">Ally: %s</string>
+    <string name="revoke_alliance">Revoke alliance</string>
+    <string name="ask_alliance">Ally</string>
+    <string name="change_sale_price">Change sale price</string>
+    <string name="capture">Capture</string>
+    <string name="buy">Buy</string>
 
 </resources>

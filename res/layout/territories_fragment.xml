@@ -58,4 +58,13 @@
         android:layout_margin="10dp" >
     </ch.hearc.corporations.view.ProfilePictureView>
 
+    <ImageView
+        android:id="@+id/trip_image_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_margin="10dp"
+        android:src="@drawable/com_facebook_button_blue" />
+
 </RelativeLayout>

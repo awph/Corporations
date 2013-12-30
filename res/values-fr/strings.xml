@@ -10,6 +10,7 @@
     <string name="action_logout">Déconnexion</string>
     <string name="action_leaderboard">Classement</string>
     <string name="title_activity_leaderboard">Classement</string>
+    <string name="title_activity_trip">Déplacements</string>
     <string name="action_refresh">Rafraîchir</string>
     <string name="icon_description">Icone de l\'application</string>
     <string name="improve_alert_dialog_title">Améliorer</string>
@@ -26,5 +27,18 @@
     <string name="in_water_alert_dialog_message">Vous ne pouvez pas acheter ce territoire car c\'est une zone d\'eau !</string>
     <string name="not_enough_money_alert_dialog_title">Pas assez d\'argent</string>
     <string name="not_enough_money_alert_dialog_message">Vous n\'avez pas assez d\'argent pour acheter ce territoire !</string>
+    <string name="alliance_update_error_message">Une erreur est survenue durant l\'alliance</string>
+    <string name="unalliance_update_error_message">Une erreur est survenue durant l\'annulation de l\'alliance</string>
+    <string name="sale_price">Prix de vente : %s</string>
+    <string name="revenue">Revenu : %s</string>
+    <string name="total_gain">Argent totale gagnée : %s</string>
+    <string name="purchasing_price">Prix d\'achat : %s</string>
+    <string name="owner">Propriétaire : %s</string>
+    <string name="ally">Allié : %s</string>
+    <string name="revoke_alliance">Annuler l\'alliance</string>
+    <string name="ask_alliance">S\'allier</string>
+    <string name="change_sale_price">Changer prix de vente</string>
+    <string name="capture">Capturer</string>
+    <string name="buy">Acheter</string>
 
 </resources>
