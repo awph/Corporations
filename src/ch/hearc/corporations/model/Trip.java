@@ -13,49 +13,103 @@
 
 package ch.hearc.corporations.model;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+
+import android.location.Location;
+import android.util.Log;
 
 /**
  * @author Alexandre
  * 
  */
-public class Trip
+public class Trip implements Serializable
 {
 
 	/*------------------------------------------------------------------*\
 	|*							Private Attributes						*|
 	\*------------------------------------------------------------------*/
 
-	private float	distance;
-	private int		secondes;
-	private Date	date;
+	/**
+	 * Auto generated
+	 */
+	private static final long	serialVersionUID	= -4387390245062411595L;
+	private static final String	TAG					= Trip.class.getSimpleName();
+	private float				distance;
+	private long				secondes;
+	private Date				date;
+
+	private long				startTime;
+	private boolean				finished;
+	private boolean				sent;												// Push
+																					// to
+																					// the
+																					// server
+	private List<Double>		latitudes;
+	private List<Double>		longitudes;
 
 	/*------------------------------------------------------------------*\
 	|*							Constructors							*|
 	\*------------------------------------------------------------------*/
 
-	public Trip(float distance, int secondes)
+	public Trip(float distance, long secondes, Date date)
 	{
+		this.finished = true;
+		this.sent = true;
 		this.distance = distance;
 		this.secondes = secondes;
+		this.date = date;
+	}
+
+	public Trip()
+	{
 		this.date = Calendar.getInstance().getTime();
+		this.startTime = System.currentTimeMillis();
+		this.finished = false;
+		this.sent = false;
+		this.latitudes = new ArrayList<Double>();
+		this.longitudes = new ArrayList<Double>();
 	}
 
 	/*------------------------------------------------------------------*\
 	|*							Public Methods							*|
 	\*------------------------------------------------------------------*/
 
-	public void tripStart()
+	public void endTrip(double latitude, double longitude)
 	{
-		// TODO Auto-generated method stub
-
+		Log.e(TAG, "endTrip1");
+		if (this.latitudes.size() <= 0 && this.longitudes.size() <= 0) return;
+		addLocation(latitude, longitude);
+		this.finished = true;
+		long endTime = System.currentTimeMillis();
+		this.secondes = (endTime - startTime) / 1000;
+		// TODO: send to server
+		Log.e(TAG, "endTrip2");
 	}
 
-	public void tripEnd()
+	public void addLocation(double latitude, double longitude)
 	{
-		// TODO Auto-generated method stub
+		Log.e(TAG, "addLocation");
+		this.latitudes.add(latitude);
+		this.longitudes.add(longitude);
+		computeLastDelta();
+	}
 
+	/*------------------------------------------------------------------*\
+	|*							Private Methods							*|
+	\*------------------------------------------------------------------*/
+
+	private void computeLastDelta()
+	{
+		if (this.latitudes.size() <= 1 && this.longitudes.size() <= 1) return;
+
+		float[] results = new float[3];
+		Location.distanceBetween(this.latitudes.get(this.latitudes.size() - 2), this.longitudes.get(this.longitudes.size() - 2), this.latitudes.get(this.latitudes.size() - 1),
+				this.longitudes.get(this.longitudes.size() - 1), results);
+		distance += results[0];
 	}
 
 	/*------------------------------*\
@@ -73,7 +127,7 @@ public class Trip
 	/**
 	 * @return the secondes
 	 */
-	public int getTime()
+	public long getTime()
 	{
 		return secondes;
 	}
@@ -86,17 +140,41 @@ public class Trip
 		return date;
 	}
 
+	/**
+	 * @return the experience points earned
+	 */
 	public int getExperienceEarned()
 	{
-		// TODO Auto-generated method stub
-
+		// TODO function
 		return 0;
 	}
 
+	/**
+	 * @return the amount of money earned
+	 */
 	public int getMoneyEarned()
 	{
-		// TODO Auto-generated method stub
+		// TODO function
 		return 0;
 	}
 
+	/*------------------------------*\
+	|*				Is				*|
+	\*------------------------------*/
+
+	/**
+	 * @return the if this trip is finished
+	 */
+	public boolean isFinished()
+	{
+		return finished;
+	}
+
+	/**
+	 * @return true if this trip is sent to the server
+	 */
+	public boolean isSent()
+	{
+		return sent;
+	}
 }

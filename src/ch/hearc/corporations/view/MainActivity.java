@@ -10,6 +10,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -23,6 +24,8 @@ import ch.hearc.corporations.controller.AccountController;
 import ch.hearc.corporations.controller.DataLoader;
 import ch.hearc.corporations.controller.DataLoaderAdapter;
 import ch.hearc.corporations.controller.Status;
+import ch.hearc.corporations.controller.TripManager;
+import ch.hearc.corporations.service.OnBootBroadcastReceiver;
 
 import com.facebook.Request;
 import com.facebook.Response;
@@ -64,6 +67,70 @@ public class MainActivity extends Activity
 		uiHelper.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 
+		{ // TODO better
+
+			registerReceiver(new OnBootBroadcastReceiver(), new IntentFilter(Intent.ACTION_TIME_TICK));
+
+			Timer timer = new Timer("profile updater");
+			timer.schedule(new TimerTask() {
+
+				@Override
+				public void run()
+				{
+					AccountController.getInstance().updateProfile();
+				}
+			}, FIVE_MINUTES, FIVE_MINUTES);
+
+			new Thread(new Runnable() {
+
+				@Override
+				public void run()
+				{
+					try
+					{
+						Thread.sleep(5000);
+						double latitude;
+						double longitude;
+						latitude = 47.039129;
+						longitude = 6.80154;
+						TripManager.addLocation(MainActivity.this, latitude, longitude);
+						Thread.sleep(2000);
+						latitude = 47.068251;
+						longitude = 6.836902;
+						TripManager.addLocation(MainActivity.this, latitude, longitude);
+						Thread.sleep(2000);
+						latitude = 47.04954;
+						longitude = 6.880504;
+						TripManager.addLocation(MainActivity.this, latitude, longitude);
+						Thread.sleep(2000);
+						latitude = 47.008236;
+						longitude = 6.845142;
+						TripManager.addLocation(MainActivity.this, latitude, longitude);
+						Thread.sleep(2000);
+						latitude = 46.986693;
+						longitude = 6.794502;
+						TripManager.addLocation(MainActivity.this, latitude, longitude);
+						Thread.sleep(2000);
+						latitude = 46.996061;
+						longitude = 6.746265;
+						TripManager.addLocation(MainActivity.this, latitude, longitude);
+						Thread.sleep(2000);
+						latitude = 47.023451;
+						longitude = 6.732361;
+						TripManager.addLocation(MainActivity.this, latitude, longitude);
+						Thread.sleep(2000);
+						latitude = 47.036439;
+						longitude = 6.791412;
+						TripManager.addLocation(MainActivity.this, latitude, longitude);
+					}
+					catch (InterruptedException e)
+					{
+						Log.e(TAG, e.toString());
+					}
+				}
+			}).start();
+		}
+
 		getActionBar().hide();
 
 		FragmentManager fm = getFragmentManager();
@@ -77,16 +144,6 @@ public class MainActivity extends Activity
 		}
 		transaction.show(fragments[LOGIN_FRAGMENT]);
 		transaction.commit();
-		
-		Timer timer = new Timer("profile updater");
-		timer.schedule(new TimerTask() {
-			
-			@Override
-			public void run()
-			{
-				AccountController.getInstance().updateProfile();
-			}
-		}, FIVE_MINUTES, FIVE_MINUTES);
 	}
 
 	private void showFragment(int fragmentIndex, boolean addToBackStack)
