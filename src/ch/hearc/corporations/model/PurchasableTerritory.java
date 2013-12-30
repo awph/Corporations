@@ -64,6 +64,7 @@ public class PurchasableTerritory extends Territory
 					PurchasableTerritory.this.revenue = territory.revenue;
 					PurchasableTerritory.this.timeOwned = territory.timeOwned;
 					PurchasableTerritory.this.owner = territory.owner;
+					PurchasableTerritory.this.owner.addTerritory(PurchasableTerritory.this);
 					PurchasableTerritory.this.updateType();
 					AccountController.getInstance().updateProfile();
 					callback.update();

@@ -72,7 +72,7 @@ public final class DataLoaderUtil
 
 		public static final class Connection extends All
 		{
-			public static final String	WHAT				= "profile";
+			public static final String	WHAT				= "connection";
 			public static final String	KEY_USER_ID			= "user_id";
 			public static final String	KEY_TOKEN			= "token";
 			public static final String	KEY_HOME_LATITUDE	= "lat";

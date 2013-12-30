@@ -64,9 +64,12 @@ public abstract class Territory implements Comparable<Territory>
 		this.timeOwned = timeOwned;
 		this.revenue = revenue;
 		this.polygon = null;
-		updateType();
 		latitudes = new double[5];
 		longitudes = new double[5];
+
+		if (this.owner != null) this.owner.addTerritory(this);
+
+		updateType();
 
 		if (deltaLat == 0)
 		{
@@ -142,9 +145,15 @@ public abstract class Territory implements Comparable<Territory>
 	\*------------------------------------------------------------------*/
 
 	/**
-	 * Check if the current territory is in water. Check the four pixels in each corner, and if in each corner at least one pixel is blue the territory is in water.
-	 * @param projection a projection object for convert from/to screen coordinates to/from map coordinates  
-	 * @param bitmap a image a the map
+	 * Check if the current territory is in water. Check the four pixels in each
+	 * corner, and if in each corner at least one pixel is blue the territory is
+	 * in water.
+	 * 
+	 * @param projection
+	 *            a projection object for convert from/to screen coordinates
+	 *            to/from map coordinates
+	 * @param bitmap
+	 *            a image a the map
 	 * @return true if territory is in water
 	 */
 	public boolean isInWater(Projection projection, Bitmap bitmap)
@@ -191,8 +200,6 @@ public abstract class Territory implements Comparable<Territory>
 				this.type = TerritoyType.Ally;
 			else
 				this.type = TerritoyType.Enemy;
-
-			owner.addTerritory(this);
 		}
 		else
 			this.type = TerritoyType.Free;
@@ -217,12 +224,6 @@ public abstract class Territory implements Comparable<Territory>
 		Territory other = (Territory) obj;
 		Log.d("Log : Territory", "" + (int) ((latitudes[CENTER] + longitudes[CENTER]) / TERRITORY_SIZE_IN_LAT_LON / 0.1));
 		return (int) ((latitudes[CENTER] + longitudes[CENTER]) / TERRITORY_SIZE_IN_LAT_LON / 0.1) == (int) ((other.latitudes[CENTER] + other.longitudes[CENTER]) / TERRITORY_SIZE_IN_LAT_LON / 0.1);
-	}
-
-	@Override
-	public int hashCode()
-	{
-		return (int) ((latitudes[CENTER] + longitudes[CENTER]) / TERRITORY_SIZE_IN_LAT_LON / 0.1);
 	}
 
 	/*------------------------------------------------------------------*\

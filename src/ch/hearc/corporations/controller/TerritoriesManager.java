@@ -26,16 +26,16 @@ public class TerritoriesManager
 		if (!fetchRunning)
 		{
 			fetchRunning = true;
-			DataLoader.getInstance().getTerritoriesForLocation(location, 0, new DataLoaderAdapter() { //TODO
+			DataLoader.getInstance().getTerritoriesForLocation(location, 0, new DataLoaderAdapter() { // TODO
 
-				@Override
-				public void territoriesFetched(List<Territory> territories)
-				{
-					TerritoriesManager.this.territories.addAll(territories);
-					TerritoriesManager.this.setVisibleTerritories(location, map);
-					// fetchRunning = false;
-				}
-			});
+						@Override
+						public void territoriesFetched(List<Territory> territories)
+						{
+							TerritoriesManager.this.territories.addAll(territories);
+							TerritoriesManager.this.setVisibleTerritories(location, map);
+							// fetchRunning = false;
+						}
+					});
 		}
 
 		// fillSetForLocation(location);
@@ -65,12 +65,17 @@ public class TerritoriesManager
 
 	public Territory getTerritoryForLocation(LatLng location, GoogleMap map)
 	{
-		for (Territory territory : territories)
+		Territory territory = null;
+		for (Territory existingTerritory : territories)
 		{
-			if (territory.isInBounds(location.latitude, location.longitude)) return territory;
+			if (existingTerritory.isInBounds(location.latitude, location.longitude))
+			{
+				territory = existingTerritory;
+				break;
+			}
 		}
-
-		Territory territory = new PurchasableTerritory(location.latitude, location.longitude, null, 0, 1000, 0, 0);
+		if (territory == null) territory = new PurchasableTerritory(location.latitude, location.longitude, null, 0, 1000, 0, 0);
+		this.territories.add(territory);
 		if (territory.getPolygon() == null) territory.setMap(map);
 		return territory;
 	}

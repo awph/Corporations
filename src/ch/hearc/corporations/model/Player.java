@@ -13,11 +13,13 @@
 
 package ch.hearc.corporations.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import android.widget.Toast;
 import ch.hearc.corporations.Corporations;
+import ch.hearc.corporations.R;
+import ch.hearc.corporations.controller.AccountController;
 import ch.hearc.corporations.controller.DataLoader;
 import ch.hearc.corporations.controller.DataLoaderAdapter;
 import ch.hearc.corporations.controller.DataLoaderUtil;
@@ -51,7 +53,7 @@ public class Player
 												// player
 												// (profile) -> this player
 
-	private List<Territory>	territories;
+	private Set<Territory>	territories;
 
 	/*------------------------------------------------------------------*\
 	|*							Constructors							*|
@@ -69,7 +71,7 @@ public class Player
 		this.numberAllies = numberAllies;
 		this.numberTerritories = numberTerritories;
 		this.ally = ally;
-		this.territories = new ArrayList<Territory>();
+		this.territories = new HashSet<Territory>();
 		loadFullName();
 	}
 
@@ -79,22 +81,24 @@ public class Player
 
 	public void updateAlliance(final Callback callback)
 	{
+		final boolean isAlly = this.ally;
 		DataLoader.getInstance().updateAlliance(this, new DataLoaderAdapter() {
 			@Override
 			public void allianceUpdated(int status)
 			{
 				if (status == DataLoaderUtil.ResultKeys.StatusKey.ALREADY_EXISTS || status == DataLoaderUtil.ResultKeys.StatusKey.DONT_EXISTS)
-					Toast.makeText(Corporations.getAppContext(), "Error during allianceUpdate", Toast.LENGTH_LONG).show(); // TODO:
-				// better
-				// message
-				// text
+				{
+					int messageId = R.string.alliance_update_error_message;
+					if (isAlly) messageId = R.string.unalliance_update_error_message;
+					Toast.makeText(Corporations.getAppContext(), Corporations.getAppContext().getResources().getString(messageId), Toast.LENGTH_LONG).show();
+				}
 				else
 				{
 					Player.this.ally = !Player.this.ally;
-					callback.update();
 					for (Territory territory : territories)
-						if (territory != null) // TODO: WTF
-							territory.updateType();
+						territory.updateType();
+					callback.update();
+					AccountController.getInstance().updateProfile();
 				}
 			}
 		});

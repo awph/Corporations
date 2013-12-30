@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import ch.hearc.corporations.R;
 import ch.hearc.corporations.Tools;
@@ -117,6 +118,17 @@ public class TerritoriesFragment extends Fragment implements ProfileInfoDisplaye
 			public void onClick(View v)
 			{
 				Intent intent = new Intent(getActivity(), ProfileActivity.class);
+				startActivity(intent);
+			}
+		});
+
+		ImageView tripImageView = (ImageView) view.findViewById(R.id.trip_image_view);
+		tripImageView.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v)
+			{
+				Intent intent = new Intent(getActivity(), TripActivity.class);
 				startActivity(intent);
 			}
 		});

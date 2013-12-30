@@ -126,7 +126,7 @@ public class DataLoader
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put(DataLoaderUtil.RequestParameters.UploadTrip.KEY_WHAT, DataLoaderUtil.RequestParameters.UploadTrip.WHAT);
 		parameters.put(DataLoaderUtil.RequestParameters.UploadTrip.KEY_DATE, Long.toString(trip.getDate().getTime()));
-		parameters.put(DataLoaderUtil.RequestParameters.UploadTrip.KEY_TIME, Integer.toString(trip.getTime()));
+		parameters.put(DataLoaderUtil.RequestParameters.UploadTrip.KEY_TIME, Long.toString(trip.getTime()));
 		parameters.put(DataLoaderUtil.RequestParameters.UploadTrip.KEY_DISTANCE, Float.toString(trip.getDistance()));
 		parameters.put(DataLoaderUtil.RequestParameters.UploadTrip.KEY_MONEY_EARNED, Integer.toString(trip.getMoneyEarned()));
 		request(parameters, ApiRequestType.uploadTrip, dataLoaderListener);

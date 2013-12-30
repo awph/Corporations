@@ -104,13 +104,13 @@ public class TerritoryInfoFragment extends Fragment
 		{
 			if (territory instanceof PurchasableTerritory)
 			{
-				infos.append("Sale price: " + Tools.formatMoney(((PurchasableTerritory) territory).getSalePrice()));
+				infos.append(String.format(getResources().getString(R.string.sale_price), Tools.formatMoney(((PurchasableTerritory) territory).getSalePrice())));
 				setBuyButton();
 				hideButton(secondButton);
 			}
 			else
 			{
-				infos.append("Revenue: " + Tools.formatMoney(territory.getRevenue()));
+				infos.append(String.format(getResources().getString(R.string.revenue), Tools.formatMoney(territory.getRevenue())));
 				setCaptureButton();
 				hideButton(secondButton);
 			}
@@ -119,12 +119,12 @@ public class TerritoryInfoFragment extends Fragment
 		}
 		else if (owner.getUserId().equals(AccountController.getInstance().getFacebookID()))
 		{
-			infos.append("Revenue: " + Tools.formatMoney(territory.getRevenue()));
-			infos.append("\nTotal gain: " + Tools.formatMoney(territory.getTotalGain()));
+			infos.append(String.format(getResources().getString(R.string.revenue), Tools.formatMoney(territory.getRevenue())));
+			infos.append("\n" + String.format(getResources().getString(R.string.total_gain), Tools.formatMoney(territory.getTotalGain())));
 			if (territory instanceof PurchasableTerritory)
 			{
-				infos.append("\nPurchasing price: " + Tools.formatMoney(((PurchasableTerritory) territory).getPurchasingPrice()));
-				infos.append("\nSale price: " + Tools.formatMoney(((PurchasableTerritory) territory).getSalePrice()));
+				infos.append("\n" + String.format(getResources().getString(R.string.purchasing_price), Tools.formatMoney(((PurchasableTerritory) territory).getPurchasingPrice())));
+				infos.append("\n" + String.format(getResources().getString(R.string.sale_price), Tools.formatMoney(((PurchasableTerritory) territory).getSalePrice())));
 				setChangePriceButton();
 				hideButton(secondButton);
 			}
@@ -138,12 +138,13 @@ public class TerritoryInfoFragment extends Fragment
 		}
 		else
 		{
-			infos.append("Owner: " + owner.getName());
-			infos.append("\nAlly: " + (owner.isAlly() ? "Yes" : "No"));
-			infos.append("\nRevenue: " + Tools.formatMoney(territory.getRevenue()));
+			infos.append(String.format(getResources().getString(R.string.owner), owner.getName()));
+			infos.append("\n"
+					+ String.format(getResources().getString(R.string.ally), (owner.isAlly() ? getResources().getString(android.R.string.yes) : getResources().getString(android.R.string.no))));
+			infos.append("\n" + String.format(getResources().getString(R.string.revenue), Tools.formatMoney(territory.getRevenue())));
 			if (territory instanceof PurchasableTerritory)
 			{
-				infos.append("\nSale price: " + Tools.formatMoney(((PurchasableTerritory) territory).getSalePrice()));
+				infos.append("\n" + String.format(getResources().getString(R.string.sale_price), Tools.formatMoney(((PurchasableTerritory) territory).getSalePrice())));
 				setBuyButton();
 			}
 			else
@@ -177,7 +178,7 @@ public class TerritoryInfoFragment extends Fragment
 	private void setAskAllianceButton(final boolean ally)
 	{
 		showButton(secondButton);
-		secondButton.setText((ally ? "Revoke alliance" : "Ask alliance"));
+		secondButton.setText((ally ? getResources().getString(R.string.revoke_alliance) : getResources().getString(R.string.ask_alliance)));
 		secondButton.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -198,7 +199,7 @@ public class TerritoryInfoFragment extends Fragment
 	private void setChangePriceButton()
 	{
 		showButton(firstButton);
-		firstButton.setText("Change sale price");
+		firstButton.setText(getResources().getString(R.string.change_sale_price));
 		firstButton.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -212,7 +213,7 @@ public class TerritoryInfoFragment extends Fragment
 	private void setCaptureButton()
 	{
 		showButton(firstButton);
-		firstButton.setText("Capture");
+		firstButton.setText(getResources().getString(R.string.capture));
 		firstButton.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -239,7 +240,7 @@ public class TerritoryInfoFragment extends Fragment
 		if (((PurchasableTerritory) territory).getSalePrice() > 0)
 		{
 			showButton(firstButton);
-			firstButton.setText("Buy");
+			firstButton.setText(getResources().getString(R.string.buy));
 			firstButton.setOnClickListener(new OnClickListener() {
 
 				@Override

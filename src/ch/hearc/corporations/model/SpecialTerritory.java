@@ -50,6 +50,7 @@ public class SpecialTerritory extends Territory
 					SpecialTerritory.this.revenue = territory.revenue;
 					SpecialTerritory.this.timeOwned = territory.timeOwned;
 					SpecialTerritory.this.owner = territory.owner;
+					SpecialTerritory.this.owner.addTerritory(SpecialTerritory.this);
 					SpecialTerritory.this.updateType();
 					AccountController.getInstance().updateProfile();
 					callback.update();
