@@ -19,5 +19,6 @@ public interface DataLoaderListener
 	void connectionFinished(Status status);
 	void allianceUpdated(int status);
 	void profileUpdated(Status status);
-	void tripUpdated(int status);
+	void tripUploaded(int status);
+	void priceChanged(Status status);
 }

@@ -1,16 +1,20 @@
 package ch.hearc.corporations.view;
 
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import ch.hearc.corporations.CorporationsConfiguration;
 import ch.hearc.corporations.R;
@@ -205,7 +209,52 @@ public class TerritoryInfoFragment extends Fragment
 			@Override
 			public void onClick(View arg0)
 			{
-				((PurchasableTerritory) territory).changePrice();
+				AlertDialog changePriceAlert = new AlertDialog.Builder(getActivity()).create();
+
+				changePriceAlert.setTitle(getActivity().getResources().getString(R.string.new_price_alert_dialog_title));
+				changePriceAlert.setMessage(getActivity().getResources().getString(R.string.new_price_alert_dialog_message));
+
+				final EditText input = new EditText(getActivity());
+				
+				input.setInputType(InputType.TYPE_CLASS_NUMBER);
+				changePriceAlert.setView(input);
+
+				changePriceAlert.setButton(DialogInterface.BUTTON_POSITIVE, getActivity().getResources().getString(android.R.string.ok), new DialogInterface.OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog, int which)
+					{
+						int newPrice = 0;
+						try
+						{
+							newPrice = Integer.parseInt(input.getText().toString());
+
+							((PurchasableTerritory) territory).changePrice(newPrice, new Callback() {
+
+								@Override
+								public void update()
+								{
+									TerritoryInfoFragment.this.loadInfo();
+								}
+							});
+						}
+						catch (NumberFormatException e)
+						{
+							return;
+						}
+					}
+				});
+
+				changePriceAlert.setButton(DialogInterface.BUTTON_NEGATIVE, getActivity().getResources().getString(android.R.string.cancel), new DialogInterface.OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog, int which)
+					{
+						// nothing
+					}
+				});
+
+				changePriceAlert.show();
 			}
 		});
 	}

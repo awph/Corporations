@@ -8,7 +8,7 @@
     <string name="login_facebook_activity_title">Login</string>
     <string name="get_started">To get started, log in using Facebook</string>
     <string name="action_logout">Logout</string>
-    <string name="action_leaderboard">Classement</string>
+    <string name="action_leaderboard">Leaderboard</string>
     <string name="title_activity_leaderboard">Leaderboard</string>
     <string name="title_activity_trip">Trips</string>
     <string name="title_activity_trip_detail">Details of the trip</string>
@@ -17,6 +17,8 @@
     <string name="upgrade_skill">+</string>
     <string name="improve_alert_dialog_title">Improve</string>
     <string name="improve_alert_dialog_message">Improve your %1$s to level %2$d for %3$d experience points?</string>
+    <string name="new_price_alert_dialog_title">Change territory price</string>
+    <string name="new_price_alert_dialog_message">Tip the price you want to sell your territory, tip 0 if you don\'t want to sell it!</string>
     <string name="purchase_price_skill_name">Prix d\'achat d\'un territoire</string>
     <string name="purchase_distance_skill_name">Distance d\'achat d\'un territoire</string>
     <string name="experience_limit_skill_name">Limite d\'expérience possédé</string>

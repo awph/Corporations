@@ -28,5 +28,6 @@ public class CorporationsConfiguration
 	public static final GradientDrawable	BACKGROUND_TRANSPARENT_ALLY		= new GradientDrawable(GradientDrawable.Orientation.BR_TL, new int[] { 0xEE2980B9, 0xEE54AEEB });
 	public static final GradientDrawable	BACKGROUND_TRANSPARENT_OWN		= new GradientDrawable(GradientDrawable.Orientation.BR_TL, new int[] { 0xEE399A48, 0xEE6BB471 });
 	public static final GradientDrawable	BACKGROUND_OWN					= new GradientDrawable(GradientDrawable.Orientation.BR_TL, new int[] { 0xFF399A48, 0xFF6BB471 });
+	public static final GradientDrawable	BACKGROUND_TRIP					= new GradientDrawable(GradientDrawable.Orientation.BR_TL, new int[] { 0xFFF2D121, 0xFFF6F53D });
 
 }

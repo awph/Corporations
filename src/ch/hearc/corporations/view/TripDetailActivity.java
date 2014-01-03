@@ -13,9 +13,14 @@
 
 package ch.hearc.corporations.view;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
+import android.graphics.drawable.GradientDrawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
+import ch.hearc.corporations.CorporationsConfiguration;
 import ch.hearc.corporations.R;
 
 /**
@@ -34,6 +39,21 @@ public class TripDetailActivity extends Activity
 		((TextView) findViewById(R.id.earn_money_text_view)).setText(Integer.toString(getIntent().getExtras().getInt(MONEY)));
 		((TextView) findViewById(R.id.trip_time_text_view)).setText(Long.toString(getIntent().getExtras().getLong(TIME)));
 		getActionBar().setDisplayHomeAsUpEnabled(true);
+		setBackground(CorporationsConfiguration.BACKGROUND_TRIP);
+	}
+
+	@SuppressWarnings("deprecation")
+	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+	private void setBackground(GradientDrawable gradientDrawable)
+	{
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN)
+		{
+			View someView = findViewById(R.id.profile_info);
+			View rootView = someView.getRootView();
+			rootView.setBackgroundDrawable(gradientDrawable);
+		}
+		else
+			getWindow().getDecorView().setBackground(gradientDrawable);
 	}
 
 	public static final String	DISTANCE	= "distance";

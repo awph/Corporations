@@ -48,7 +48,6 @@ public class TripManager
 
 	public static void addLocation(Context context, double latitude, double longitude)
 	{
-		Log.e(TAG, "addLocation");
 		List<Trip> trips = loadTrips(context);
 		Trip trip;
 
@@ -79,7 +78,6 @@ public class TripManager
 	@SuppressWarnings("unchecked")
 	public static List<Trip> loadTrips(Context context)
 	{
-		Log.e(TAG, "loadTrips");
 		List<Trip> trips = null;
 		try
 		{
@@ -95,9 +93,8 @@ public class TripManager
 		return trips;
 	}
 
-	private static void saveTrips(Context context, List<Trip> trips)
+	public static void saveTrips(Context context, List<Trip> trips)
 	{
-		Log.e(TAG, "saveTrips");
 		try
 		{
 			FileOutputStream fos = context.openFileOutput(TRIPS_FILENAME, Context.MODE_PRIVATE);
@@ -114,10 +111,8 @@ public class TripManager
 
 	private static boolean isInHomeArea(double latitude, double longitude)
 	{
-		Log.e(TAG, "isInHomeArea1");
 		LatLng home = AccountController.getInstance().getHome();
 		if (home == null) return false;
-		Log.e(TAG, "isInHomeArea2");
 
 		float[] deltaLocationHome = new float[3];
 		Location.distanceBetween(home.latitude, home.longitude, latitude, longitude, deltaLocationHome);

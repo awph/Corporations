@@ -158,29 +158,37 @@ public abstract class Territory implements Comparable<Territory>
 	 */
 	public boolean isInWater(Projection projection, Bitmap bitmap)
 	{
-		int WATER = 0x00ADCEFF;
+		int WATER1 = 0x00ADCEFF;
+		int WATER2 = 0x00ACCCFF;
 		Point point = projection.toScreenLocation(new LatLng(latitudes[TOP_LEFT], longitudes[TOP_LEFT]));
 		int width = bitmap.getWidth();
 		int height = bitmap.getHeight();
-		int x = point.x < 0 ? 0 : point.x < width ? point.x : width;
-		int y = point.y < 0 ? 0 : point.y < height ? point.y : height;
-		if (!((bitmap.getPixel(x, y) & 0x00FFFFFF) == WATER || (bitmap.getPixel(x + 1, y) & 0x00FFFFFF) == WATER || (bitmap.getPixel(x, y + 1) & 0x00FFFFFF) == WATER || (bitmap.getPixel(x + 1, y + 1) & 0x00FFFFFF) == WATER))
-			return false;
+		int x = point.x < 0 ? 0 : point.x < width ? point.x : width - 1;
+		int y = point.y < 0 ? 0 : point.y < height ? point.y : height - 1;
+
+		// Log.e("isInWater", String.format("%X", bitmap.getPixel(x, y)));
+
+		if (!((bitmap.getPixel(x, y) & 0x00FFFFFF) == WATER1 || (bitmap.getPixel(x + 1, y) & 0x00FFFFFF) == WATER1 || (bitmap.getPixel(x, y + 1) & 0x00FFFFFF) == WATER1
+				|| (bitmap.getPixel(x + 1, y + 1) & 0x00FFFFFF) == WATER1 || (bitmap.getPixel(x, y) & 0x00FFFFFF) == WATER2 || (bitmap.getPixel(x + 1, y) & 0x00FFFFFF) == WATER2
+				|| (bitmap.getPixel(x, y + 1) & 0x00FFFFFF) == WATER2 || (bitmap.getPixel(x + 1, y + 1) & 0x00FFFFFF) == WATER2)) return false;
 		point = projection.toScreenLocation(new LatLng(latitudes[TOP_RIGHT], longitudes[TOP_RIGHT]));
-		x = point.x < 0 ? 0 : point.x < width ? point.x : width;
-		y = point.y < 0 ? 0 : point.y < height ? point.y : height;
-		if (!((bitmap.getPixel(x, y) & 0x00FFFFFF) == WATER || (bitmap.getPixel(x - 1, y) & 0x00FFFFFF) == WATER || (bitmap.getPixel(x, y + 1) & 0x00FFFFFF) == WATER || (bitmap.getPixel(x - 1, y + 1) & 0x00FFFFFF) == WATER))
-			return false;
+		x = point.x < 0 ? 0 : point.x < width ? point.x : width - 1;
+		y = point.y < 0 ? 0 : point.y < height ? point.y : height - 1;
+		if (!((bitmap.getPixel(x, y) & 0x00FFFFFF) == WATER1 || (bitmap.getPixel(x - 1, y) & 0x00FFFFFF) == WATER1 || (bitmap.getPixel(x, y + 1) & 0x00FFFFFF) == WATER1
+				|| (bitmap.getPixel(x - 1, y + 1) & 0x00FFFFFF) == WATER1 || (bitmap.getPixel(x, y) & 0x00FFFFFF) == WATER2 || (bitmap.getPixel(x - 1, y) & 0x00FFFFFF) == WATER2
+				|| (bitmap.getPixel(x, y + 1) & 0x00FFFFFF) == WATER2 || (bitmap.getPixel(x - 1, y + 1) & 0x00FFFFFF) == WATER2)) return false;
 		point = projection.toScreenLocation(new LatLng(latitudes[BOTTOM_RIGHT], longitudes[BOTTOM_RIGHT]));
-		x = point.x < 0 ? 0 : point.x < width ? point.x : width;
-		y = point.y < 0 ? 0 : point.y < height ? point.y : height;
-		if (!((bitmap.getPixel(x, y) & 0x00FFFFFF) == WATER || (bitmap.getPixel(x - 1, y) & 0x00FFFFFF) == WATER || (bitmap.getPixel(x, y - 1) & 0x00FFFFFF) == WATER || (bitmap.getPixel(x - 1, y - 1) & 0x00FFFFFF) == WATER))
-			return false;
+		x = point.x < 0 ? 0 : point.x < width ? point.x : width - 1;
+		y = point.y < 0 ? 0 : point.y < height ? point.y : height - 1;
+		if (!((bitmap.getPixel(x, y) & 0x00FFFFFF) == WATER1 || (bitmap.getPixel(x - 1, y) & 0x00FFFFFF) == WATER1 || (bitmap.getPixel(x, y - 1) & 0x00FFFFFF) == WATER1
+				|| (bitmap.getPixel(x - 1, y - 1) & 0x00FFFFFF) == WATER1 || (bitmap.getPixel(x, y) & 0x00FFFFFF) == WATER2 || (bitmap.getPixel(x - 1, y) & 0x00FFFFFF) == WATER2
+				|| (bitmap.getPixel(x, y - 1) & 0x00FFFFFF) == WATER2 || (bitmap.getPixel(x - 1, y - 1) & 0x00FFFFFF) == WATER2)) return false;
 		point = projection.toScreenLocation(new LatLng(latitudes[BOTTOM_LEFT], longitudes[BOTTOM_LEFT]));
-		x = point.x < 0 ? 0 : point.x < width ? point.x : width;
-		y = point.y < 0 ? 0 : point.y < height ? point.y : height;
-		if (!((bitmap.getPixel(x, y) & 0x00FFFFFF) == WATER || (bitmap.getPixel(x + 1, y) & 0x00FFFFFF) == WATER || (bitmap.getPixel(x, y - 1) & 0x00FFFFFF) == WATER || (bitmap.getPixel(x + 1, y - 1) & 0x00FFFFFF) == WATER))
-			return false;
+		x = point.x < 0 ? 0 : point.x < width ? point.x : width - 1;
+		y = point.y < 0 ? 0 : point.y < height ? point.y : height - 1;
+		if (!((bitmap.getPixel(x, y) & 0x00FFFFFF) == WATER1 || (bitmap.getPixel(x + 1, y) & 0x00FFFFFF) == WATER1 || (bitmap.getPixel(x, y - 1) & 0x00FFFFFF) == WATER1
+				|| (bitmap.getPixel(x + 1, y - 1) & 0x00FFFFFF) == WATER1 || (bitmap.getPixel(x, y) & 0x00FFFFFF) == WATER2 || (bitmap.getPixel(x + 1, y) & 0x00FFFFFF) == WATER2
+				|| (bitmap.getPixel(x, y - 1) & 0x00FFFFFF) == WATER2 || (bitmap.getPixel(x + 1, y - 1) & 0x00FFFFFF) == WATER2)) return false;
 
 		return true;
 	}

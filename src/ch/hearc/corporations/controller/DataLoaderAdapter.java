@@ -64,7 +64,11 @@ public abstract class DataLoaderAdapter implements DataLoaderListener
 	{
 	}
 
-	public void tripUpdated(int status)
+	public void tripUploaded(int status)
+	{
+	}
+
+	public void priceChanged(Status status)
 	{
 	}
 }

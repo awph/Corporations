@@ -2,6 +2,7 @@ package ch.hearc.corporations.view;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -25,6 +26,7 @@ import ch.hearc.corporations.controller.DataLoader;
 import ch.hearc.corporations.controller.DataLoaderAdapter;
 import ch.hearc.corporations.controller.Status;
 import ch.hearc.corporations.controller.TripManager;
+import ch.hearc.corporations.model.Trip;
 import ch.hearc.corporations.service.OnBootBroadcastReceiver;
 
 import com.facebook.Request;
@@ -127,6 +129,17 @@ public class MainActivity extends Activity
 					{
 						Log.e(TAG, e.toString());
 					}
+				}
+			});// .start();
+			new Thread(new Runnable() {
+
+				@Override
+				public void run()
+				{
+					List<Trip> trips = TripManager.loadTrips(MainActivity.this);
+					for (Trip trip : trips)
+						if (trip.isFinished() && !trip.isSent()) trip.send();
+					TripManager.saveTrips(MainActivity.this, trips);
 				}
 			}).start();
 		}

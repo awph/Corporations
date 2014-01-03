@@ -21,6 +21,9 @@ import java.util.List;
 
 import android.location.Location;
 import android.util.Log;
+import ch.hearc.corporations.controller.DataLoader;
+import ch.hearc.corporations.controller.DataLoaderAdapter;
+import ch.hearc.corporations.controller.DataLoaderUtil;
 
 /**
  * @author Alexandre
@@ -176,5 +179,38 @@ public class Trip implements Serializable
 	public boolean isSent()
 	{
 		return sent;
+	}
+
+	/**
+	 * /!\ This method wait for the server response. (Sync)
+	 */
+	public void send()
+	{
+		Thread thread = new Thread(new Runnable() {
+
+			@Override
+			public void run()
+			{
+				DataLoader.getInstance().uploadTrip(Trip.this, new DataLoaderAdapter() {
+
+					@Override
+					public void tripUploaded(int status)
+					{
+						if (status == DataLoaderUtil.ResultKeys.StatusKey.OK) Trip.this.sent = true;
+					}
+				});
+				while (!Trip.this.sent)
+					;
+			}
+		});
+		thread.start();
+		try
+		{
+			thread.join();
+		}
+		catch (InterruptedException e)
+		{
+			Log.e("Trip -> send", e.toString());
+		}
 	}
 }

@@ -109,6 +109,14 @@ public final class DataLoaderUtil
 			public static final String	KEY_DATE			= "date";
 		}
 
+		public static final class ChangePrice extends All
+		{
+			public static final String	WHAT			= "changePrice";
+			public static final String	KEY_NEW_PRICE	= "newPrice";
+			public static final String	KEY_LATITUDE	= "lat";
+			public static final String	KEY_LONGITUDE	= "lng";
+		}
+
 		public static final class StatusKey
 		{
 			public static final int	OK					= 0;

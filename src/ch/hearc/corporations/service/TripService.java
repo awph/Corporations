@@ -13,6 +13,7 @@
 
 package ch.hearc.corporations.service;
 
+import ch.hearc.corporations.controller.TripManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -57,7 +58,7 @@ public class TripService extends Service implements LocationListener
 	/*------------------------------------------------------------------*\
 	|*							Service Methods							*|
 	\*------------------------------------------------------------------*/
-	
+
 	@Override
 	public void onCreate()
 	{
@@ -100,6 +101,7 @@ public class TripService extends Service implements LocationListener
 	public void onLocationChanged(Location location)
 	{
 		Log.e(TAG, "onLocationChanged -> " + location.toString());
+		TripManager.addLocation(this, location.getLatitude(), location.getLongitude());
 	}
 
 	@Override

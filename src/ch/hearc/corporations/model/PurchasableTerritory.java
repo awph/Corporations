@@ -16,6 +16,7 @@ package ch.hearc.corporations.model;
 import ch.hearc.corporations.controller.AccountController;
 import ch.hearc.corporations.controller.DataLoader;
 import ch.hearc.corporations.controller.DataLoaderAdapter;
+import ch.hearc.corporations.controller.Status;
 import ch.hearc.corporations.view.TerritoryInfoFragment.Callback;
 
 /**
@@ -74,10 +75,17 @@ public class PurchasableTerritory extends Territory
 		return canBuyTerritory;
 	}
 
-	public void changePrice()
+	public void changePrice(final int newPrice, final Callback callback)
 	{
-		// TODO Auto-generated method stub
+		DataLoader.getInstance().changeTerritoryPrice(this, newPrice, new DataLoaderAdapter() {
 
+			@Override
+			public void priceChanged(Status status)
+			{
+				PurchasableTerritory.this.salePrice = newPrice;
+				callback.update();
+			}
+		});
 	}
 
 	/*------------------------------*\

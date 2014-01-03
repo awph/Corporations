@@ -148,6 +148,16 @@ public class DataLoader
 		request(parameters, ApiRequestType.updateProfile, dataLoaderListener);
 	}
 
+	public void changeTerritoryPrice(PurchasableTerritory territory, int newPrice, DataLoaderListener dataLoaderListener)
+	{
+		Map<String, String> parameters = new HashMap<String, String>();
+		parameters.put(DataLoaderUtil.RequestParameters.ChangePrice.KEY_WHAT, DataLoaderUtil.RequestParameters.ChangePrice.WHAT);
+		parameters.put(DataLoaderUtil.RequestParameters.ChangePrice.KEY_NEW_PRICE, Integer.toString(newPrice));
+		parameters.put(DataLoaderUtil.RequestParameters.ChangePrice.KEY_LATITUDE, String.format("%1$.4f", territory.getLatitude()));
+		parameters.put(DataLoaderUtil.RequestParameters.ChangePrice.KEY_LONGITUDE, String.format("%1$.4f", territory.getLongitude()));
+		request(parameters, ApiRequestType.changePrice, dataLoaderListener);
+	}
+
 	private DataLoader()
 	{
 	}
@@ -316,10 +326,13 @@ public class DataLoader
 				break;
 			case updateProfile:
 				updateProfile(result);
-				listener.profileUpdated(null);
+				listener.profileUpdated(null); //TODO
 				break;
 			case uploadTrip:
-
+				listener.tripUploaded(0); //TODO
+				break;
+			case changePrice:
+				listener.priceChanged(null); //TODO
 				break;
 
 			default:

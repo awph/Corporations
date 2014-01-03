@@ -78,6 +78,7 @@ public class TerritoriesFragment extends Fragment implements ProfileInfoDisplaye
 		map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
 		map.setMyLocationEnabled(true);
 		map.getUiSettings().setZoomControlsEnabled(false);
+		map.getUiSettings().setMyLocationButtonEnabled(false);
 		moneyTextView = (TextView) view.findViewById(R.id.money_text_view);
 		revenuTextView = (TextView) view.findViewById(R.id.revenue_text_view);
 		experiencePointsTextView = (TextView) view.findViewById(R.id.experience_text_view);
