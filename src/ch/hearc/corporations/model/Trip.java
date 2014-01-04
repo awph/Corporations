@@ -43,6 +43,7 @@ public class Trip implements Serializable
 	private static final String	TAG					= Trip.class.getSimpleName();
 	private float				distance;
 	private long				secondes;
+	private int					experience;
 	private Date				date;
 
 	private long				startTime;
@@ -58,12 +59,13 @@ public class Trip implements Serializable
 	|*							Constructors							*|
 	\*------------------------------------------------------------------*/
 
-	public Trip(float distance, long secondes, Date date)
+	public Trip(float distance, long secondes, int experience, Date date)
 	{
 		this.finished = true;
 		this.sent = true;
 		this.distance = distance;
 		this.secondes = secondes;
+		this.experience = experience;
 		this.date = date;
 	}
 
@@ -83,19 +85,16 @@ public class Trip implements Serializable
 
 	public void endTrip(double latitude, double longitude)
 	{
-		Log.e(TAG, "endTrip1");
 		if (this.latitudes.size() <= 0 && this.longitudes.size() <= 0) return;
 		addLocation(latitude, longitude);
 		this.finished = true;
 		long endTime = System.currentTimeMillis();
 		this.secondes = (endTime - startTime) / 1000;
 		// TODO: send to server
-		Log.e(TAG, "endTrip2");
 	}
 
 	public void addLocation(double latitude, double longitude)
 	{
-		Log.e(TAG, "addLocation");
 		this.latitudes.add(latitude);
 		this.longitudes.add(longitude);
 		computeLastDelta();
@@ -148,8 +147,7 @@ public class Trip implements Serializable
 	 */
 	public int getExperienceEarned()
 	{
-		// TODO function
-		return 0;
+		return experience;
 	}
 
 	/**

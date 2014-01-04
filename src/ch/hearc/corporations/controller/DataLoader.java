@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -268,7 +269,27 @@ public class DataLoader
 				}
 				break;
 			case trips:
-
+				try
+				{
+					List<Trip> trips = new ArrayList<Trip>();
+					JSONArray jsonArray = result.getJSONArray(DataLoaderUtil.ResultKeys.RESULTS);
+					for (int i = 0; i < jsonArray.length(); ++i)
+					{
+						JSONObject jsonObject = jsonArray.getJSONObject(i);
+						float distance = Float.parseFloat(jsonObject.getString(DataLoaderUtil.ResultKeys.Trips.DISTANCE));
+						long secondes = Long.parseLong(jsonObject.getString(DataLoaderUtil.ResultKeys.Trips.TIME));
+						int experience = Integer.parseInt(jsonObject.getString(DataLoaderUtil.ResultKeys.Trips.MONEY));
+						
+						Date date = java.sql.Date.valueOf(jsonObject.getString(DataLoaderUtil.ResultKeys.Trips.DATE).split(" ")[0]);
+						Trip trip = new Trip(distance, secondes, experience, date);
+						trips.add(trip);
+					}
+					listener.tripsFetched(trips);
+				}
+				catch (JSONException e)
+				{
+					Log.e(TAG, e.getMessage());
+				}
 				break;
 			case territoryPurchasing:
 				try

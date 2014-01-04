@@ -13,7 +13,6 @@
 
 package ch.hearc.corporations.service;
 
-import ch.hearc.corporations.controller.TripManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -22,8 +21,10 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.Vibrator;
 import android.util.Log;
 import android.widget.Toast;
+import ch.hearc.corporations.controller.TripManager;
 
 /**
  * @author Alexandre
@@ -68,6 +69,9 @@ public class TripService extends Service implements LocationListener
 		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		// Start track location each five minutes
 		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, FIVE_MINUTES, 0, this);
+		Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+		// Vibrate for 500 milliseconds
+		v.vibrate(500);
 	}
 
 	@Override
@@ -101,6 +105,10 @@ public class TripService extends Service implements LocationListener
 	public void onLocationChanged(Location location)
 	{
 		Log.e(TAG, "onLocationChanged -> " + location.toString());
+
+		Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+		// Vibrate for 500 milliseconds
+		v.vibrate(500);
 		TripManager.addLocation(this, location.getLatitude(), location.getLongitude());
 	}
 
