@@ -14,17 +14,21 @@
 package ch.hearc.corporations.service;
 
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.os.Vibrator;
 import android.util.Log;
 import android.widget.Toast;
 import ch.hearc.corporations.controller.TripManager;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesClient;
+import com.google.android.gms.common.GooglePlayServicesClient.ConnectionCallbacks;
+import com.google.android.gms.common.GooglePlayServicesClient.OnConnectionFailedListener;
+import com.google.android.gms.location.LocationClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
 
 /**
  * @author Alexandre
@@ -47,7 +51,8 @@ public class TripService extends Service implements LocationListener
 	|*							Private Attributes						*|
 	\*------------------------------------------------------------------*/
 
-	private LocationManager		locationManager;
+	private LocationRequest		locationRequest;
+	private LocationClient		locationClient;
 
 	/*------------------------------*\
 	|*			  Static			*|
@@ -65,13 +70,33 @@ public class TripService extends Service implements LocationListener
 	{
 		super.onCreate();
 		Log.e(TAG, "onCreate");
-		// Acquire a reference to the system Location Manager
-		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-		// Start track location each five minutes
-		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, FIVE_MINUTES, 0, this);
-		Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-		// Vibrate for 500 milliseconds
-		v.vibrate(500);
+
+		locationRequest = LocationRequest.create();
+		locationRequest.setInterval(FIVE_MINUTES);
+		locationRequest.setPriority(LocationRequest.PRIORITY_LOW_POWER);
+		locationRequest.setFastestInterval(FIVE_MINUTES);
+
+		ConnectionCallbacks connectionCallbacks = new GooglePlayServicesClient.ConnectionCallbacks() {
+			@Override
+			public void onDisconnected()
+			{
+			}
+
+			@Override
+			public void onConnected(Bundle connectionHint)
+			{
+				locationClient.requestLocationUpdates(locationRequest, TripService.this);
+			}
+		};
+
+		locationClient = new LocationClient(this, connectionCallbacks, new OnConnectionFailedListener() {
+
+			@Override
+			public void onConnectionFailed(ConnectionResult arg0)
+			{
+				// Nothing to do...
+			}
+		});
 	}
 
 	@Override
@@ -79,6 +104,7 @@ public class TripService extends Service implements LocationListener
 	{
 		running = true;
 		Toast.makeText(this, "Trip service starting", Toast.LENGTH_SHORT).show();
+		locationClient.connect();
 		Log.e(TAG, "Received start id " + startId + ": " + intent);
 		return START_STICKY;
 	}
@@ -105,30 +131,7 @@ public class TripService extends Service implements LocationListener
 	public void onLocationChanged(Location location)
 	{
 		Log.e(TAG, "onLocationChanged -> " + location.toString());
-
-		Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-		// Vibrate for 500 milliseconds
-		v.vibrate(500);
 		TripManager.addLocation(this, location.getLatitude(), location.getLongitude());
-	}
-
-	@Override
-	public void onProviderDisabled(String provider)
-	{
-		Log.e(TAG, "onProviderDisabled -> " + provider);
-	}
-
-	@Override
-	public void onProviderEnabled(String provider)
-	{
-		Log.e(TAG, "onProviderEnabled -> " + provider);
-	}
-
-	@Override
-	public void onStatusChanged(String provider, int status, Bundle extras)
-	{
-		Log.e(TAG, "onStatusChanged -> " + provider + " -status-> " + status + " -extras-> " + extras.toString());
-
 	}
 
 }
