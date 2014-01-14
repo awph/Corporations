@@ -1,29 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="match_parent" >
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
 
     <TextView
         android:id="@+id/skill_name"
-        android:layout_width="211dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_weight=".5"
         android:layout_gravity="left"
         android:textColor="@color/white"
         android:textSize="@dimen/text_size" />
 
     <TextView
         android:id="@+id/skill_level"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_gravity="left"
+        android:layout_weight=".4"
+        android:layout_gravity="right"
         android:textColor="@color/white"
         android:textSize="@dimen/text_size" />
 
     <Button
         android:id="@+id/upgrade_skill"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_gravity="left"
+        android:layout_weight=".1"
+        android:layout_gravity="right"
         android:text="@string/upgrade_skill" />
 
-</GridLayout>
+</LinearLayout>
