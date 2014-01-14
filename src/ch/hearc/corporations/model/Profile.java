@@ -31,6 +31,7 @@ public class Profile extends Player
 	private String	identifier;
 	private long	currentMoney;
 	private long	currentRevenue;
+	private long	tripMoneyEarned;
 	private long	totalGain;
 	private int		experiencePoints;
 	private LatLng	home;
@@ -40,7 +41,7 @@ public class Profile extends Player
 	|*							Constructors							*|
 	\*------------------------------------------------------------------*/
 
-	public Profile(String userId, int numberAllies, int numberTerritories, int rank, long currentMoney, long currentRevenue, long totalGain, int experiencePoints, LatLng home,
+	public Profile(String userId, int numberAllies, int numberTerritories, int rank, long currentMoney, long currentRevenue, long tripMoneyEarned, long totalGain, int experiencePoints, LatLng home,
 			int purchasePriceSkillLevel, int purchaseDistanceSkillLevel, int experienceLimitSkillLevel, int moneyLimitSkillLevel, int experienceQuantityFoundSkillLevel, int alliancePriceSkillLevel)
 	{
 		super(userId, rank, numberAllies, numberTerritories, false);
@@ -60,17 +61,17 @@ public class Profile extends Player
 
 	public Profile()
 	{
-		this(null, 0, 0, 0, 0, 0, 0, 0, null, 0, 0, 0, 0, 0, 0);
+		this(null, 0, 0, 0, 0, 0, 0, 0, 0, null, 0, 0, 0, 0, 0, 0);
 	}
 
 	public Profile(Profile profile)
 	{
 		// We dont put the userid in constructor, because we know the name and
 		// we dont need to fetch it again
-		this(null, profile.numberAllies, profile.numberTerritories, profile.rank, profile.currentMoney, profile.currentRevenue, profile.totalGain, profile.experiencePoints, new LatLng(
-				profile.home.latitude, profile.home.longitude), profile.getSkill(SkillType.purchasePrice).getLevel(), profile.getSkill(SkillType.purchaseDistance).getLevel(), profile.getSkill(
-				SkillType.experienceLimit).getLevel(), profile.getSkill(SkillType.moneyLimit).getLevel(), profile.getSkill(SkillType.experienceQuantityFound).getLevel(), profile.getSkill(
-				SkillType.alliancePrice).getLevel());
+		this(null, profile.numberAllies, profile.numberTerritories, profile.rank, profile.currentMoney, profile.currentRevenue, profile.tripMoneyEarned, profile.totalGain, profile.experiencePoints,
+				new LatLng(profile.home.latitude, profile.home.longitude), profile.getSkill(SkillType.purchasePrice).getLevel(), profile.getSkill(SkillType.purchaseDistance).getLevel(), profile
+						.getSkill(SkillType.experienceLimit).getLevel(), profile.getSkill(SkillType.moneyLimit).getLevel(), profile.getSkill(SkillType.experienceQuantityFound).getLevel(), profile
+						.getSkill(SkillType.alliancePrice).getLevel());
 		this.userId = profile.userId;
 		this.name = profile.name;
 	}
@@ -124,8 +125,7 @@ public class Profile extends Player
 
 	public long getTripMoneyEarned()
 	{
-		// TODO Auto-generated method stub
-		return 0;
+		return tripMoneyEarned;
 	}
 
 	public Skill getSkill(SkillType skillType)
@@ -176,6 +176,11 @@ public class Profile extends Player
 	public void setExperiencePoints(int experiencePoints)
 	{
 		this.experiencePoints = experiencePoints;
+	}
+
+	public void setTripMoneyEarned(long tripMoneyEarned)
+	{
+		this.tripMoneyEarned = tripMoneyEarned;
 	}
 
 	/**

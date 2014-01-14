@@ -126,20 +126,18 @@ public class DataLoader
 	{
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put(DataLoaderUtil.RequestParameters.UploadTrip.KEY_WHAT, DataLoaderUtil.RequestParameters.UploadTrip.WHAT);
-		parameters.put(DataLoaderUtil.RequestParameters.UploadTrip.KEY_DATE, Long.toString(trip.getDate().getTime()));
+		parameters.put(DataLoaderUtil.RequestParameters.UploadTrip.KEY_DATE, new java.sql.Date(trip.getDate().getTime()).toString());
 		parameters.put(DataLoaderUtil.RequestParameters.UploadTrip.KEY_TIME, Long.toString(trip.getTime()));
 		parameters.put(DataLoaderUtil.RequestParameters.UploadTrip.KEY_DISTANCE, Float.toString(trip.getDistance()));
 		parameters.put(DataLoaderUtil.RequestParameters.UploadTrip.KEY_MONEY_EARNED, Integer.toString(trip.getMoneyEarned()));
 		request(parameters, ApiRequestType.uploadTrip, dataLoaderListener);
 	}
 
-	public void updateProfile(Profile profile, DataLoaderListener dataLoaderListener)
+	public void updateProfile(Profile profile, int updatePrice, DataLoaderListener dataLoaderListener)
 	{
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put(DataLoaderUtil.RequestParameters.UpdateProfile.KEY_WHAT, DataLoaderUtil.RequestParameters.UpdateProfile.WHAT);
-		parameters.put(DataLoaderUtil.RequestParameters.UpdateProfile.KEY_CURRENT_MONEY, Long.toString(profile.getCurrentMoney()));
-		parameters.put(DataLoaderUtil.RequestParameters.UpdateProfile.KEY_TOTAL_GAIN, Long.toString(profile.getTotalGain()));
-		parameters.put(DataLoaderUtil.RequestParameters.UpdateProfile.KEY_EXPERIENCE_POINTS, Integer.toString(profile.getExperiencePoints()));
+		parameters.put(DataLoaderUtil.RequestParameters.UpdateProfile.KEY_EXPERIENCE_POINTS_PRICE, Integer.toString(updatePrice));
 		parameters.put(DataLoaderUtil.RequestParameters.UpdateProfile.KEY_PURCHASE_PRICE_SKILL_LEVEL, Integer.toString(profile.getSkill(SkillType.purchasePrice).getLevel()));
 		parameters.put(DataLoaderUtil.RequestParameters.UpdateProfile.KEY_PURCHASE_DISTANCE_SKILL_LEVEL, Integer.toString(profile.getSkill(SkillType.purchaseDistance).getLevel()));
 		parameters.put(DataLoaderUtil.RequestParameters.UpdateProfile.KEY_EXPERIENCE_LIMIT_SKILL_LEVEL, Integer.toString(profile.getSkill(SkillType.experienceLimit).getLevel()));
@@ -205,6 +203,11 @@ public class DataLoader
 		catch (JSONException e)
 		{
 			Log.e(TAG, e.getMessage());
+		}
+		catch (NullPointerException e)
+		{
+			// TODO: No internet here !!
+			return;
 		}
 		switch (apiRequestType)
 		{
@@ -279,7 +282,7 @@ public class DataLoader
 						float distance = Float.parseFloat(jsonObject.getString(DataLoaderUtil.ResultKeys.Trips.DISTANCE));
 						long secondes = Long.parseLong(jsonObject.getString(DataLoaderUtil.ResultKeys.Trips.TIME));
 						int experience = Integer.parseInt(jsonObject.getString(DataLoaderUtil.ResultKeys.Trips.MONEY));
-						
+
 						Date date = java.sql.Date.valueOf(jsonObject.getString(DataLoaderUtil.ResultKeys.Trips.DATE).split(" ")[0]);
 						Trip trip = new Trip(distance, secondes, experience, date);
 						trips.add(trip);
@@ -347,13 +350,13 @@ public class DataLoader
 				break;
 			case updateProfile:
 				updateProfile(result);
-				listener.profileUpdated(null); //TODO
+				listener.profileUpdated(null); // TODO
 				break;
 			case uploadTrip:
-				listener.tripUploaded(0); //TODO
+				listener.tripUploaded(0); // TODO
 				break;
 			case changePrice:
-				listener.priceChanged(null); //TODO
+				listener.priceChanged(null); // TODO
 				break;
 
 			default:
@@ -371,9 +374,10 @@ public class DataLoader
 			int numberAllies = Integer.valueOf(jsonObject.getString(DataLoaderUtil.ResultKeys.Profile.NUMBER_OF_ALLIANCE));
 			int numberTerritories = Integer.valueOf(jsonObject.getString(DataLoaderUtil.ResultKeys.Profile.NUMBER_OF_TERRITORIES));
 			int rank = Integer.valueOf(jsonObject.getString(DataLoaderUtil.ResultKeys.Profile.RANK));
-			int currentMoney = Integer.valueOf(jsonObject.getString(DataLoaderUtil.ResultKeys.Profile.CURRENT_MONEY));
-			int currentRevenue = Integer.valueOf(jsonObject.getString(DataLoaderUtil.ResultKeys.Profile.CURRENT_REVENUE));
-			int totalGain = Integer.valueOf(jsonObject.getString(DataLoaderUtil.ResultKeys.Profile.TOTAL_GAIN));
+			long currentMoney = Long.valueOf(jsonObject.getString(DataLoaderUtil.ResultKeys.Profile.CURRENT_MONEY));
+			long currentRevenue = Long.valueOf(jsonObject.getString(DataLoaderUtil.ResultKeys.Profile.CURRENT_REVENUE));
+			long tripMoneyEarned = Long.valueOf(jsonObject.getString(DataLoaderUtil.ResultKeys.Profile.TRIP_MONEY_EARNED));
+			long totalGain = Long.valueOf(jsonObject.getString(DataLoaderUtil.ResultKeys.Profile.TOTAL_GAIN));
 			int experiencePoints = Integer.valueOf(jsonObject.getString(DataLoaderUtil.ResultKeys.Profile.EXPERIENCE_POINTS));
 			LatLng home = new LatLng(Double.valueOf(jsonObject.getString(DataLoaderUtil.ResultKeys.Profile.HOME_LAT)), Double.valueOf(jsonObject.getString(DataLoaderUtil.ResultKeys.Profile.HOME_LNG)));
 			int purchasePriceSkillLevel = Integer.valueOf(jsonObject.getString(DataLoaderUtil.ResultKeys.Profile.PPL));
@@ -389,6 +393,7 @@ public class DataLoader
 			profile.setRank(rank);
 			profile.setCurrentMoney(currentMoney);
 			profile.setCurrentRevenue(currentRevenue);
+			profile.setTripMoneyEarned(tripMoneyEarned);
 			profile.setTotalGain(totalGain);
 			profile.setExperiencePoints(experiencePoints);
 			profile.setHome(home);

@@ -82,9 +82,7 @@ public final class DataLoaderUtil
 		public static final class UpdateProfile extends All
 		{
 			public static final String	WHAT										= "updateProfile";
-			public static final String	KEY_CURRENT_MONEY							= "currentMoney";
-			public static final String	KEY_TOTAL_GAIN								= "totalGain";
-			public static final String	KEY_EXPERIENCE_POINTS						= "experiencePoints";
+			public static final String	KEY_EXPERIENCE_POINTS_PRICE					= "experiencePointsPrice";
 			public static final String	KEY_PURCHASE_PRICE_SKILL_LEVEL				= "purchasePriceSkillLevel";
 			public static final String	KEY_PURCHASE_DISTANCE_SKILL_LEVEL			= "purchaseDistanceSkillLevel";
 			public static final String	KEY_EXPERIENCE_LIMIT_SKILL_LEVEL			= "experienceLimitSkillLevel";
@@ -150,6 +148,7 @@ public final class DataLoaderUtil
 			public static final String	RANK					= "r";
 			public static final String	CURRENT_MONEY			= "cm";
 			public static final String	CURRENT_REVENUE			= "cr";
+			public static final String	TRIP_MONEY_EARNED		= "tme";
 			public static final String	TOTAL_GAIN				= "tg";
 			public static final String	EXPERIENCE_POINTS		= "ep";
 			public static final String	HOME_LAT				= "hlat";
