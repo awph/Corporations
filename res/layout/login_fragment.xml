@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="#303040"
+    android:background="#252525"
     android:orientation="vertical" >
 
     <ImageView
@@ -20,9 +20,8 @@
         android:layout_gravity="center"
         android:gravity="center"
         android:text="@string/app_name"
-        android:textColor="#AFDEFE"
-        android:textSize="28sp"
-        android:typeface="serif" />
+        android:textColor="#38b39b"
+        android:textSize="32sp" />
 
     <TextView
         android:id="@+id/profile_name"
@@ -35,8 +34,8 @@
         android:gravity="center_horizontal"
         android:lines="2"
         android:text="@string/get_started"
-        android:textColor="#AFDEFE"
-        android:textSize="17sp" />
+        android:textColor="#38b39b"
+        android:textSize="@dimen/text_size" />
 
     <com.facebook.widget.LoginButton
         android:id="@+id/login_button"
@@ -45,5 +44,12 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="30dp"
         android:layout_marginTop="30dp" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center|center_vertical"
+        android:gravity="center"
+        android:src="@drawable/hearc_logo" />
 
 </LinearLayout>
