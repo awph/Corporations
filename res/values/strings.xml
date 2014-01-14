@@ -20,17 +20,27 @@
     <string name="new_price_alert_dialog_title">Change territory price</string>
     <string name="new_price_alert_dialog_message">Tip the price you want to sell your territory, tip 0 if you don\'t want to sell it!</string>
     <string name="purchase_price_skill_name">Prix d\'achat d\'un territoire</string>
+    <string name="purchase_price_skill_description">-%d%%</string>
     <string name="purchase_distance_skill_name">Distance d\'achat d\'un territoire</string>
+    <string name="purchase_distance_skill_description">%s territoires</string>
     <string name="experience_limit_skill_name">Limite d\'expérience possédé</string>
+    <string name="experience_limit_skill_description">%s</string>
     <string name="money_limit_skill_name">Limite d\'argent possédé</string>
+    <string name="money_limit_skill_description">$%d</string>
     <string name="experience_quantity_found_skill_name">Points d\'expérience trouvé lors des déplacements</string>
+    <string name="experience_quantity_found_skill_description">+%d%%</string>
     <string name="alliance_price_skill_name">Prix d\'une alliance</string>
+    <string name="alliance_price_skill_description">-%d%%</string>
     <string name="not_in_zone_alert_dialog_title">Not in zone</string>
     <string name="not_in_zone_alert_dialog_message">You are not in the territory, so you can\'t capture it!</string>
     <string name="in_water_alert_dialog_title">In water</string>
     <string name="in_water_alert_dialog_message">You can\'t buy a territoty in a water area!</string>
     <string name="not_enough_money_alert_dialog_title">Not enough money</string>
     <string name="not_enough_money_alert_dialog_message">You don\'t have enough money for buy this territory!</string>
+    <string name="territory_not_connnected_alert_dialog_title">Not connected</string>
+    <string name="territory_not_connnected_alert_dialog_message">You need to be connected to this territory, by have a territory or an ally territory that touch this one!</string>
+    <string name="verify_gps_title">No GPS</string>
+    <string name="verify_gps_message">We are unable to find your location, please check if your GPS is on and try again!</string>
     <string name="alliance_update_error_message">An error occurred during the alliance</string>
     <string name="unalliance_update_error_message">An error occurred during the alliance revocation</string>
     <string name="sale_price">Sale price: %s</string>
@@ -44,5 +54,11 @@
     <string name="change_sale_price">Change sale price</string>
     <string name="capture">Capture</string>
     <string name="buy">Buy</string>
+    
+    <string name="trip_detail_activity_distance">Distance: %.3fkm</string>
+    <string name="trip_detail_activity_experience_points">Earned experience: %s</string>
+    <string name="trip_detail_activity_money_earn">Earned money: %s</string>
+    <string name="trip_detail_activity_date">Date: %s</string>
+    <string name="trip_detail_activity_time">Trip time: %smin</string>
 
 </resources>

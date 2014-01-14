@@ -13,6 +13,8 @@
 
 package ch.hearc.corporations.model;
 
+import android.util.Log;
+
 /**
  * @author Alexandre
  * 
@@ -69,15 +71,20 @@ public class Skill
 		return type;
 	}
 
+	public String getDescription()
+	{
+		Log.e("Skill", type.getDescription());
+		return String.format(type.getDescription(), ((int) type.getExplicitValueSkills() * level));
+	}
+
 	public int getLevel()
 	{
 		return level;
 	}
 
-	public int getPrice()
+	public int getUpdatePrice()
 	{
-		// TODO Auto-generated method stub
-		return 0;
+		return (int) (Math.pow(level, 2));
 	}
 
 	/*------------------------------*\
