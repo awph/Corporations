@@ -93,6 +93,7 @@ public class TripArrayAdapter extends ArrayAdapter<Trip>
 				intent.putExtra(TripDetailActivity.DISTANCE, trip.getDistance());
 				intent.putExtra(TripDetailActivity.EXPERIENCE, trip.getExperienceEarned());
 				intent.putExtra(TripDetailActivity.MONEY, trip.getMoneyEarned());
+				intent.putExtra(TripDetailActivity.DATE, trip.getDate());
 				intent.putExtra(TripDetailActivity.TIME, trip.getTime());
 				context.startActivity(intent);
 			}

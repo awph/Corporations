@@ -8,24 +8,30 @@
         android:id="@+id/distance_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:textSize="@dimen/text_size" />
 
     <TextView
         android:id="@+id/earn_money_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:textSize="@dimen/text_size" />
 
     <TextView
         android:id="@+id/earn_experience_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:textSize="@dimen/text_size" />
+
+    <TextView
+        android:id="@+id/trip_date_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_size" />
 
     <TextView
         android:id="@+id/trip_time_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:textSize="@dimen/text_size" />
 
 </LinearLayout>

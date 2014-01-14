@@ -90,7 +90,6 @@ public class Trip implements Serializable
 		this.finished = true;
 		long endTime = System.currentTimeMillis();
 		this.secondes = (endTime - startTime) / 1000;
-		// TODO: send to server
 	}
 
 	public void addLocation(double latitude, double longitude)
@@ -155,8 +154,7 @@ public class Trip implements Serializable
 	 */
 	public int getMoneyEarned()
 	{
-		// TODO function
-		return 0;
+		return (int) (secondes / 10 + distance * 10);
 	}
 
 	/*------------------------------*\

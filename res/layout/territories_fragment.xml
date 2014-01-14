@@ -13,14 +13,6 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true" />
 
-    <fragment
-        android:id="@+id/territory"
-        android:name="ch.hearc.corporations.view.TerritoryInfoFragment"
-        android:layout_width="fill_parent"
-        android:layout_height="200dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true" />
-
     <LinearLayout
         android:id="@+id/linearLayout1"
         android:layout_width="match_parent"
@@ -32,21 +24,21 @@
             android:id="@+id/money_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+            android:textSize="@dimen/text_size" />
 
         <TextView
             android:id="@+id/revenue_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+            android:textSize="@dimen/text_size" />
 
         <TextView
             android:id="@+id/experience_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="30dp"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+            android:textSize="@dimen/text_size" />
     </LinearLayout>
 
     <ch.hearc.corporations.view.ProfilePictureView
@@ -65,6 +57,14 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_margin="10dp"
-        android:src="@drawable/com_facebook_button_blue" />
+        android:src="@drawable/trips_icon" />
+
+    <fragment
+        android:id="@+id/territory"
+        android:name="ch.hearc.corporations.view.TerritoryInfoFragment"
+        android:layout_width="fill_parent"
+        android:layout_height="200dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true" />
 
 </RelativeLayout>
