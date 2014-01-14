@@ -21,6 +21,7 @@ import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import ch.hearc.corporations.R;
+import ch.hearc.corporations.Tools;
 import ch.hearc.corporations.controller.AccountController;
 import ch.hearc.corporations.controller.DataLoader;
 import ch.hearc.corporations.controller.DataLoaderAdapter;
@@ -42,13 +43,22 @@ import com.google.android.gms.maps.model.LatLng;
 
 public class MainActivity extends Activity
 {
+	/*------------------------------------------------------------------*\
+	|*							Public Attributes						*|
+	\*------------------------------------------------------------------*/
+
+	/*------------------------------*\
+	|*			  Static			*|
+	\*------------------------------*/
+
+	public static final int			CLOSE_FACEBOOK_SESSION	= 100;
+
+	/*------------------------------------------------------------------*\
+	|*							Private Attributes						*|
+	\*------------------------------------------------------------------*/
+
 	private boolean					isResumed				= false;
-	private static final int		LOGIN_FRAGMENT			= 0;
-	private static final int		TERRITORIES_FRAGMENT	= 1;
-	private static final int		FRAGMENT_COUNT			= TERRITORIES_FRAGMENT + 1;
-
 	private Fragment[]				fragments				= new Fragment[FRAGMENT_COUNT];
-
 	private UiLifecycleHelper		uiHelper;
 	private Session.StatusCallback	callback				= new Session.StatusCallback() {
 																@Override
@@ -57,9 +67,16 @@ public class MainActivity extends Activity
 																	onSessionStateChange(session, state, exception);
 																}
 															};
-	LocationClient					locationClient;
+	private LocationClient			locationClient;
 
-	private static final long		FIVE_MINUTES			= 300000;
+	/*------------------------------*\
+	|*			  Static			*|
+	\*------------------------------*/
+
+	private static final int		LOGIN_FRAGMENT			= 0;
+	private static final int		TERRITORIES_FRAGMENT	= 1;
+	private static final int		FRAGMENT_COUNT			= TERRITORIES_FRAGMENT + 1;
+	private static final long		FIVE_MINUTES			= 5 * 60 * 100;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -138,7 +155,10 @@ public class MainActivity extends Activity
 				{
 					List<Trip> trips = TripManager.loadTrips(MainActivity.this);
 					for (Trip trip : trips)
+					{
 						if (trip.isFinished() && !trip.isSent()) trip.send();
+					}
+
 					TripManager.saveTrips(MainActivity.this, trips);
 				}
 			}).start();
@@ -212,8 +232,6 @@ public class MainActivity extends Activity
 									@Override
 									public void onDisconnected()
 									{
-										// TODO Auto-generated method stub
-
 									}
 
 									@Override
@@ -228,8 +246,7 @@ public class MainActivity extends Activity
 									@Override
 									public void onConnectionFailed(ConnectionResult arg0)
 									{
-										// TODO Auto-generated method stub
-
+										Tools.showInfoAlertDialog(MainActivity.this, getResources().getString(R.string.verify_gps_title), getResources().getString(R.string.verify_gps_message));
 									}
 								});
 								locationClient.connect();
@@ -238,7 +255,6 @@ public class MainActivity extends Activity
 							{
 								loginToServer(session, AccountController.getInstance().getHome());
 							}
-							Log.i(FACEBOOK_TAG, "User Name " + user.getFirstName() + " " + user.getLastName());
 						}
 					}
 
@@ -305,6 +321,16 @@ public class MainActivity extends Activity
 	{
 		super.onActivityResult(requestCode, resultCode, data);
 		uiHelper.onActivityResult(requestCode, resultCode, data);
+		Log.e(TAG, resultCode + "");
+		if (resultCode == CLOSE_FACEBOOK_SESSION)
+		{
+			Session session = Session.getActiveSession();
+			if (session != null && session.isOpened())
+			{
+				session.closeAndClearTokenInformation();
+			}
+			showFragment(LOGIN_FRAGMENT, false);
+		}
 	}
 
 	@Override

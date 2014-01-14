@@ -18,6 +18,16 @@ public abstract class Territory implements Comparable<Territory>
 {
 
 	/*------------------------------------------------------------------*\
+	|*							Public Attributes						*|
+	\*------------------------------------------------------------------*/
+
+	/*------------------------------*\
+	|*			  Static			*|
+	\*------------------------------*/
+
+	public static final double	TERRITORY_SIZE_IN_LAT_LON	= 0.01D;
+
+	/*------------------------------------------------------------------*\
 	|*							Protected Attributes					*|
 	\*------------------------------------------------------------------*/
 
@@ -48,7 +58,6 @@ public abstract class Territory implements Comparable<Territory>
 	private static double		deltaLat					= 0;
 	private static float[]		results						= new float[3];
 	private static final int	TERRITORY_SIZE_IN_METER		= 5000;
-	private static final double	TERRITORY_SIZE_IN_LAT_LON	= 0.01D;
 	private static final float	BORDER_WIDTH				= 1f;
 	private static final float	BORDER_WIDTH_HIGHLIGHTED	= 5f;
 	private static final float	BORDER_WIDTH_SPECIAL		= 2f;
@@ -131,13 +140,6 @@ public abstract class Territory implements Comparable<Territory>
 					.add(new LatLng(latitudes[TOP_LEFT], longitudes[TOP_LEFT]), new LatLng(latitudes[TOP_RIGHT], longitudes[TOP_RIGHT]), new LatLng(latitudes[BOTTOM_RIGHT], longitudes[BOTTOM_RIGHT]),
 							new LatLng(latitudes[BOTTOM_LEFT], longitudes[BOTTOM_LEFT])).strokeColor(BORDER_COLOR).fillColor(type.getColor(isSpecial)).strokeWidth(borderWidth);
 		}
-
-		// Log.d("Log : Territory", points[CENTER].toString());
-		// Log.d("Log : Territory points", Arrays.toString(points));
-		// Log.d("Log : Territory", location.toString());
-		// Log.d("Log : Territory", "delta Lat : " + (location.latitude -
-		// points[CENTER].latitude) + " ||| delta Lon : " + (location.longitude
-		// - points[CENTER].longitude));
 	}
 
 	/*------------------------------------------------------------------*\
@@ -196,6 +198,11 @@ public abstract class Territory implements Comparable<Territory>
 	public boolean isInBounds(double latitude, double longitude)
 	{
 		return (latitude < latitudes[TOP_LEFT] && latitude > latitudes[BOTTOM_LEFT] && longitude > longitudes[TOP_LEFT] && longitude < longitudes[TOP_RIGHT]);
+	}
+
+	public boolean isAConnectedTerritory(double latitude, double longitude)
+	{
+		return isInBounds(latitude, longitude) && this.owner != null && (this.owner.isAlly() || this.owner.me());
 	}
 
 	public void updateType()

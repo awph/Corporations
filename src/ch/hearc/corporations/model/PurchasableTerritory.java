@@ -50,9 +50,8 @@ public class PurchasableTerritory extends Territory
 
 	public boolean buy(final Callback callback)
 	{
-		boolean canBuyTerritory = AccountController.getInstance().getProfile().getCurrentMoney() >= salePrice;// TODO
-																												// border
-																												// territory
+		boolean canBuyTerritory = AccountController.getInstance().getProfile().getCurrentMoney() >= salePrice;
+		
 		if (canBuyTerritory)
 		{
 			DataLoader.getInstance().purchaseTerritory(this, new DataLoaderAdapter() {

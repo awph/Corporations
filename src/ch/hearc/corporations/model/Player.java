@@ -238,4 +238,9 @@ public class Player
 		this.numberTerritories = numberTerritories;
 	}
 
+	public boolean me()
+	{
+		return userId.equals(AccountController.getInstance().getFacebookID());
+	}
+
 }
