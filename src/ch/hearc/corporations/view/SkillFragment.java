@@ -60,19 +60,22 @@ public class SkillFragment extends Fragment
 			{
 				AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
 				alertDialog.setTitle(getActivity().getResources().getString(R.string.improve_alert_dialog_title));
-				alertDialog.setMessage(String.format(getActivity().getResources().getString(R.string.improve_alert_dialog_message), skill.getType().getName(), skill.getLevel() + 1, skill.getPrice()));
+				alertDialog.setMessage(String.format(getActivity().getResources().getString(R.string.improve_alert_dialog_message), skill.getType().getName(), skill.getLevel() + 1,
+						skill.getUpdatePrice()));
 				alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, getActivity().getResources().getString(android.R.string.yes), new OnClickListener() {
 
 					@Override
 					public void onClick(DialogInterface dialog, int which)
 					{
 						Profile profile = new Profile(AccountController.getInstance().getProfile());
+						int updatePrice = skill.getUpdatePrice();
 						profile.getSkill(skill.getType()).upgrade();
-						DataLoader.getInstance().updateProfile(profile, new DataLoaderAdapter() {
+						DataLoader.getInstance().updateProfile(profile, updatePrice, new DataLoaderAdapter() {
 
 							@Override
 							public void profileUpdated(Status status)
 							{
+								((ProfileActivity)getActivity()).refreshProfileInfo();
 								SkillFragment.this.updateLevel();
 							}
 						});
@@ -101,6 +104,6 @@ public class SkillFragment extends Fragment
 	public void updateLevel()
 	{
 		Skill skill = AccountController.getInstance().getProfile().getSkill(skillType);
-		((TextView) view.findViewById(R.id.skill_level)).setText(Integer.toString(skill.getLevel()));
+		((TextView) view.findViewById(R.id.skill_level)).setText(skill.getDescription());
 	}
 }
