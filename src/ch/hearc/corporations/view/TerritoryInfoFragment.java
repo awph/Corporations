@@ -38,6 +38,7 @@ public class TerritoryInfoFragment extends Fragment
 	private Button									secondButton;
 	private View									view;
 	private Territory								territory;
+	private boolean									isCurrentTerritoryConnected;
 	private boolean									displayed;
 
 	/*------------------------------*\
@@ -65,6 +66,15 @@ public class TerritoryInfoFragment extends Fragment
 		profileView = (RoundedFacebookProfilePictureImageView) view.findViewById(R.id.player_image_territory_info);
 		profileView.setBorderColor(Color.WHITE);
 		profileView.setBorderWidth(1);
+		
+		view.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v)
+			{
+				//Nothing just for catch the tap and don't tap the map under this view
+			}
+		});
 
 		return view;
 	}
@@ -73,8 +83,9 @@ public class TerritoryInfoFragment extends Fragment
 	|*							Public Methods							*|
 	\*------------------------------------------------------------------*/
 
-	public boolean updateTerritoryInfo(Territory territory)
+	public boolean updateTerritoryInfo(Territory territory, boolean isConnected)
 	{
+		isCurrentTerritoryConnected = isConnected;
 		territory.setVisible(true);
 		if (this.territory != null) this.territory.setHighlighted(false);
 		if (!displayed || !territory.equals(this.territory))
@@ -215,7 +226,7 @@ public class TerritoryInfoFragment extends Fragment
 				changePriceAlert.setMessage(getActivity().getResources().getString(R.string.new_price_alert_dialog_message));
 
 				final EditText input = new EditText(getActivity());
-				
+
 				input.setInputType(InputType.TYPE_CLASS_NUMBER);
 				changePriceAlert.setView(input);
 
@@ -295,17 +306,25 @@ public class TerritoryInfoFragment extends Fragment
 				@Override
 				public void onClick(View arg0)
 				{
-					if (!((PurchasableTerritory) territory).buy(new Callback() {
-
-						@Override
-						public void update()
-						{
-							TerritoryInfoFragment.this.loadInfo();
-						}
-					}))
+					if (isCurrentTerritoryConnected)
 					{
-						Tools.showInfoAlertDialog(getActivity(), getActivity().getResources().getString(R.string.not_enough_money_alert_dialog_title),
-								getActivity().getResources().getString(R.string.not_enough_money_alert_dialog_message));
+						if (!((PurchasableTerritory) territory).buy(new Callback() {
+
+							@Override
+							public void update()
+							{
+								TerritoryInfoFragment.this.loadInfo();
+							}
+						}))
+						{
+							Tools.showInfoAlertDialog(getActivity(), getActivity().getResources().getString(R.string.not_enough_money_alert_dialog_title),
+									getActivity().getResources().getString(R.string.not_enough_money_alert_dialog_message));
+						}
+					}
+					else
+					{
+						Tools.showInfoAlertDialog(getActivity(), getActivity().getResources().getString(R.string.territory_not_connnected_alert_dialog_title),
+								getActivity().getResources().getString(R.string.territory_not_connnected_alert_dialog_message));
 					}
 				}
 			});

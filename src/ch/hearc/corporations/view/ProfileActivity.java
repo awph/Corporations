@@ -45,6 +45,11 @@ import ch.hearc.corporations.model.SkillType;
  */
 public class ProfileActivity extends Activity
 {
+	
+	/*------------------------------------------------------------------*\
+	|*							Private Attributes						*|
+	\*------------------------------------------------------------------*/
+
 	private SkillFragment[]	skillFragments;
 
 	@Override
@@ -74,10 +79,8 @@ public class ProfileActivity extends Activity
 		switch (item.getItemId())
 		{
 			case R.id.action_logout:
-				// TODO
-				return true;
-			case R.id.action_settings:
-				// TODO
+				setResult(MainActivity.CLOSE_FACEBOOK_SESSION);
+				finish();
 				return true;
 			case R.id.action_leaderboard:
 				DataLoader.getInstance().getLeaderboard(0, 1000, new DataLoaderAdapter() {
@@ -102,7 +105,12 @@ public class ProfileActivity extends Activity
 		profilePictureView.setProfileId(AccountController.getInstance().getFacebookID());
 		profilePictureView.setBorderWidth(4);
 		profilePictureView.setBorderColor(getResources().getColor(R.color.white));
-		TextView textView = (TextView) findViewById(R.id.profile_info);
+		refreshProfileInfo();
+	}
+
+	public void refreshProfileInfo()
+	{
+		TextView profileInfo = (TextView) findViewById(R.id.profile_info);
 		Profile profile = AccountController.getInstance().getProfile();
 		StringBuilder stringBuilder = new StringBuilder("Current money: " + Tools.formatMoney(profile.getCurrentMoney()));
 		stringBuilder.append("\nTotal revenue: " + Tools.formatMoney(profile.getCurrentRevenue()));
@@ -112,7 +120,7 @@ public class ProfileActivity extends Activity
 		stringBuilder.append("\nTerrotories owned: " + profile.getNumberTerritories());
 		stringBuilder.append("\nExperience points: " + profile.getExperiencePoints());
 		stringBuilder.append("\nRank: " + profile.getRank());
-		textView.setText(stringBuilder);
+		profileInfo.setText(stringBuilder);		
 	}
 
 	private void addFragmentsToView()

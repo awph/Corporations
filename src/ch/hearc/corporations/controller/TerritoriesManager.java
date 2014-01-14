@@ -79,4 +79,23 @@ public class TerritoriesManager
 		if (territory.getPolygon() == null) territory.setMap(map);
 		return territory;
 	}
+
+	public boolean isConnected(Territory territory)
+	{
+		double latitude = territory.getLatitude();
+		double longitude = territory.getLongitude();
+
+		for (Territory existingTerritory : territories)
+		{
+			if (existingTerritory.isAConnectedTerritory(latitude + Territory.TERRITORY_SIZE_IN_LAT_LON, longitude)) return true;
+			if (existingTerritory.isAConnectedTerritory(latitude + Territory.TERRITORY_SIZE_IN_LAT_LON, longitude + Territory.TERRITORY_SIZE_IN_LAT_LON)) return true;
+			if (existingTerritory.isAConnectedTerritory(latitude, longitude + Territory.TERRITORY_SIZE_IN_LAT_LON)) return true;
+			if (existingTerritory.isAConnectedTerritory(latitude - Territory.TERRITORY_SIZE_IN_LAT_LON, longitude + Territory.TERRITORY_SIZE_IN_LAT_LON)) return true;
+			if (existingTerritory.isAConnectedTerritory(latitude - Territory.TERRITORY_SIZE_IN_LAT_LON, longitude)) return true;
+			if (existingTerritory.isAConnectedTerritory(latitude - Territory.TERRITORY_SIZE_IN_LAT_LON, longitude - Territory.TERRITORY_SIZE_IN_LAT_LON)) return true;
+			if (existingTerritory.isAConnectedTerritory(latitude, longitude - Territory.TERRITORY_SIZE_IN_LAT_LON)) return true;
+			if (existingTerritory.isAConnectedTerritory(latitude + Territory.TERRITORY_SIZE_IN_LAT_LON, longitude - Territory.TERRITORY_SIZE_IN_LAT_LON)) return true;
+		}
+		return false;
+	}
 }

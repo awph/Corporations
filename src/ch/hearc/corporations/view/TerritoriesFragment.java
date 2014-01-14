@@ -119,7 +119,7 @@ public class TerritoriesFragment extends Fragment implements ProfileInfoDisplaye
 			public void onClick(View v)
 			{
 				Intent intent = new Intent(getActivity(), ProfileActivity.class);
-				startActivity(intent);
+				getActivity().startActivityForResult(intent, 0);
 			}
 		});
 
@@ -179,7 +179,7 @@ public class TerritoriesFragment extends Fragment implements ProfileInfoDisplaye
 			{
 				final Territory territory = territories.getTerritoryForLocation(location, map);
 				if (territory.getOwner() != null)
-					showInfoView(map, fragment, location, territory);
+					showInfoView(map, fragment, location, territory, territories.isConnected(territory));
 				else
 				{
 					map.snapshot(new SnapshotReadyCallback() {
@@ -191,7 +191,7 @@ public class TerritoriesFragment extends Fragment implements ProfileInfoDisplaye
 								Tools.showInfoAlertDialog(getActivity(), getActivity().getResources().getString(R.string.in_water_alert_dialog_title),
 										getActivity().getResources().getString(R.string.in_water_alert_dialog_message));
 							else
-								showInfoView(map, fragment, location, territory);
+								showInfoView(map, fragment, location, territory, territories.isConnected(territory));
 						}
 					});
 				}
@@ -202,10 +202,11 @@ public class TerritoriesFragment extends Fragment implements ProfileInfoDisplaye
 			 * @param fragment
 			 * @param location
 			 * @param territory
+			 * @param connected
 			 */
-			private void showInfoView(final GoogleMap map, final TerritoryInfoFragment fragment, LatLng location, Territory territory)
+			private void showInfoView(final GoogleMap map, final TerritoryInfoFragment fragment, LatLng location, Territory territory, boolean isConnected)
 			{
-				boolean showFragment = fragment.updateTerritoryInfo(territory);
+				boolean showFragment = fragment.updateTerritoryInfo(territory, isConnected);
 				FragmentTransaction ft = getFragmentManager().beginTransaction();
 				ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
 				if (showFragment)
