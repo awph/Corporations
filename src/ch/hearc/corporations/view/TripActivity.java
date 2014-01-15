@@ -25,6 +25,7 @@ import ch.hearc.corporations.CorporationsConfiguration;
 import ch.hearc.corporations.R;
 import ch.hearc.corporations.controller.DataLoader;
 import ch.hearc.corporations.controller.DataLoaderAdapter;
+import ch.hearc.corporations.controller.Status;
 import ch.hearc.corporations.model.Trip;
 import ch.hearc.corporations.model.TripArrayAdapter;
 
@@ -46,10 +47,13 @@ public class TripActivity extends ListActivity
 		DataLoader.getInstance().getTrips(0, new DataLoaderAdapter() {
 
 			@Override
-			public void tripsFetched(List<Trip> trips)
+			public void tripsFetched(List<Trip> trips, Status status)
 			{
-				TripArrayAdapter adapter = new TripArrayAdapter(TripActivity.this, trips);
-				setListAdapter(adapter);
+				if (status == Status.OK)
+				{
+					TripArrayAdapter adapter = new TripArrayAdapter(TripActivity.this, trips);
+					setListAdapter(adapter);
+				}
 			}
 		});
 		setBackground(CorporationsConfiguration.BACKGROUND_TRIP);

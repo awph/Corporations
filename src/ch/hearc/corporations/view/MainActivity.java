@@ -21,6 +21,7 @@ import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 import ch.hearc.corporations.R;
 import ch.hearc.corporations.Tools;
 import ch.hearc.corporations.controller.AccountController;
@@ -42,6 +43,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.GooglePlayServicesClient.ConnectionCallbacks;
 import com.google.android.gms.common.GooglePlayServicesClient.OnConnectionFailedListener;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
@@ -93,6 +95,7 @@ public class MainActivity extends Activity implements LocationListener
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 
+		// Location
 		locationRequest = LocationRequest.create();
 		locationRequest.setInterval(FIVE_MINUTES);
 		locationRequest.setPriority(LocationRequest.PRIORITY_LOW_POWER);
@@ -121,35 +124,21 @@ public class MainActivity extends Activity implements LocationListener
 			}
 		});
 
-		{ // TODO better
+		// Start trip tracking if it's not running
+		if (!TripService.running) registerReceiver(new OnBootBroadcastReceiver(), new IntentFilter(Intent.ACTION_TIME_TICK));
 
-			if (!TripService.running) registerReceiver(new OnBootBroadcastReceiver(), new IntentFilter(Intent.ACTION_TIME_TICK));
+		// Timer for update profile info
+		Timer timer = new Timer("profile updater");
+		timer.schedule(new TimerTask() {
 
-			Timer timer = new Timer("profile updater");
-			timer.schedule(new TimerTask() {
+			@Override
+			public void run()
+			{
+				AccountController.getInstance().updateProfile();
+			}
+		}, FIVE_MINUTES, FIVE_MINUTES);
 
-				@Override
-				public void run()
-				{
-					AccountController.getInstance().updateProfile();
-				}
-			}, FIVE_MINUTES, FIVE_MINUTES);
-
-			new Thread(new Runnable() {
-
-				@Override
-				public void run()
-				{
-					List<Trip> trips = TripManager.loadTrips(MainActivity.this);
-					for (Trip trip : trips)
-					{
-						if (trip.isFinished() && !trip.isSent()) trip.send();
-					}
-
-					TripManager.saveTrips(MainActivity.this, trips);
-				}
-			}).start();
-		}
+		uploadTrips();
 
 		getActionBar().hide();
 
@@ -174,13 +163,136 @@ public class MainActivity extends Activity implements LocationListener
 	{
 		super.onStart();
 		showLoginButton(false);
-		locationClient.connect(); // TODO google play service
+		if (GooglePlayServicesUtil.isGooglePlayServicesAvailable(this) == ConnectionResult.SUCCESS)
+			locationClient.connect();
+		else
+			Toast.makeText(this, getString(R.string.update_google_play_service), Toast.LENGTH_LONG).show();
+	}
+
+	@Override
+	public void onResume()
+	{
+		super.onResume();
+
+		Session session = Session.getActiveSession();
+
+		isResumed = true;
+		uiHelper.onResume();
+		onSessionStateChange(session, session.getState(), null);
+	}
+
+	@Override
+	public void onPause()
+	{
+		super.onPause();
+		uiHelper.onPause();
+		isResumed = false;
+	}
+
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data)
+	{
+		super.onActivityResult(requestCode, resultCode, data);
+		uiHelper.onActivityResult(requestCode, resultCode, data);
+		showLoginButton(false);
+		if (resultCode == CLOSE_FACEBOOK_SESSION)
+		{
+			Session session = Session.getActiveSession();
+			if (session != null && session.isOpened())
+			{
+				session.closeAndClearTokenInformation();
+			}
+			showFragment(LOGIN_FRAGMENT, false);
+			showLoginButton(true);
+		}
+	}
+
+	@Override
+	public void onDestroy()
+	{
+		super.onDestroy();
+		uiHelper.onDestroy();
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState)
+	{
+		super.onSaveInstanceState(outState);
+		uiHelper.onSaveInstanceState(outState);
+	}
+
+	/*------------------------------------------------------------------*\
+	|*							Public Methods							*|
+	\*------------------------------------------------------------------*/
+
+	public void generateKeyHash()
+	{
+		PackageInfo info;
+		try
+		{
+			info = getPackageManager().getPackageInfo(PACKAGE_NAME, PackageManager.GET_SIGNATURES);
+
+			for (Signature signature : info.signatures)
+			{
+				MessageDigest md = MessageDigest.getInstance("SHA");
+				md.update(signature.toByteArray());
+				Log.d(TAG, "KeyHash: " + Base64.encodeToString(md.digest(), Base64.DEFAULT));
+			}
+		}
+		catch (NameNotFoundException e)
+		{
+			e.printStackTrace();
+		}
+		catch (NoSuchAlgorithmException e)
+		{
+			e.printStackTrace();
+		}
+	}
+
+	public Location getCurrentLocation()
+	{
+		if (currentLocation == null) currentLocation = locationClient.getLastLocation();
+		return currentLocation;
+	}
+
+	@Override
+	public void onLocationChanged(Location location)
+	{
+		this.currentLocation = location;
+	}
+
+	/*------------------------------------------------------------------*\
+	|*							Private Methods							*|
+	\*------------------------------------------------------------------*/
+
+	/**
+	 * 
+	 */
+	private void uploadTrips()
+	{
+		new Thread(new Runnable() {
+
+			@Override
+			public void run()
+			{
+				List<Trip> trips = TripManager.loadTrips(MainActivity.this);
+				for (Trip trip : trips)
+				{
+					if (trip.isFinished() && !trip.isSent()) trip.send();
+				}
+
+				TripManager.saveTrips(MainActivity.this, trips);
+			}
+		}).start();
 	}
 
 	private void showFragment(int fragmentIndex, boolean addToBackStack)
 	{
 		if (fragmentIndex == TERRITORIES_FRAGMENT)
+		{
 			((TerritoriesFragment) fragments[TERRITORIES_FRAGMENT]).setActived(true);
+			((TerritoriesFragment) fragments[TERRITORIES_FRAGMENT]).zoomOnHome();
+		}
 		else
 			((TerritoriesFragment) fragments[TERRITORIES_FRAGMENT]).setActived(false);
 
@@ -207,12 +319,6 @@ public class MainActivity extends Activity implements LocationListener
 		{
 			// Dont change view
 		}
-	}
-
-	@Override
-	public void onLocationChanged(Location location)
-	{
-		this.currentLocation = location;
 	}
 
 	private void onSessionStateChange(final Session session, SessionState state, Exception exception)
@@ -312,82 +418,6 @@ public class MainActivity extends Activity implements LocationListener
 		}
 	}
 
-	@Override
-	public void onResume()
-	{
-		super.onResume();
-
-		Session session = Session.getActiveSession();
-
-		isResumed = true;
-		uiHelper.onResume();
-		onSessionStateChange(session, session.getState(), null);
-	}
-
-	@Override
-	public void onPause()
-	{
-		super.onPause();
-		uiHelper.onPause();
-		isResumed = false;
-	}
-
-	@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent data)
-	{
-		super.onActivityResult(requestCode, resultCode, data);
-		uiHelper.onActivityResult(requestCode, resultCode, data);
-		showLoginButton(false);
-		if (resultCode == CLOSE_FACEBOOK_SESSION)
-		{
-			Session session = Session.getActiveSession();
-			if (session != null && session.isOpened())
-			{
-				session.closeAndClearTokenInformation();
-			}
-			showFragment(LOGIN_FRAGMENT, false);
-			showLoginButton(true);
-		}
-	}
-
-	@Override
-	public void onDestroy()
-	{
-		super.onDestroy();
-		uiHelper.onDestroy();
-	}
-
-	@Override
-	protected void onSaveInstanceState(Bundle outState)
-	{
-		super.onSaveInstanceState(outState);
-		uiHelper.onSaveInstanceState(outState);
-	}
-
-	public void generateKeyHash()
-	{
-		PackageInfo info;
-		try
-		{
-			info = getPackageManager().getPackageInfo(PACKAGE_NAME, PackageManager.GET_SIGNATURES);
-
-			for (Signature signature : info.signatures)
-			{
-				MessageDigest md = MessageDigest.getInstance("SHA");
-				md.update(signature.toByteArray());
-				Log.d(TAG, "KeyHash: " + Base64.encodeToString(md.digest(), Base64.DEFAULT));
-			}
-		}
-		catch (NameNotFoundException e)
-		{
-			e.printStackTrace();
-		}
-		catch (NoSuchAlgorithmException e)
-		{
-			e.printStackTrace();
-		}
-	}
-
 	private void showLoginButton(boolean show)
 	{
 		if (show)
@@ -402,13 +432,6 @@ public class MainActivity extends Activity implements LocationListener
 		}
 	}
 
-	public Location getCurrentLocation()
-	{
-		if (currentLocation == null) currentLocation = locationClient.getLastLocation();
-		return currentLocation;
-	}
-
 	private static final String	TAG				= "Log : MainActivity";
-
 	private static final String	PACKAGE_NAME	= "ch.hearc.corporations";
 }

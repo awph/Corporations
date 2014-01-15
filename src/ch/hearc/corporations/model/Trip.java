@@ -23,7 +23,7 @@ import android.location.Location;
 import android.util.Log;
 import ch.hearc.corporations.controller.DataLoader;
 import ch.hearc.corporations.controller.DataLoaderAdapter;
-import ch.hearc.corporations.controller.DataLoaderUtil;
+import ch.hearc.corporations.controller.Status;
 
 /**
  * @author Alexandre
@@ -191,9 +191,9 @@ public class Trip implements Serializable
 				DataLoader.getInstance().uploadTrip(Trip.this, new DataLoaderAdapter() {
 
 					@Override
-					public void tripUploaded(int status)
+					public void tripUploaded(Status status)
 					{
-						if (status == DataLoaderUtil.ResultKeys.StatusKey.OK) Trip.this.sent = true;
+						if (status == Status.OK) Trip.this.sent = true;
 					}
 				});
 				while (!Trip.this.sent)

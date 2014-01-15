@@ -22,7 +22,7 @@ import ch.hearc.corporations.R;
 import ch.hearc.corporations.controller.AccountController;
 import ch.hearc.corporations.controller.DataLoader;
 import ch.hearc.corporations.controller.DataLoaderAdapter;
-import ch.hearc.corporations.controller.DataLoaderUtil;
+import ch.hearc.corporations.controller.Status;
 import ch.hearc.corporations.view.TerritoryInfoFragment.Callback;
 
 import com.facebook.Request;
@@ -84,9 +84,9 @@ public class Player
 		final boolean isAlly = this.ally;
 		DataLoader.getInstance().updateAlliance(this, new DataLoaderAdapter() {
 			@Override
-			public void allianceUpdated(int status)
+			public void allianceUpdated(Status status)
 			{
-				if (status == DataLoaderUtil.ResultKeys.StatusKey.ALREADY_EXISTS || status == DataLoaderUtil.ResultKeys.StatusKey.DONT_EXISTS)
+				if (status == Status.ALREADY_EXISTS || status == Status.DONT_EXISTS)
 				{
 					int messageId = R.string.alliance_update_error_message;
 					if (isAlly) messageId = R.string.unalliance_update_error_message;

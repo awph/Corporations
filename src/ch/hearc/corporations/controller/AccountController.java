@@ -82,7 +82,7 @@ public class AccountController
 			@Override
 			public void profileFetched(Status status)
 			{
-				profileInfoDisplayer.updateProfileInfo();
+				if (profileInfoDisplayer != null) profileInfoDisplayer.updateProfileInfo();
 				AccountController.this.home = AccountController.this.profile.getHome();
 				AccountController.this.saveHome();
 			}
@@ -98,7 +98,7 @@ public class AccountController
 		SharedPreferences preferences = Corporations.getAppContext().getSharedPreferences(PREFERENCES_FILENAME, Context.MODE_PRIVATE);
 		facebookID = preferences.getString(FACEBOOK_ID_KEY, null);
 	}
-	
+
 	private void restoreHome()
 	{
 		SharedPreferences preferences = Corporations.getAppContext().getSharedPreferences(PREFERENCES_FILENAME, Context.MODE_PRIVATE);
@@ -107,7 +107,7 @@ public class AccountController
 		if (homeLat != null && homeLng != null)
 			home = new LatLng(Double.parseDouble(homeLat), Double.parseDouble(homeLng));
 		else
-			home = null;		
+			home = null;
 	}
 
 	private void saveAccount()

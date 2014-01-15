@@ -19,7 +19,6 @@ import android.location.Location;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
-import android.widget.Toast;
 import ch.hearc.corporations.controller.TripManager;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -102,7 +101,8 @@ public class TripService extends Service implements LocationListener
 	public int onStartCommand(Intent intent, int flags, int startId)
 	{
 		running = true;
-		Toast.makeText(this, "Trip service started", Toast.LENGTH_LONG).show(); //TODO: comments when app is finished
+		// Toast.makeText(this, "Trip service started",
+		// Toast.LENGTH_LONG).show();
 		locationClient.connect();
 		Log.e(TAG, "Received start id " + startId + ": " + intent);
 		return START_STICKY;

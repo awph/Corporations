@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import ch.hearc.corporations.Tools;
 import ch.hearc.corporations.model.Player;
 import ch.hearc.corporations.model.PurchasableTerritory;
 import ch.hearc.corporations.model.Territory;
@@ -19,6 +20,8 @@ public class TerritoriesManager
 
 	private SortedSet<Territory>	territories	= new TreeSet<Territory>();
 	private Boolean					fetchRunning;
+	private float					farthestTerritory;
+	private LatLng					lastFetchingLocation;
 
 	/*------------------------------------------------------------------*\
 	|*							Constructors							*|
@@ -33,28 +36,42 @@ public class TerritoriesManager
 	|*							Public Methods							*|
 	\*------------------------------------------------------------------*/
 
-	public Object[] getTerritoryPolygoneForLocation(final LatLng location, final GoogleMap map)
+	public void getTerritoryPolygoneForLocation(final LatLng location, final GoogleMap map)
 	{
 		if (!fetchRunning)
 		{
-			fetchRunning = true;
-			DataLoader.getInstance().getTerritoriesForLocation(location, 0, new DataLoaderAdapter() { // TODO
+			synchronized (fetchRunning)
+			{
+				fetchRunning = true;
+			}
+			if (lastFetchingLocation != null && farthestTerritory < Tools.distanceBetween(lastFetchingLocation.latitude, lastFetchingLocation.longitude, location.latitude, location.longitude))
+			{
 
-						@Override
-						public void territoriesFetched(List<Territory> territories)
+				synchronized (fetchRunning)
+				{
+					fetchRunning = false;
+				}
+				return;
+			}
+			lastFetchingLocation = location;
+			DataLoader.getInstance().getTerritoriesForLocation(location, 0, new DataLoaderAdapter() {
+
+				@Override
+				public void territoriesFetched(List<Territory> territories, Status status)
+				{
+					if (status == Status.OK)
+					{
+						TerritoriesManager.this.territories.addAll(territories);
+						TerritoriesManager.this.setVisibleTerritories(location, map);
+						for (Territory territory : territories)
 						{
-							TerritoriesManager.this.territories.addAll(territories);
-							TerritoriesManager.this.setVisibleTerritories(location, map);
-							// fetchRunning = false;
+							Math.max(farthestTerritory, Tools.distanceBetween(location.latitude, location.longitude, territory.getLatitude(), territory.getLongitude()));
 						}
-					});
+						fetchRunning = false;
+					}
+				}
+			});
 		}
-
-		// fillSetForLocation(location);
-		// SortedSet<Territory> territories = new TreeSet<Territory>();
-		// territories.addAll(this.territories);
-		// this.territories = territories;
-		return this.territories.toArray();
 	}
 
 	public Territory getTerritoryForLocation(LatLng location, GoogleMap map)

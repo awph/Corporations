@@ -17,9 +17,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.location.Location;
-import android.util.Log;
-
-import com.google.android.gms.maps.model.LatLng;
 
 /**
  * @author Alexandre
@@ -48,12 +45,10 @@ public class Tools
 		alertDialog.show();
 	}
 
-	public static float distanceBetween(LatLng firstLocation, LatLng secondLocation)
+	public static float distanceBetween(double latitude1, double longitude1, double latitude2, double longitude2)
 	{
 		float[] results = new float[3];
-		if(firstLocation == null) Log.e("Tools", "1");
-		if(secondLocation == null) Log.e("Tools", "2");
-		Location.distanceBetween(firstLocation.latitude, firstLocation.longitude, secondLocation.latitude, secondLocation.longitude, results);
+		Location.distanceBetween(latitude1, longitude1, latitude2, longitude2, results);
 		return results[0];
 	}
 }

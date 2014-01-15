@@ -5,6 +5,7 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.location.Location;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -69,36 +70,26 @@ public class TerritoriesFragment extends Fragment implements ProfileInfoDisplaye
 		actived = false;
 		territories = new TerritoriesManager();
 
-		map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
-		map.setMyLocationEnabled(true);
-		map.getUiSettings().setZoomControlsEnabled(false);
-		map.getUiSettings().setMyLocationButtonEnabled(false);
 		moneyTextView = (TextView) view.findViewById(R.id.money_text_view);
 		revenuTextView = (TextView) view.findViewById(R.id.revenue_text_view);
 		experiencePointsTextView = (TextView) view.findViewById(R.id.experience_text_view);
+		map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
 
-		AccountController.getInstance().setProfileInfoDisplayer(this);
-
+		map.setMyLocationEnabled(true);
+		map.getUiSettings().setZoomControlsEnabled(false);
+		map.getUiSettings().setMyLocationButtonEnabled(false);
 		map.setOnCameraChangeListener(new OnCameraChangeListener() {
 
 			@Override
 			public void onCameraChange(CameraPosition position)
 			{
 				currentLocation = position.target;
-				refreshPolygoneForLocation(position.target);
-			}
-
-			private void refreshPolygoneForLocation(LatLng target)
-			{
 				if (TerritoriesFragment.this.actived)
 				{
-					TerritoriesFragment.this.territories.getTerritoryPolygoneForLocation(target, map);
+					TerritoriesFragment.this.territories.getTerritoryPolygoneForLocation(position.target, map);
 				}
 			}
 		});
-
-		if(AccountController.getInstance().getHome() != null)
-			map.animateCamera(CameraUpdateFactory.newLatLngZoom(AccountController.getInstance().getHome(), 13));
 		addTerritoryInfoListener(map, (TerritoryInfoFragment) getFragmentManager().findFragmentById(R.id.territory));
 
 		profilePictureView = (ProfilePictureView) view.findViewById(R.id.profile_picture_view);
@@ -132,9 +123,17 @@ public class TerritoriesFragment extends Fragment implements ProfileInfoDisplaye
 	public void setActived(boolean actived)
 	{
 		this.actived = actived;
-		updateProfileInfo();
-		profilePictureView.setPresetSize(ProfilePictureView.NORMAL);
-		profilePictureView.setProfileId(AccountController.getInstance().getFacebookID());
+		if (actived)
+		{
+			AccountController.getInstance().setProfileInfoDisplayer(this);
+			updateProfileInfo();
+			profilePictureView.setPresetSize(ProfilePictureView.NORMAL);
+			profilePictureView.setProfileId(AccountController.getInstance().getFacebookID());
+		}
+		else
+		{
+			AccountController.getInstance().setProfileInfoDisplayer(null);
+		}
 	}
 
 	public void updateProfileInfo()
@@ -151,6 +150,17 @@ public class TerritoriesFragment extends Fragment implements ProfileInfoDisplaye
 
 			revenuTextView.setText((revenue >= 0 ? "+" : "-") + "$" + revenue);
 			experiencePointsTextView.setText("Exp. " + profile.getExperiencePoints());
+		}
+	}
+
+	public void zoomOnHome()
+	{
+		if (AccountController.getInstance().getHome() != null)
+			map.animateCamera(CameraUpdateFactory.newLatLngZoom(AccountController.getInstance().getHome(), 13));
+		else
+		{
+			Location currentLocation = ((MainActivity) getActivity()).getCurrentLocation();
+			if (currentLocation != null) map.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()), 13));
 		}
 	}
 

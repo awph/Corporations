@@ -21,7 +21,10 @@ import org.json.JSONObject;
 
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
+import ch.hearc.corporations.Corporations;
 import ch.hearc.corporations.CorporationsConfiguration;
+import ch.hearc.corporations.R;
 import ch.hearc.corporations.model.Player;
 import ch.hearc.corporations.model.Profile;
 import ch.hearc.corporations.model.PurchasableTerritory;
@@ -47,11 +50,7 @@ public class DataLoader
 	{
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put(DataLoaderUtil.RequestParameters.Territories.KEY_WHAT, DataLoaderUtil.RequestParameters.Leaderboard.WHAT);
-		parameters.put(DataLoaderUtil.RequestParameters.Leaderboard.KEY_START, Integer.toString(from)); // TODO:
-																										// test
-																										// if
-																										// need
-																										// -1
+		parameters.put(DataLoaderUtil.RequestParameters.Leaderboard.KEY_START, Integer.toString(from));
 		parameters.put(DataLoaderUtil.RequestParameters.Leaderboard.KEY_LIMIT, Integer.toString(to - from));
 		request(parameters, ApiRequestType.leaderboard, dataLoaderListener);
 	}
@@ -193,11 +192,10 @@ public class DataLoader
 
 	protected void requestFinished(JSONObject result, ApiRequestType apiRequestType, DataLoaderListener listener)
 	{
-		String status = null;
+		Status status = null;
 		try
 		{
-			status = result.getString(DataLoaderUtil.ResultKeys.STATUS);
-			Log.e("status", result.getString(DataLoaderUtil.ResultKeys.STATUS));
+			status = Status.valueOf(result.getString(DataLoaderUtil.ResultKeys.STATUS));
 		}
 		catch (JSONException e)
 		{
@@ -205,7 +203,7 @@ public class DataLoader
 		}
 		catch (NullPointerException e)
 		{
-			// TODO: No internet here !!
+			Toast.makeText(Corporations.getAppContext(), Corporations.getAppContext().getString(R.string.no_internet), Toast.LENGTH_LONG).show();
 			return;
 		}
 		switch (apiRequestType)
@@ -225,7 +223,7 @@ public class DataLoader
 						Player player = PlayersManager.getInstance().createOrUpdatePlayerForUserID(userId, rank, numberTerritories, ally);
 						players.add(player);
 					}
-					listener.leaderboardFetched(players);
+					listener.leaderboardFetched(players, status);
 				}
 				catch (JSONException e)
 				{
@@ -263,7 +261,7 @@ public class DataLoader
 						}
 						territories.add(territory);
 					}
-					listener.territoriesFetched(territories);
+					listener.territoriesFetched(territories, status);
 				}
 				catch (JSONException e)
 				{
@@ -287,7 +285,7 @@ public class DataLoader
 						Trip trip = new Trip(distance, secondes, money, experience, date);
 						trips.add(trip);
 					}
-					listener.tripsFetched(trips);
+					listener.tripsFetched(trips, status);
 				}
 				catch (JSONException e)
 				{
@@ -308,7 +306,7 @@ public class DataLoader
 					long salePrice = Long.valueOf(jsonObject.getString(DataLoaderUtil.ResultKeys.PurchaseTerritory.SALE_PRICE));
 					long purchasingPrice = Long.valueOf(jsonObject.getString(DataLoaderUtil.ResultKeys.PurchaseTerritory.PURCHASE_PRICE));
 					PurchasableTerritory territory = new PurchasableTerritory(latitude, longitude, player, timeOwned, salePrice, purchasingPrice, revenue);
-					listener.territoryPurchased(territory);
+					listener.territoryPurchased(territory, status);
 				}
 				catch (JSONException e)
 				{
@@ -327,7 +325,7 @@ public class DataLoader
 					double longitude = Double.valueOf(jsonObject.getString(DataLoaderUtil.ResultKeys.CaptureTerritory.LONGITUDE));
 					int revenue = Integer.valueOf(jsonObject.getString(DataLoaderUtil.ResultKeys.CaptureTerritory.REVENUE));
 					SpecialTerritory territory = new SpecialTerritory(latitude, longitude, player, timeOwned, revenue);
-					listener.territoryCaptured(territory);
+					listener.territoryCaptured(territory, status);
 				}
 				catch (JSONException e)
 				{
@@ -336,27 +334,20 @@ public class DataLoader
 				break;
 			case connection:
 				updateProfile(result);
-				listener.connectionFinished(null);
+				listener.connectionFinished(status);
 				break;
 			case updateAlliance:
-				int int_status = -1; // TODO: better
-				if (status.equals("OK"))
-					int_status = DataLoaderUtil.ResultKeys.StatusKey.OK;
-				else if (status.equals("ALREADY_EXISTS"))
-					int_status = DataLoaderUtil.ResultKeys.StatusKey.ALREADY_EXISTS;
-				else if (status.equals("DONT_EXISTS")) int_status = DataLoaderUtil.ResultKeys.StatusKey.DONT_EXISTS;
-
-				listener.allianceUpdated(int_status);
+				listener.allianceUpdated(status);
 				break;
 			case updateProfile:
 				updateProfile(result);
-				listener.profileUpdated(null); // TODO
+				listener.profileUpdated(status);
 				break;
 			case uploadTrip:
-				listener.tripUploaded(0); // TODO
+				listener.tripUploaded(status);
 				break;
 			case changePrice:
-				listener.priceChanged(null); // TODO
+				listener.priceChanged(status);
 				break;
 
 			default:

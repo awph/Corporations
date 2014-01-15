@@ -34,6 +34,7 @@ import ch.hearc.corporations.Tools;
 import ch.hearc.corporations.controller.AccountController;
 import ch.hearc.corporations.controller.DataLoader;
 import ch.hearc.corporations.controller.DataLoaderAdapter;
+import ch.hearc.corporations.controller.Status;
 import ch.hearc.corporations.model.Player;
 import ch.hearc.corporations.model.Profile;
 import ch.hearc.corporations.model.Skill;
@@ -45,7 +46,7 @@ import ch.hearc.corporations.model.SkillType;
  */
 public class ProfileActivity extends Activity
 {
-	
+
 	/*------------------------------------------------------------------*\
 	|*							Private Attributes						*|
 	\*------------------------------------------------------------------*/
@@ -86,10 +87,13 @@ public class ProfileActivity extends Activity
 				DataLoader.getInstance().getLeaderboard(0, 1000, new DataLoaderAdapter() {
 
 					@Override
-					public void leaderboardFetched(List<Player> players)
+					public void leaderboardFetched(List<Player> players, Status status)
 					{
-						Intent intent = new Intent(ProfileActivity.this, LeaderboardActivity.class);
-						startActivity(intent);
+						if (status == Status.OK)
+						{
+							Intent intent = new Intent(ProfileActivity.this, LeaderboardActivity.class);
+							startActivity(intent);
+						}
 					}
 
 				});
@@ -120,7 +124,7 @@ public class ProfileActivity extends Activity
 		stringBuilder.append("\nTerrotories owned: " + profile.getNumberTerritories());
 		stringBuilder.append("\nExperience points: " + profile.getExperiencePoints());
 		stringBuilder.append("\nRank: " + profile.getRank());
-		profileInfo.setText(stringBuilder);		
+		profileInfo.setText(stringBuilder);
 	}
 
 	private void addFragmentsToView()

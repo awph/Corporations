@@ -17,6 +17,7 @@ import android.location.Location;
 import ch.hearc.corporations.controller.AccountController;
 import ch.hearc.corporations.controller.DataLoader;
 import ch.hearc.corporations.controller.DataLoaderAdapter;
+import ch.hearc.corporations.controller.Status;
 import ch.hearc.corporations.view.TerritoryInfoFragment.Callback;
 
 /**
@@ -46,15 +47,18 @@ public class SpecialTerritory extends Territory
 			DataLoader.getInstance().captureTerritory(this, new DataLoaderAdapter() {
 
 				@Override
-				public void territoryCaptured(SpecialTerritory territory)
+				public void territoryCaptured(SpecialTerritory territory, Status status)
 				{
-					SpecialTerritory.this.revenue = territory.revenue;
-					SpecialTerritory.this.timeOwned = territory.timeOwned;
-					SpecialTerritory.this.owner = territory.owner;
-					SpecialTerritory.this.owner.addTerritory(SpecialTerritory.this);
-					SpecialTerritory.this.updateType();
-					AccountController.getInstance().updateProfile();
-					callback.update();
+					if (status == Status.OK)
+					{
+						SpecialTerritory.this.revenue = territory.revenue;
+						SpecialTerritory.this.timeOwned = territory.timeOwned;
+						SpecialTerritory.this.owner = territory.owner;
+						SpecialTerritory.this.owner.addTerritory(SpecialTerritory.this);
+						SpecialTerritory.this.updateType();
+						AccountController.getInstance().updateProfile();
+						callback.update();
+					}
 				}
 			});
 		}

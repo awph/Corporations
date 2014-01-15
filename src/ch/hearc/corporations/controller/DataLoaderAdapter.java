@@ -28,7 +28,7 @@ import ch.hearc.corporations.model.Trip;
 public abstract class DataLoaderAdapter implements DataLoaderListener
 {
 
-	public void leaderboardFetched(List<Player> players)
+	public void leaderboardFetched(List<Player> players, Status status)
 	{
 	}
 
@@ -36,19 +36,19 @@ public abstract class DataLoaderAdapter implements DataLoaderListener
 	{
 	}
 
-	public void tripsFetched(List<Trip> trips)
+	public void tripsFetched(List<Trip> trips, Status status)
 	{
 	}
 
-	public void territoriesFetched(List<Territory> territories)
+	public void territoriesFetched(List<Territory> territories, Status status)
 	{
 	}
 
-	public void territoryPurchased(PurchasableTerritory territory)
+	public void territoryPurchased(PurchasableTerritory territory, Status status)
 	{
 	}
 
-	public void territoryCaptured(SpecialTerritory territory)
+	public void territoryCaptured(SpecialTerritory territory, Status status)
 	{
 	}
 
@@ -56,7 +56,7 @@ public abstract class DataLoaderAdapter implements DataLoaderListener
 	{
 	}
 
-	public void allianceUpdated(int status)
+	public void allianceUpdated(Status status)
 	{
 	}
 
@@ -64,7 +64,7 @@ public abstract class DataLoaderAdapter implements DataLoaderListener
 	{
 	}
 
-	public void tripUploaded(int status)
+	public void tripUploaded(Status status)
 	{
 	}
 

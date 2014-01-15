@@ -56,7 +56,8 @@
     <string name="change_sale_price">Change sale price</string>
     <string name="capture">Capture</string>
     <string name="buy">Buy</string>
-    
+    <string name="update_google_play_service">Please update Google Play Services</string>
+    <string name="no_internet">Please verify your internet connection and try again</string>
     <string name="trip_detail_activity_distance">Distance: %.3fkm</string>
     <string name="trip_detail_activity_experience_points">Earned experience: %s</string>
     <string name="trip_detail_activity_money_earn">Earned money: %s</string>

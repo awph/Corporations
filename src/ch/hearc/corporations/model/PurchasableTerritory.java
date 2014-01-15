@@ -13,8 +13,6 @@
 
 package ch.hearc.corporations.model;
 
-import com.google.android.gms.maps.model.LatLng;
-
 import ch.hearc.corporations.Tools;
 import ch.hearc.corporations.controller.AccountController;
 import ch.hearc.corporations.controller.DataLoader;
@@ -70,17 +68,20 @@ public class PurchasableTerritory extends Territory
 			DataLoader.getInstance().purchaseTerritory(this, new DataLoaderAdapter() {
 
 				@Override
-				public void territoryPurchased(PurchasableTerritory territory)
+				public void territoryPurchased(PurchasableTerritory territory, Status status)
 				{
-					PurchasableTerritory.this.salePrice = territory.salePrice;
-					PurchasableTerritory.this.purchasingPrice = territory.purchasingPrice;
-					PurchasableTerritory.this.revenue = territory.revenue;
-					PurchasableTerritory.this.timeOwned = territory.timeOwned;
-					PurchasableTerritory.this.owner = territory.owner;
-					PurchasableTerritory.this.owner.addTerritory(PurchasableTerritory.this);
-					PurchasableTerritory.this.updateType();
-					AccountController.getInstance().updateProfile();
-					callback.update();
+					if (status == Status.OK)
+					{
+						PurchasableTerritory.this.salePrice = territory.salePrice;
+						PurchasableTerritory.this.purchasingPrice = territory.purchasingPrice;
+						PurchasableTerritory.this.revenue = territory.revenue;
+						PurchasableTerritory.this.timeOwned = territory.timeOwned;
+						PurchasableTerritory.this.owner = territory.owner;
+						PurchasableTerritory.this.owner.addTerritory(PurchasableTerritory.this);
+						PurchasableTerritory.this.updateType();
+						AccountController.getInstance().updateProfile();
+						callback.update();
+					}
 				}
 			});
 		}
@@ -106,7 +107,7 @@ public class PurchasableTerritory extends Territory
 
 	private int computePrice()
 	{
-		float distance = Tools.distanceBetween(AccountController.getInstance().getHome(), new LatLng(getLatitude(), getLongitude()));
+		float distance = Tools.distanceBetween(AccountController.getInstance().getHome().latitude, AccountController.getInstance().getHome().longitude, getLatitude(), getLongitude());
 		int price = (int) (10 * distance);
 		price -= price * (AccountController.getInstance().getProfile().getSkill(SkillType.purchasePrice).getValue() / 100);
 		return price;

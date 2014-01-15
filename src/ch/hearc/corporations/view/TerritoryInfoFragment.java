@@ -173,7 +173,10 @@ public class TerritoryInfoFragment extends Fragment
 			if (territory instanceof PurchasableTerritory)
 			{
 				infos.append("\n" + String.format(getResources().getString(R.string.sale_price), Tools.formatMoney(((PurchasableTerritory) territory).getSalePrice())));
-				setBuyButton();
+				if(!owner.isAlly())
+					setBuyButton();
+				else
+					hideButton(firstButton);
 			}
 			else
 			{

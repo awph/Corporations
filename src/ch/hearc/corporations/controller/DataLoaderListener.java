@@ -10,15 +10,15 @@ import ch.hearc.corporations.model.Trip;
 
 public interface DataLoaderListener
 {
-	void leaderboardFetched(List<Player> players);
+	void leaderboardFetched(List<Player> players, Status status);
 	void profileFetched(Status status);
-	void territoriesFetched(List<Territory> territories);
-	void tripsFetched(List<Trip> trips);
-	void territoryPurchased(PurchasableTerritory territory);
-	void territoryCaptured(SpecialTerritory territory);
+	void territoriesFetched(List<Territory> territories, Status status);
+	void tripsFetched(List<Trip> trips, Status status);
+	void territoryPurchased(PurchasableTerritory territory, Status status);
+	void territoryCaptured(SpecialTerritory territory, Status status);
 	void connectionFinished(Status status);
-	void allianceUpdated(int status);
+	void allianceUpdated(Status status);
 	void profileUpdated(Status status);
-	void tripUploaded(int status);
+	void tripUploaded(Status status);
 	void priceChanged(Status status);
 }
