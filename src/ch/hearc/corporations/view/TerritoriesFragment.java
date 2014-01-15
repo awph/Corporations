@@ -56,12 +56,6 @@ public class TerritoriesFragment extends Fragment implements ProfileInfoDisplaye
 	private TextView			revenuTextView;
 	private TextView			experiencePointsTextView;
 
-	/*------------------------------*\
-	|*			  Static			*|
-	\*------------------------------*/
-
-	private static final LatLng	HOUSE				= new LatLng(47.039340, 6.799249);
-
 	/*------------------------------------------------------------------*\
 	|*							Constructors							*|
 	\*------------------------------------------------------------------*/
@@ -99,17 +93,12 @@ public class TerritoriesFragment extends Fragment implements ProfileInfoDisplaye
 				if (TerritoriesFragment.this.actived)
 				{
 					TerritoriesFragment.this.territories.getTerritoryPolygoneForLocation(target, map);
-					// Object[] territories =
-					// TerritoriesFragment.this.territories.getTerritoryPolygoneForLocation(target,
-					// map);
-					// map.clear();
-					// for (int i = 0; i < 70 && i < territories.length; ++i)
-					// map.addPolygon(((Territory)
-					// territories[i]).getPolygon());
 				}
 			}
 		});
-		map.animateCamera(CameraUpdateFactory.newLatLngZoom(HOUSE, 13));
+
+		if(AccountController.getInstance().getHome() != null)
+			map.animateCamera(CameraUpdateFactory.newLatLngZoom(AccountController.getInstance().getHome(), 13));
 		addTerritoryInfoListener(map, (TerritoryInfoFragment) getFragmentManager().findFragmentById(R.id.territory));
 
 		profilePictureView = (ProfilePictureView) view.findViewById(R.id.profile_picture_view);
@@ -217,7 +206,7 @@ public class TerritoriesFragment extends Fragment implements ProfileInfoDisplaye
 				}
 				else
 				{
-					territory.setHighlighted(false);// TODO
+					territory.setHighlighted(false);
 					ft.hide(fragment);
 				}
 				ft.commit();

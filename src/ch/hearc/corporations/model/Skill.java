@@ -13,8 +13,6 @@
 
 package ch.hearc.corporations.model;
 
-import android.util.Log;
-
 /**
  * @author Alexandre
  * 
@@ -73,8 +71,12 @@ public class Skill
 
 	public String getDescription()
 	{
-		Log.e("Skill", type.getDescription());
 		return String.format(type.getDescription(), ((int) type.getExplicitValueSkills() * level));
+	}
+
+	public float getValue()
+	{
+		return type.getExplicitValueSkills() * level;
 	}
 
 	public int getLevel()

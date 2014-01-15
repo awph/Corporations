@@ -86,60 +86,7 @@ public abstract class Territory implements Comparable<Territory>
 			Log.d("Log : Delta Lat", Double.toString(deltaLat));
 		}
 
-		boolean simple = true;
-		boolean isSpecial = this instanceof SpecialTerritory;
-		borderWidth = isSpecial ? BORDER_WIDTH_SPECIAL : BORDER_WIDTH;
-		if (simple)
-		{
-			double topLatitude = getTopLatitudeTerritoryForLatitude2(latitude);
-			double leftLongitude = getLeftLongitudeTerritoryForLatitudeAndLongitude2(longitude);
-
-			latitudes[TOP_LEFT] = topLatitude;
-			longitudes[TOP_LEFT] = leftLongitude;
-
-			latitudes[TOP_RIGHT] = topLatitude;
-			longitudes[TOP_RIGHT] = leftLongitude + TERRITORY_SIZE_IN_LAT_LON;
-
-			latitudes[BOTTOM_RIGHT] = topLatitude - TERRITORY_SIZE_IN_LAT_LON;
-			longitudes[BOTTOM_RIGHT] = leftLongitude + TERRITORY_SIZE_IN_LAT_LON;
-
-			latitudes[BOTTOM_LEFT] = topLatitude - TERRITORY_SIZE_IN_LAT_LON;
-			longitudes[BOTTOM_LEFT] = leftLongitude;
-
-			latitudes[CENTER] = topLatitude - TERRITORY_SIZE_IN_LAT_LON / 2;
-			longitudes[CENTER] = leftLongitude + TERRITORY_SIZE_IN_LAT_LON / 2;
-
-			polygonOptions = new PolygonOptions()
-					.add(new LatLng(latitudes[TOP_LEFT], longitudes[TOP_LEFT]), new LatLng(latitudes[TOP_RIGHT], longitudes[TOP_RIGHT]), new LatLng(latitudes[BOTTOM_RIGHT], longitudes[BOTTOM_RIGHT]),
-							new LatLng(latitudes[BOTTOM_LEFT], longitudes[BOTTOM_LEFT])).strokeColor(BORDER_COLOR).fillColor(type.getColor(isSpecial)).strokeWidth(borderWidth);
-		}
-		else
-		{
-
-			double topLatitude = getTopLatitudeTerritoryForLatitude(latitude);
-			double[] leftLongitudeAndDelta = getLeftLongitudeTerritoryForLatitudeAndLongitude(topLatitude - deltaLat * TERRITORY_SIZE_IN_METER / 2, longitude);
-			double leftLongitude = leftLongitudeAndDelta[0];
-			double deltaLon = leftLongitudeAndDelta[1];
-
-			latitudes[TOP_LEFT] = topLatitude;
-			longitudes[TOP_LEFT] = topLatitude;
-
-			latitudes[TOP_RIGHT] = topLatitude;
-			longitudes[TOP_RIGHT] = leftLongitude + deltaLon * TERRITORY_SIZE_IN_METER;
-
-			latitudes[BOTTOM_RIGHT] = topLatitude - deltaLat * TERRITORY_SIZE_IN_METER;
-			longitudes[BOTTOM_RIGHT] = leftLongitude + deltaLon * TERRITORY_SIZE_IN_METER;
-
-			latitudes[BOTTOM_LEFT] = topLatitude - deltaLat * TERRITORY_SIZE_IN_METER;
-			longitudes[BOTTOM_LEFT] = leftLongitude;
-
-			latitudes[CENTER] = topLatitude - deltaLat * TERRITORY_SIZE_IN_METER / 2;
-			longitudes[CENTER] = leftLongitude + deltaLon * TERRITORY_SIZE_IN_METER / 2;
-
-			polygonOptions = new PolygonOptions()
-					.add(new LatLng(latitudes[TOP_LEFT], longitudes[TOP_LEFT]), new LatLng(latitudes[TOP_RIGHT], longitudes[TOP_RIGHT]), new LatLng(latitudes[BOTTOM_RIGHT], longitudes[BOTTOM_RIGHT]),
-							new LatLng(latitudes[BOTTOM_LEFT], longitudes[BOTTOM_LEFT])).strokeColor(BORDER_COLOR).fillColor(type.getColor(isSpecial)).strokeWidth(borderWidth);
-		}
+		computeLocation(latitude, longitude);
 	}
 
 	/*------------------------------------------------------------------*\
@@ -162,37 +109,45 @@ public abstract class Territory implements Comparable<Territory>
 	{
 		int WATER1 = 0x00ADCEFF;
 		int WATER2 = 0x00ACCCFF;
+		int OFFSET = 10;
+		int DELTA = 8;
 		Point point = projection.toScreenLocation(new LatLng(latitudes[TOP_LEFT], longitudes[TOP_LEFT]));
 		int width = bitmap.getWidth();
 		int height = bitmap.getHeight();
-		int x = point.x < 0 ? 0 : point.x < width ? point.x : width - 1;
-		int y = point.y < 0 ? 0 : point.y < height ? point.y : height - 1;
+		int x = point.x < OFFSET ? OFFSET : point.x < width ? point.x : width - OFFSET;
+		int y = point.y < OFFSET ? OFFSET : point.y < height ? point.y : height - OFFSET;
 
-		// Log.e("isInWater", String.format("%X", bitmap.getPixel(x, y)));
-
-		if (!((bitmap.getPixel(x, y) & 0x00FFFFFF) == WATER1 || (bitmap.getPixel(x + 1, y) & 0x00FFFFFF) == WATER1 || (bitmap.getPixel(x, y + 1) & 0x00FFFFFF) == WATER1
-				|| (bitmap.getPixel(x + 1, y + 1) & 0x00FFFFFF) == WATER1 || (bitmap.getPixel(x, y) & 0x00FFFFFF) == WATER2 || (bitmap.getPixel(x + 1, y) & 0x00FFFFFF) == WATER2
-				|| (bitmap.getPixel(x, y + 1) & 0x00FFFFFF) == WATER2 || (bitmap.getPixel(x + 1, y + 1) & 0x00FFFFFF) == WATER2)) return false;
+		if (!((bitmap.getPixel(x, y) & 0x00FFFFFF) == WATER1 || (bitmap.getPixel(x + DELTA, y) & 0x00FFFFFF) == WATER1 || (bitmap.getPixel(x, y + DELTA) & 0x00FFFFFF) == WATER1
+				|| (bitmap.getPixel(x + DELTA, y + DELTA) & 0x00FFFFFF) == WATER1 || (bitmap.getPixel(x, y) & 0x00FFFFFF) == WATER2 || (bitmap.getPixel(x + DELTA, y) & 0x00FFFFFF) == WATER2
+				|| (bitmap.getPixel(x, y + DELTA) & 0x00FFFFFF) == WATER2 || (bitmap.getPixel(x + DELTA, y + DELTA) & 0x00FFFFFF) == WATER2)) return false;
 		point = projection.toScreenLocation(new LatLng(latitudes[TOP_RIGHT], longitudes[TOP_RIGHT]));
-		x = point.x < 0 ? 0 : point.x < width ? point.x : width - 1;
-		y = point.y < 0 ? 0 : point.y < height ? point.y : height - 1;
-		if (!((bitmap.getPixel(x, y) & 0x00FFFFFF) == WATER1 || (bitmap.getPixel(x - 1, y) & 0x00FFFFFF) == WATER1 || (bitmap.getPixel(x, y + 1) & 0x00FFFFFF) == WATER1
-				|| (bitmap.getPixel(x - 1, y + 1) & 0x00FFFFFF) == WATER1 || (bitmap.getPixel(x, y) & 0x00FFFFFF) == WATER2 || (bitmap.getPixel(x - 1, y) & 0x00FFFFFF) == WATER2
-				|| (bitmap.getPixel(x, y + 1) & 0x00FFFFFF) == WATER2 || (bitmap.getPixel(x - 1, y + 1) & 0x00FFFFFF) == WATER2)) return false;
+		x = point.x < OFFSET ? OFFSET : point.x < width ? point.x : width - OFFSET;
+		y = point.y < OFFSET ? OFFSET : point.y < height ? point.y : height - OFFSET;
+		if (!((bitmap.getPixel(x, y) & 0x00FFFFFF) == WATER1 || (bitmap.getPixel(x - DELTA, y) & 0x00FFFFFF) == WATER1 || (bitmap.getPixel(x, y + DELTA) & 0x00FFFFFF) == WATER1
+				|| (bitmap.getPixel(x - DELTA, y + DELTA) & 0x00FFFFFF) == WATER1 || (bitmap.getPixel(x, y) & 0x00FFFFFF) == WATER2 || (bitmap.getPixel(x - DELTA, y) & 0x00FFFFFF) == WATER2
+				|| (bitmap.getPixel(x, y + DELTA) & 0x00FFFFFF) == WATER2 || (bitmap.getPixel(x - DELTA, y + DELTA) & 0x00FFFFFF) == WATER2)) return false;
 		point = projection.toScreenLocation(new LatLng(latitudes[BOTTOM_RIGHT], longitudes[BOTTOM_RIGHT]));
-		x = point.x < 0 ? 0 : point.x < width ? point.x : width - 1;
-		y = point.y < 0 ? 0 : point.y < height ? point.y : height - 1;
-		if (!((bitmap.getPixel(x, y) & 0x00FFFFFF) == WATER1 || (bitmap.getPixel(x - 1, y) & 0x00FFFFFF) == WATER1 || (bitmap.getPixel(x, y - 1) & 0x00FFFFFF) == WATER1
-				|| (bitmap.getPixel(x - 1, y - 1) & 0x00FFFFFF) == WATER1 || (bitmap.getPixel(x, y) & 0x00FFFFFF) == WATER2 || (bitmap.getPixel(x - 1, y) & 0x00FFFFFF) == WATER2
-				|| (bitmap.getPixel(x, y - 1) & 0x00FFFFFF) == WATER2 || (bitmap.getPixel(x - 1, y - 1) & 0x00FFFFFF) == WATER2)) return false;
+		x = point.x < OFFSET ? OFFSET : point.x < width ? point.x : width - OFFSET;
+		y = point.y < OFFSET ? OFFSET : point.y < height ? point.y : height - OFFSET;
+		if (!((bitmap.getPixel(x, y) & 0x00FFFFFF) == WATER1 || (bitmap.getPixel(x - DELTA, y) & 0x00FFFFFF) == WATER1 || (bitmap.getPixel(x, y - DELTA) & 0x00FFFFFF) == WATER1
+				|| (bitmap.getPixel(x - DELTA, y - DELTA) & 0x00FFFFFF) == WATER1 || (bitmap.getPixel(x, y) & 0x00FFFFFF) == WATER2 || (bitmap.getPixel(x - DELTA, y) & 0x00FFFFFF) == WATER2
+				|| (bitmap.getPixel(x, y - DELTA) & 0x00FFFFFF) == WATER2 || (bitmap.getPixel(x - DELTA, y - DELTA) & 0x00FFFFFF) == WATER2)) return false;
 		point = projection.toScreenLocation(new LatLng(latitudes[BOTTOM_LEFT], longitudes[BOTTOM_LEFT]));
-		x = point.x < 0 ? 0 : point.x < width ? point.x : width - 1;
-		y = point.y < 0 ? 0 : point.y < height ? point.y : height - 1;
-		if (!((bitmap.getPixel(x, y) & 0x00FFFFFF) == WATER1 || (bitmap.getPixel(x + 1, y) & 0x00FFFFFF) == WATER1 || (bitmap.getPixel(x, y - 1) & 0x00FFFFFF) == WATER1
-				|| (bitmap.getPixel(x + 1, y - 1) & 0x00FFFFFF) == WATER1 || (bitmap.getPixel(x, y) & 0x00FFFFFF) == WATER2 || (bitmap.getPixel(x + 1, y) & 0x00FFFFFF) == WATER2
-				|| (bitmap.getPixel(x, y - 1) & 0x00FFFFFF) == WATER2 || (bitmap.getPixel(x + 1, y - 1) & 0x00FFFFFF) == WATER2)) return false;
+		x = point.x < OFFSET ? OFFSET : point.x < width ? point.x : width - OFFSET;
+		y = point.y < OFFSET ? OFFSET : point.y < height ? point.y : height - OFFSET;
+		if (!((bitmap.getPixel(x, y) & 0x00FFFFFF) == WATER1 || (bitmap.getPixel(x + DELTA, y) & 0x00FFFFFF) == WATER1 || (bitmap.getPixel(x, y - DELTA) & 0x00FFFFFF) == WATER1
+				|| (bitmap.getPixel(x + DELTA, y - DELTA) & 0x00FFFFFF) == WATER1 || (bitmap.getPixel(x, y) & 0x00FFFFFF) == WATER2 || (bitmap.getPixel(x + DELTA, y) & 0x00FFFFFF) == WATER2
+				|| (bitmap.getPixel(x, y - DELTA) & 0x00FFFFFF) == WATER2 || (bitmap.getPixel(x + DELTA, y - DELTA) & 0x00FFFFFF) == WATER2)) return false;
 
 		return true;
+	}
+
+	public boolean isTooFar()
+	{
+		float limit = AccountController.getInstance().getProfile().getSkill(SkillType.purchaseDistance).getValue();
+		float distance = (float) (Math.sqrt(Math.pow(Math.abs(AccountController.getInstance().getHome().latitude - getLatitude()), 2)
+				+ Math.pow(Math.abs(AccountController.getInstance().getHome().longitude - getLongitude()), 2)) / TERRITORY_SIZE_IN_LAT_LON);
+		return limit < distance;
 	}
 
 	public boolean isInBounds(double latitude, double longitude)
@@ -245,6 +200,75 @@ public abstract class Territory implements Comparable<Territory>
 	|*							Private Methods							*|
 	\*------------------------------------------------------------------*/
 
+	/**
+	 * @param latitude
+	 * @param longitude
+	 */
+	private void computeLocation(double latitude, double longitude)
+	{
+		boolean simple = true;
+		boolean isSpecial = this instanceof SpecialTerritory;
+		borderWidth = isSpecial ? BORDER_WIDTH_SPECIAL : BORDER_WIDTH;
+		if (simple)
+		{
+			double topLatitude = getTopLatitudeTerritoryForLatitude2(latitude);
+			double leftLongitude = getLeftLongitudeTerritoryForLatitudeAndLongitude2(longitude);
+
+			latitudes[TOP_LEFT] = topLatitude;
+			longitudes[TOP_LEFT] = leftLongitude;
+
+			latitudes[TOP_RIGHT] = topLatitude;
+			longitudes[TOP_RIGHT] = leftLongitude + TERRITORY_SIZE_IN_LAT_LON;
+
+			latitudes[BOTTOM_RIGHT] = topLatitude - TERRITORY_SIZE_IN_LAT_LON;
+			longitudes[BOTTOM_RIGHT] = leftLongitude + TERRITORY_SIZE_IN_LAT_LON;
+
+			latitudes[BOTTOM_LEFT] = topLatitude - TERRITORY_SIZE_IN_LAT_LON;
+			longitudes[BOTTOM_LEFT] = leftLongitude;
+
+			latitudes[CENTER] = topLatitude - TERRITORY_SIZE_IN_LAT_LON / 2;
+			longitudes[CENTER] = leftLongitude + TERRITORY_SIZE_IN_LAT_LON / 2;
+
+			createPolygonOptions(isSpecial);
+		}
+		else
+		{
+
+			double topLatitude = getTopLatitudeTerritoryForLatitude(latitude);
+			double[] leftLongitudeAndDelta = getLeftLongitudeTerritoryForLatitudeAndLongitude(topLatitude - deltaLat * TERRITORY_SIZE_IN_METER / 2, longitude);
+			double leftLongitude = leftLongitudeAndDelta[0];
+			double deltaLon = leftLongitudeAndDelta[1];
+
+			latitudes[TOP_LEFT] = topLatitude;
+			longitudes[TOP_LEFT] = topLatitude;
+
+			latitudes[TOP_RIGHT] = topLatitude;
+			longitudes[TOP_RIGHT] = leftLongitude + deltaLon * TERRITORY_SIZE_IN_METER;
+
+			latitudes[BOTTOM_RIGHT] = topLatitude - deltaLat * TERRITORY_SIZE_IN_METER;
+			longitudes[BOTTOM_RIGHT] = leftLongitude + deltaLon * TERRITORY_SIZE_IN_METER;
+
+			latitudes[BOTTOM_LEFT] = topLatitude - deltaLat * TERRITORY_SIZE_IN_METER;
+			longitudes[BOTTOM_LEFT] = leftLongitude;
+
+			latitudes[CENTER] = topLatitude - deltaLat * TERRITORY_SIZE_IN_METER / 2;
+			longitudes[CENTER] = leftLongitude + deltaLon * TERRITORY_SIZE_IN_METER / 2;
+
+			createPolygonOptions(isSpecial);
+		}
+	}
+
+	/**
+	 * @param isSpecial
+	 *            true if it's a special territory
+	 */
+	private void createPolygonOptions(boolean isSpecial)
+	{
+		polygonOptions = new PolygonOptions()
+				.add(new LatLng(latitudes[TOP_LEFT], longitudes[TOP_LEFT]), new LatLng(latitudes[TOP_RIGHT], longitudes[TOP_RIGHT]), new LatLng(latitudes[BOTTOM_RIGHT], longitudes[BOTTOM_RIGHT]),
+						new LatLng(latitudes[BOTTOM_LEFT], longitudes[BOTTOM_LEFT])).strokeColor(BORDER_COLOR).fillColor(type.getColor(isSpecial)).strokeWidth(borderWidth);
+	}
+
 	private double getLeftLongitudeTerritoryForLatitudeAndLongitude2(double longitude)
 	{
 		int sign = (longitude >= 0) ? 1 : -1;
@@ -282,12 +306,12 @@ public abstract class Territory implements Comparable<Territory>
 	{
 		Location.distanceBetween(0D, 0D, latitude, 0D, results);
 		float lat = results[0];
-		Log.d("Log", Float.toString(results[0]));
-		Log.d("Log", Double.toString(latitude));
+		// Log.d("Log", Float.toString(results[0]));
+		// Log.d("Log", Double.toString(latitude));
 		int sign = (latitude >= 0) ? 1 : -1;
 		Location.distanceBetween(0D, 0D, sign * (results[0]) * deltaLat, 0D, results);
-		Log.d("Log", Float.toString(results[0]));
-		Log.d("Log", Double.toString(sign * (results[0]) * deltaLat));
+		// Log.d("Log", Float.toString(results[0]));
+		// Log.d("Log", Double.toString(sign * (results[0]) * deltaLat));
 		double delta = (1 - lat / results[0]) / results[0];
 		lat -= delta * lat * results[0];
 		return sign * (lat - (lat % TERRITORY_SIZE_IN_METER)) * deltaLat;
@@ -299,8 +323,6 @@ public abstract class Territory implements Comparable<Territory>
 		Location.distanceBetween(0D, 0D, delta, 0D, results);
 		double ratio = (1D / results[0]);
 		delta *= ratio;
-
-		Log.d("Log", Float.toString(results[0]));
 
 		// Location.distanceBetween(-90D, 0D, 90D, 0D, results);
 		// Log.d("Log", Float.toString(2 * results[0] / 1000)); // 40007.863km
@@ -385,6 +407,7 @@ public abstract class Territory implements Comparable<Territory>
 
 	public void setMap(GoogleMap map)
 	{
+		if (polygonOptions == null) createPolygonOptions(this instanceof SpecialTerritory);
 		polygon = map.addPolygon(polygonOptions);
 		polygon.setVisible(false);
 		polygonOptions = null;
@@ -398,8 +421,13 @@ public abstract class Territory implements Comparable<Territory>
 	public void setHighlighted(boolean highlighted)
 	{
 		if (!highlighted && type == TerritoyType.Free)
-			polygon.remove();
+		{
+			if (polygon != null) polygon.remove();
+			polygon = null;
+		}
 		else
+		{
 			polygon.setStrokeWidth(highlighted ? BORDER_WIDTH_HIGHLIGHTED : borderWidth);
+		}
 	}
 }

@@ -60,7 +60,7 @@ public enum SkillType
 				resultValue = 1.8f;
 				break;
 			case 1: // purchase_distance_skill_name
-				resultValue = 5;
+				resultValue = 20;
 				break;
 			case 2: // experience_limit_skill_name
 				resultValue = 25;
@@ -69,7 +69,7 @@ public enum SkillType
 				resultValue = 10000;
 				break;
 			case 4: // experience_quantity_found_skill_name
-				resultValue = 4;
+				resultValue = 2;
 				break;
 			case 5: // alliance_price_skill_name
 				resultValue = 1.5f;

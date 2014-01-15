@@ -3,9 +3,11 @@ package ch.hearc.corporations.view;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
@@ -22,6 +24,7 @@ import ch.hearc.corporations.Tools;
 import ch.hearc.corporations.controller.AccountController;
 import ch.hearc.corporations.model.Player;
 import ch.hearc.corporations.model.PurchasableTerritory;
+import ch.hearc.corporations.model.SkillType;
 import ch.hearc.corporations.model.SpecialTerritory;
 import ch.hearc.corporations.model.Territory;
 
@@ -66,13 +69,20 @@ public class TerritoryInfoFragment extends Fragment
 		profileView = (RoundedFacebookProfilePictureImageView) view.findViewById(R.id.player_image_territory_info);
 		profileView.setBorderColor(Color.WHITE);
 		profileView.setBorderWidth(1);
-		
+
 		view.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v)
 			{
-				//Nothing just for catch the tap and don't tap the map under this view
+				// Hide the view
+				FragmentTransaction ft = getFragmentManager().beginTransaction();
+				ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+				territory.setHighlighted(false);
+				ft.hide(TerritoryInfoFragment.this);
+				ft.commit();
+				territory = null;
+				displayed = false;
 			}
 		});
 
@@ -95,7 +105,10 @@ public class TerritoryInfoFragment extends Fragment
 			loadInfo();
 		}
 		else
+		{
+			this.territory = null;
 			displayed = false;
+		}
 
 		return displayed;
 	}
@@ -235,10 +248,10 @@ public class TerritoryInfoFragment extends Fragment
 					@Override
 					public void onClick(DialogInterface dialog, int which)
 					{
-						int newPrice = 0;
+						long newPrice = 0;
 						try
 						{
-							newPrice = Integer.parseInt(input.getText().toString());
+							newPrice = Long.parseLong(input.getText().toString());
 
 							((PurchasableTerritory) territory).changePrice(newPrice, new Callback() {
 
@@ -279,6 +292,12 @@ public class TerritoryInfoFragment extends Fragment
 			@Override
 			public void onClick(View arg0)
 			{
+				Location currentLocation = ((MainActivity) getActivity()).getCurrentLocation();
+				if (currentLocation == null)
+				{
+					Tools.showInfoAlertDialog(getActivity(), getActivity().getResources().getString(R.string.verify_gps_title), getActivity().getResources().getString(R.string.verify_gps_message));
+					return;
+				}
 				if (!((SpecialTerritory) territory).capture(new Callback() {
 
 					@Override
@@ -286,7 +305,7 @@ public class TerritoryInfoFragment extends Fragment
 					{
 						TerritoryInfoFragment.this.loadInfo();
 					}
-				}))
+				}, currentLocation))
 				{
 					Tools.showInfoAlertDialog(getActivity(), getActivity().getResources().getString(R.string.not_in_zone_alert_dialog_title),
 							getActivity().getResources().getString(R.string.not_in_zone_alert_dialog_message));
@@ -308,17 +327,28 @@ public class TerritoryInfoFragment extends Fragment
 				{
 					if (isCurrentTerritoryConnected)
 					{
-						if (!((PurchasableTerritory) territory).buy(new Callback() {
-
-							@Override
-							public void update()
-							{
-								TerritoryInfoFragment.this.loadInfo();
-							}
-						}))
+						if (!territory.isTooFar())
 						{
-							Tools.showInfoAlertDialog(getActivity(), getActivity().getResources().getString(R.string.not_enough_money_alert_dialog_title),
-									getActivity().getResources().getString(R.string.not_enough_money_alert_dialog_message));
+							if (!((PurchasableTerritory) territory).buy(new Callback() {
+
+								@Override
+								public void update()
+								{
+									TerritoryInfoFragment.this.loadInfo();
+								}
+							}))
+							{
+								Tools.showInfoAlertDialog(getActivity(), getActivity().getResources().getString(R.string.not_enough_money_alert_dialog_title),
+										getActivity().getResources().getString(R.string.not_enough_money_alert_dialog_message));
+							}
+						}
+						else
+						{
+							Tools.showInfoAlertDialog(
+									getActivity(),
+									getActivity().getResources().getString(R.string.too_far_alert_dialog_title),
+									String.format(getActivity().getResources().getString(R.string.too_far_alert_dialog_message),
+											(int) AccountController.getInstance().getProfile().getSkill(SkillType.purchaseDistance).getValue()));
 						}
 					}
 					else
