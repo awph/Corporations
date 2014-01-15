@@ -56,6 +56,7 @@ public class AccountController
 		// http://android-developers.blogspot.in/2011/03/identifying-app-installations.html
 		deviceID = Secure.getString(Corporations.getAppContext().getContentResolver(), Secure.ANDROID_ID);
 		restoreFacebookID();
+		restoreHome();
 		generateIdentifier();
 	}
 
@@ -82,6 +83,8 @@ public class AccountController
 			public void profileFetched(Status status)
 			{
 				profileInfoDisplayer.updateProfileInfo();
+				AccountController.this.home = AccountController.this.profile.getHome();
+				AccountController.this.saveHome();
 			}
 		});
 	}
@@ -94,12 +97,17 @@ public class AccountController
 	{
 		SharedPreferences preferences = Corporations.getAppContext().getSharedPreferences(PREFERENCES_FILENAME, Context.MODE_PRIVATE);
 		facebookID = preferences.getString(FACEBOOK_ID_KEY, null);
+	}
+	
+	private void restoreHome()
+	{
+		SharedPreferences preferences = Corporations.getAppContext().getSharedPreferences(PREFERENCES_FILENAME, Context.MODE_PRIVATE);
 		String homeLat = preferences.getString(HOME_LAT_KEY, null);
 		String homeLng = preferences.getString(HOME_LNG_KEY, null);
 		if (homeLat != null && homeLng != null)
 			home = new LatLng(Double.parseDouble(homeLat), Double.parseDouble(homeLng));
 		else
-			home = null;
+			home = null;		
 	}
 
 	private void saveAccount()
@@ -107,6 +115,13 @@ public class AccountController
 		SharedPreferences preferences = Corporations.getAppContext().getSharedPreferences(PREFERENCES_FILENAME, Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = preferences.edit();
 		editor.putString(FACEBOOK_ID_KEY, facebookID);
+		editor.commit();
+	}
+
+	private void saveHome()
+	{
+		SharedPreferences preferences = Corporations.getAppContext().getSharedPreferences(PREFERENCES_FILENAME, Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = preferences.edit();
 		if (home != null)
 		{
 			editor.putString(HOME_LAT_KEY, Double.toString(home.latitude));
@@ -157,7 +172,7 @@ public class AccountController
 
 	public LatLng getHome()
 	{
-		return profile.getHome();
+		return home;
 	}
 
 	/*------------------------------*\
