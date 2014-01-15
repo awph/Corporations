@@ -37,6 +37,15 @@
         android:textColor="#38b39b"
         android:textSize="@dimen/text_size" />
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="30dp"
+        android:layout_marginTop="30dp"
+        android:visibility="gone" />
+
     <com.facebook.widget.LoginButton
         android:id="@+id/login_button"
         android:layout_width="wrap_content"

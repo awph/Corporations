@@ -20,6 +20,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
+import android.view.View;
 import ch.hearc.corporations.R;
 import ch.hearc.corporations.Tools;
 import ch.hearc.corporations.controller.AccountController;
@@ -29,6 +30,7 @@ import ch.hearc.corporations.controller.Status;
 import ch.hearc.corporations.controller.TripManager;
 import ch.hearc.corporations.model.Trip;
 import ch.hearc.corporations.service.OnBootBroadcastReceiver;
+import ch.hearc.corporations.service.TripService;
 
 import com.facebook.Request;
 import com.facebook.Response;
@@ -38,10 +40,14 @@ import com.facebook.UiLifecycleHelper;
 import com.facebook.model.GraphUser;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
+import com.google.android.gms.common.GooglePlayServicesClient.ConnectionCallbacks;
+import com.google.android.gms.common.GooglePlayServicesClient.OnConnectionFailedListener;
 import com.google.android.gms.location.LocationClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.maps.model.LatLng;
 
-public class MainActivity extends Activity
+public class MainActivity extends Activity implements LocationListener
 {
 	/*------------------------------------------------------------------*\
 	|*							Public Attributes						*|
@@ -67,7 +73,10 @@ public class MainActivity extends Activity
 																	onSessionStateChange(session, state, exception);
 																}
 															};
+	private LocationRequest			locationRequest;
 	private LocationClient			locationClient;
+	private LocationClient			tempLocationClient;
+	private Location				currentLocation;
 
 	/*------------------------------*\
 	|*			  Static			*|
@@ -82,13 +91,39 @@ public class MainActivity extends Activity
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-		uiHelper = new UiLifecycleHelper(this, callback);
-		uiHelper.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
+
+		locationRequest = LocationRequest.create();
+		locationRequest.setInterval(FIVE_MINUTES);
+		locationRequest.setPriority(LocationRequest.PRIORITY_LOW_POWER);
+		locationRequest.setFastestInterval(FIVE_MINUTES);
+
+		ConnectionCallbacks connectionCallbacks = new GooglePlayServicesClient.ConnectionCallbacks() {
+			@Override
+			public void onDisconnected()
+			{
+			}
+
+			@Override
+			public void onConnected(Bundle connectionHint)
+			{
+				locationClient.requestLocationUpdates(locationRequest, MainActivity.this);
+				showLoginButton(true);
+			}
+		};
+
+		locationClient = new LocationClient(this, connectionCallbacks, new OnConnectionFailedListener() {
+
+			@Override
+			public void onConnectionFailed(ConnectionResult arg0)
+			{
+				Tools.showInfoAlertDialog(MainActivity.this, getResources().getString(R.string.verify_gps_title), getResources().getString(R.string.verify_gps_message));
+			}
+		});
 
 		{ // TODO better
 
-			registerReceiver(new OnBootBroadcastReceiver(), new IntentFilter(Intent.ACTION_TIME_TICK));
+			if (!TripService.running) registerReceiver(new OnBootBroadcastReceiver(), new IntentFilter(Intent.ACTION_TIME_TICK));
 
 			Timer timer = new Timer("profile updater");
 			timer.schedule(new TimerTask() {
@@ -100,54 +135,6 @@ public class MainActivity extends Activity
 				}
 			}, FIVE_MINUTES, FIVE_MINUTES);
 
-			new Thread(new Runnable() {
-
-				@Override
-				public void run()
-				{
-					try
-					{
-						Thread.sleep(5000);
-						double latitude;
-						double longitude;
-						latitude = 47.039129;
-						longitude = 6.80154;
-						TripManager.addLocation(MainActivity.this, latitude, longitude);
-						Thread.sleep(2000);
-						latitude = 47.068251;
-						longitude = 6.836902;
-						TripManager.addLocation(MainActivity.this, latitude, longitude);
-						Thread.sleep(2000);
-						latitude = 47.04954;
-						longitude = 6.880504;
-						TripManager.addLocation(MainActivity.this, latitude, longitude);
-						Thread.sleep(2000);
-						latitude = 47.008236;
-						longitude = 6.845142;
-						TripManager.addLocation(MainActivity.this, latitude, longitude);
-						Thread.sleep(2000);
-						latitude = 46.986693;
-						longitude = 6.794502;
-						TripManager.addLocation(MainActivity.this, latitude, longitude);
-						Thread.sleep(2000);
-						latitude = 46.996061;
-						longitude = 6.746265;
-						TripManager.addLocation(MainActivity.this, latitude, longitude);
-						Thread.sleep(2000);
-						latitude = 47.023451;
-						longitude = 6.732361;
-						TripManager.addLocation(MainActivity.this, latitude, longitude);
-						Thread.sleep(2000);
-						latitude = 47.036439;
-						longitude = 6.791412;
-						TripManager.addLocation(MainActivity.this, latitude, longitude);
-					}
-					catch (InterruptedException e)
-					{
-						Log.e(TAG, e.toString());
-					}
-				}
-			});// .start();
 			new Thread(new Runnable() {
 
 				@Override
@@ -177,6 +164,17 @@ public class MainActivity extends Activity
 		}
 		transaction.show(fragments[LOGIN_FRAGMENT]);
 		transaction.commit();
+
+		uiHelper = new UiLifecycleHelper(this, callback);
+		uiHelper.onCreate(savedInstanceState);
+	}
+
+	@Override
+	protected void onStart()
+	{
+		super.onStart();
+		showLoginButton(false);
+		locationClient.connect(); // TODO google play service
 	}
 
 	private void showFragment(int fragmentIndex, boolean addToBackStack)
@@ -185,6 +183,8 @@ public class MainActivity extends Activity
 			((TerritoriesFragment) fragments[TERRITORIES_FRAGMENT]).setActived(true);
 		else
 			((TerritoriesFragment) fragments[TERRITORIES_FRAGMENT]).setActived(false);
+
+		showLoginButton(true);
 
 		FragmentManager fm = getFragmentManager();
 		FragmentTransaction transaction = fm.beginTransaction();
@@ -199,7 +199,20 @@ public class MainActivity extends Activity
 		{
 			transaction.addToBackStack(null);
 		}
-		transaction.commit();
+		try
+		{
+			transaction.commit();
+		}
+		catch (IllegalStateException e)
+		{
+			// Dont change view
+		}
+	}
+
+	@Override
+	public void onLocationChanged(Location location)
+	{
+		this.currentLocation = location;
 	}
 
 	private void onSessionStateChange(final Session session, SessionState state, Exception exception)
@@ -208,15 +221,16 @@ public class MainActivity extends Activity
 		if (isResumed)
 		{
 			FragmentManager manager = getFragmentManager();
-			// Get the number of entries in the back stack
 			int backStackSize = manager.getBackStackEntryCount();
-			// Clear the back stack
+
 			for (int i = 0; i < backStackSize; i++)
 			{
 				manager.popBackStack();
 			}
+
 			if (state.isOpened())
 			{
+				showLoginButton(false);
 				Request.newMeRequest(session, new Request.GraphUserCallback() {
 
 					@Override
@@ -227,29 +241,44 @@ public class MainActivity extends Activity
 							AccountController.getInstance().setFacebookID(user.getId());
 							if (AccountController.getInstance().getHome() == null)
 							{
-								locationClient = new LocationClient(MainActivity.this, new GooglePlayServicesClient.ConnectionCallbacks() {
+								if (currentLocation == null)
+								{
 
-									@Override
-									public void onDisconnected()
-									{
-									}
+									tempLocationClient = new LocationClient(MainActivity.this, new GooglePlayServicesClient.ConnectionCallbacks() {
 
-									@Override
-									public void onConnected(Bundle arg0)
-									{
-										Location location = locationClient.getLastLocation();
-										loginToServer(session, new LatLng(location.getLatitude(), location.getLongitude()));
-										locationClient.disconnect();
-									}
-								}, new GooglePlayServicesClient.OnConnectionFailedListener() {
+										@Override
+										public void onDisconnected()
+										{
+										}
 
-									@Override
-									public void onConnectionFailed(ConnectionResult arg0)
-									{
-										Tools.showInfoAlertDialog(MainActivity.this, getResources().getString(R.string.verify_gps_title), getResources().getString(R.string.verify_gps_message));
-									}
-								});
-								locationClient.connect();
+										@Override
+										public void onConnected(Bundle arg0)
+										{
+											currentLocation = tempLocationClient.getLastLocation();
+											if (currentLocation == null)
+											{
+												Tools.showInfoAlertDialog(MainActivity.this, getResources().getString(R.string.verify_gps_title), getResources().getString(R.string.verify_gps_message));
+												Session.getActiveSession().closeAndClearTokenInformation();
+											}
+											else
+											{
+												loginToServer(session, new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()));
+											}
+											tempLocationClient.disconnect();
+											tempLocationClient = null;
+										}
+									}, new GooglePlayServicesClient.OnConnectionFailedListener() {
+
+										@Override
+										public void onConnectionFailed(ConnectionResult arg0)
+										{
+											Tools.showInfoAlertDialog(MainActivity.this, getResources().getString(R.string.verify_gps_title), getResources().getString(R.string.verify_gps_message));
+										}
+									});
+									tempLocationClient.connect();
+								}
+								else
+									loginToServer(session, new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()));
 							}
 							else
 							{
@@ -277,8 +306,7 @@ public class MainActivity extends Activity
 			}
 			else if (state.isClosed())
 			{
-				// If the session state is closed:
-				// Show the login fragment
+				if (locationClient.isConnected()) showLoginButton(true);
 				showFragment(LOGIN_FRAGMENT, false);
 			}
 		}
@@ -291,21 +319,9 @@ public class MainActivity extends Activity
 
 		Session session = Session.getActiveSession();
 
-		if (session != null && session.isOpened() && AccountController.getInstance().getProfile() != null)
-		{
-			// if the session is already open,
-			// try to show the selection fragment
-			showFragment(TERRITORIES_FRAGMENT, false);
-		}
-		else
-		{
-			// otherwise present the splash screen
-			// and ask the person to login.
-			showFragment(LOGIN_FRAGMENT, false);
-		}
-
-		uiHelper.onResume();
 		isResumed = true;
+		uiHelper.onResume();
+		onSessionStateChange(session, session.getState(), null);
 	}
 
 	@Override
@@ -321,7 +337,7 @@ public class MainActivity extends Activity
 	{
 		super.onActivityResult(requestCode, resultCode, data);
 		uiHelper.onActivityResult(requestCode, resultCode, data);
-		Log.e(TAG, resultCode + "");
+		showLoginButton(false);
 		if (resultCode == CLOSE_FACEBOOK_SESSION)
 		{
 			Session session = Session.getActiveSession();
@@ -330,6 +346,7 @@ public class MainActivity extends Activity
 				session.closeAndClearTokenInformation();
 			}
 			showFragment(LOGIN_FRAGMENT, false);
+			showLoginButton(true);
 		}
 	}
 
@@ -371,7 +388,25 @@ public class MainActivity extends Activity
 		}
 	}
 
-	private static final String	FACEBOOK_TAG	= "Log : Facebook";
+	private void showLoginButton(boolean show)
+	{
+		if (show)
+		{
+			findViewById(R.id.login_button).setVisibility(View.VISIBLE);
+			findViewById(R.id.progressBar).setVisibility(View.GONE);
+		}
+		else
+		{
+			findViewById(R.id.login_button).setVisibility(View.GONE);
+			findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
+		}
+	}
+
+	public Location getCurrentLocation()
+	{
+		if (currentLocation == null) currentLocation = locationClient.getLastLocation();
+		return currentLocation;
+	}
 
 	private static final String	TAG				= "Log : MainActivity";
 

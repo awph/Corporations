@@ -38,6 +38,8 @@
     <string name="not_enough_money_alert_dialog_message">Vous n\'avez pas assez d\'argent pour acheter ce territoire !</string>
     <string name="territory_not_connnected_alert_dialog_title">Pas connecté</string>
     <string name="territory_not_connnected_alert_dialog_message">Vous devez possèder ou être allié à un joueur possédant un territoire à côté de celui-ci pour l\'acheter</string>
+    <string name="too_far_alert_dialog_title">Territory too far</string>
+    <string name="too_far_alert_dialog_message">This territory is too far compared your home! Upgrade your skill, actually you can buy a territory at a maximum distance of %s territories!</string>
     <string name="alliance_update_error_message">Une erreur est survenue durant l\'alliance</string>
     <string name="unalliance_update_error_message">Une erreur est survenue durant l\'annulation de l\'alliance</string>
     <string name="sale_price">Prix de vente : %s</string>

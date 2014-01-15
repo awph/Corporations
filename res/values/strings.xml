@@ -39,6 +39,8 @@
     <string name="not_enough_money_alert_dialog_message">You don\'t have enough money for buy this territory!</string>
     <string name="territory_not_connnected_alert_dialog_title">Not connected</string>
     <string name="territory_not_connnected_alert_dialog_message">You need to be connected to this territory, by have a territory or an ally territory that touch this one!</string>
+    <string name="too_far_alert_dialog_title">Territory too far</string>
+    <string name="too_far_alert_dialog_message">This territory is too far compared your home! Upgrade your skill, actually you can buy a territory at a maximum distance of %s territories!</string>
     <string name="verify_gps_title">No GPS</string>
     <string name="verify_gps_message">We are unable to find your location, please check if your GPS is on and try again!</string>
     <string name="alliance_update_error_message">An error occurred during the alliance</string>
