@@ -42,7 +42,7 @@ public class TripManager
 	|*			  Static			*|
 	\*------------------------------*/
 
-	private static final int	RADIUS_HOME_AREA_IN_METER	= 500;
+	private static final int	RADIUS_HOME_AREA_IN_METER	= 1000;
 	private static final String	TRIPS_FILENAME				= "trips.bin";
 	private static final String	TAG							= TripManager.class.getSimpleName();
 

@@ -13,13 +13,25 @@ import com.google.android.gms.maps.model.LatLng;
 
 public class TerritoriesManager
 {
+	/*------------------------------------------------------------------*\
+	|*							Private Attributes						*|
+	\*------------------------------------------------------------------*/
+
 	private SortedSet<Territory>	territories	= new TreeSet<Territory>();
 	private Boolean					fetchRunning;
+
+	/*------------------------------------------------------------------*\
+	|*							Constructors							*|
+	\*------------------------------------------------------------------*/
 
 	public TerritoriesManager()
 	{
 		fetchRunning = false;
 	}
+
+	/*------------------------------------------------------------------*\
+	|*							Public Methods							*|
+	\*------------------------------------------------------------------*/
 
 	public Object[] getTerritoryPolygoneForLocation(final LatLng location, final GoogleMap map)
 	{
@@ -45,24 +57,6 @@ public class TerritoriesManager
 		return this.territories.toArray();
 	}
 
-	private void setVisibleTerritories(LatLng location, GoogleMap map)
-	{
-		for (Territory territory : territories)
-		{
-			if (territory.getPolygon() == null) territory.setMap(map);
-			territory.setVisible(true);
-		}
-	}
-
-	@SuppressWarnings("unused")
-	private void fillSetForLocation(LatLng currentLocation)
-	{
-		for (int i = 0; i < 10; ++i)
-			for (int j = 0; j < 10; ++j)
-				this.territories.add(new PurchasableTerritory(currentLocation.latitude + (i - 5) * 0.01D, currentLocation.longitude + (j - 5) * 0.01D, new Player("0", 0, 0, 0, true), 0, 0, 0, 0));
-
-	}
-
 	public Territory getTerritoryForLocation(LatLng location, GoogleMap map)
 	{
 		Territory territory = null;
@@ -74,7 +68,7 @@ public class TerritoriesManager
 				break;
 			}
 		}
-		if (territory == null) territory = new PurchasableTerritory(location.latitude, location.longitude, null, 0, 1000, 0, 0);
+		if (territory == null) territory = new PurchasableTerritory(location.latitude, location.longitude, null, 0, PurchasableTerritory.NO_PRICE, 0, 0);
 		this.territories.add(territory);
 		if (territory.getPolygon() == null) territory.setMap(map);
 		return territory;
@@ -97,5 +91,28 @@ public class TerritoriesManager
 			if (existingTerritory.isAConnectedTerritory(latitude + Territory.TERRITORY_SIZE_IN_LAT_LON, longitude - Territory.TERRITORY_SIZE_IN_LAT_LON)) return true;
 		}
 		return false;
+	}
+
+	/*------------------------------------------------------------------*\
+	|*							Private Methods							*|
+	\*------------------------------------------------------------------*/
+
+	private void setVisibleTerritories(LatLng location, GoogleMap map)
+	{
+		for (Territory territory : territories)
+		{
+			if (territory.getPolygon() == null) territory.setMap(map);
+			territory.setVisible(true);
+		}
+	}
+
+	@Deprecated
+	@SuppressWarnings("unused")
+	private void fillSetForLocation(LatLng currentLocation)
+	{
+		for (int i = 0; i < 10; ++i)
+			for (int j = 0; j < 10; ++j)
+				this.territories.add(new PurchasableTerritory(currentLocation.latitude + (i - 5) * 0.01D, currentLocation.longitude + (j - 5) * 0.01D, new Player("0", 0, 0, 0, true), 0, 0, 0, 0));
+
 	}
 }

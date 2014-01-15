@@ -40,18 +40,18 @@ public class Trip implements Serializable
 	 * Auto generated
 	 */
 	private static final long	serialVersionUID	= -4387390245062411595L;
-	private static final String	TAG					= Trip.class.getSimpleName();
 	private float				distance;
 	private long				secondes;
+	private long				money;
 	private int					experience;
 	private Date				date;
 
 	private long				startTime;
 	private boolean				finished;
-	private boolean				sent;												// Push
-																					// to
-																					// the
-																					// server
+	private boolean				sent;											// Push
+																				// to
+																				// the
+																				// server
 	private List<Double>		latitudes;
 	private List<Double>		longitudes;
 
@@ -59,12 +59,13 @@ public class Trip implements Serializable
 	|*							Constructors							*|
 	\*------------------------------------------------------------------*/
 
-	public Trip(float distance, long secondes, int experience, Date date)
+	public Trip(float distance, long secondes, long money, int experience, Date date)
 	{
 		this.finished = true;
 		this.sent = true;
 		this.distance = distance;
 		this.secondes = secondes;
+		this.money = money;
 		this.experience = experience;
 		this.date = date;
 	}
@@ -152,9 +153,9 @@ public class Trip implements Serializable
 	/**
 	 * @return the amount of money earned
 	 */
-	public int getMoneyEarned()
+	public long getMoneyEarned()
 	{
-		return (int) (secondes / 10 + distance * 10);
+		return money;
 	}
 
 	/*------------------------------*\
@@ -206,7 +207,7 @@ public class Trip implements Serializable
 		}
 		catch (InterruptedException e)
 		{
-			Log.e("Trip -> send", e.toString());
+			Log.e("Trip -> send fail", e.toString());
 		}
 	}
 }

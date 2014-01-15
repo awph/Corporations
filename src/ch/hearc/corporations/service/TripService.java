@@ -69,7 +69,6 @@ public class TripService extends Service implements LocationListener
 	public void onCreate()
 	{
 		super.onCreate();
-		Log.e(TAG, "onCreate");
 
 		locationRequest = LocationRequest.create();
 		locationRequest.setInterval(FIVE_MINUTES);
@@ -103,7 +102,7 @@ public class TripService extends Service implements LocationListener
 	public int onStartCommand(Intent intent, int flags, int startId)
 	{
 		running = true;
-		Toast.makeText(this, "Trip service starting", Toast.LENGTH_SHORT).show();
+		Toast.makeText(this, "Trip service started", Toast.LENGTH_LONG).show(); //TODO: comments when app is finished
 		locationClient.connect();
 		Log.e(TAG, "Received start id " + startId + ": " + intent);
 		return START_STICKY;
