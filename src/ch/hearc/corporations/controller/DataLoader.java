@@ -88,7 +88,7 @@ public class DataLoader
 		parameters.put(DataLoaderUtil.RequestParameters.PurchaseTerritory.KEY_LATITUDE, String.format("%1$.4f", territory.getLatitude()));
 		parameters.put(DataLoaderUtil.RequestParameters.PurchaseTerritory.KEY_LONGITUDE, String.format("%1$.4f", territory.getLongitude()));
 		parameters.put(DataLoaderUtil.RequestParameters.PurchaseTerritory.KEY_OWNER, (territory.getOwner() != null ? territory.getOwner().getUserId() : "-1"));
-		parameters.put(DataLoaderUtil.RequestParameters.PurchaseTerritory.KEY_PRICE, Integer.toString(territory.getSalePrice()));
+		parameters.put(DataLoaderUtil.RequestParameters.PurchaseTerritory.KEY_PRICE, Long.toString(territory.getSalePrice()));
 		request(parameters, ApiRequestType.territoryPurchasing, dataLoaderListener);
 	}
 
@@ -129,7 +129,6 @@ public class DataLoader
 		parameters.put(DataLoaderUtil.RequestParameters.UploadTrip.KEY_DATE, new java.sql.Date(trip.getDate().getTime()).toString());
 		parameters.put(DataLoaderUtil.RequestParameters.UploadTrip.KEY_TIME, Long.toString(trip.getTime()));
 		parameters.put(DataLoaderUtil.RequestParameters.UploadTrip.KEY_DISTANCE, Float.toString(trip.getDistance()));
-		parameters.put(DataLoaderUtil.RequestParameters.UploadTrip.KEY_MONEY_EARNED, Integer.toString(trip.getMoneyEarned()));
 		request(parameters, ApiRequestType.uploadTrip, dataLoaderListener);
 	}
 
@@ -147,11 +146,11 @@ public class DataLoader
 		request(parameters, ApiRequestType.updateProfile, dataLoaderListener);
 	}
 
-	public void changeTerritoryPrice(PurchasableTerritory territory, int newPrice, DataLoaderListener dataLoaderListener)
+	public void changeTerritoryPrice(PurchasableTerritory territory, long newPrice, DataLoaderListener dataLoaderListener)
 	{
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put(DataLoaderUtil.RequestParameters.ChangePrice.KEY_WHAT, DataLoaderUtil.RequestParameters.ChangePrice.WHAT);
-		parameters.put(DataLoaderUtil.RequestParameters.ChangePrice.KEY_NEW_PRICE, Integer.toString(newPrice));
+		parameters.put(DataLoaderUtil.RequestParameters.ChangePrice.KEY_NEW_PRICE, Long.toString(newPrice));
 		parameters.put(DataLoaderUtil.RequestParameters.ChangePrice.KEY_LATITUDE, String.format("%1$.4f", territory.getLatitude()));
 		parameters.put(DataLoaderUtil.RequestParameters.ChangePrice.KEY_LONGITUDE, String.format("%1$.4f", territory.getLongitude()));
 		request(parameters, ApiRequestType.changePrice, dataLoaderListener);
@@ -258,8 +257,8 @@ public class DataLoader
 							territory = new SpecialTerritory(latitude, longitude, player, timeOwned, revenue);
 						else
 						{
-							int salePrice = Integer.valueOf(jsonObject.getString(DataLoaderUtil.ResultKeys.Territories.SALE_PRICE));
-							int purchasingPrice = Integer.valueOf(jsonObject.getString(DataLoaderUtil.ResultKeys.Territories.PURCHASE_PRICE));
+							long salePrice = Long.valueOf(jsonObject.getString(DataLoaderUtil.ResultKeys.Territories.SALE_PRICE));
+							long purchasingPrice = Long.valueOf(jsonObject.getString(DataLoaderUtil.ResultKeys.Territories.PURCHASE_PRICE));
 							territory = new PurchasableTerritory(latitude, longitude, player, timeOwned, salePrice, purchasingPrice, revenue);
 						}
 						territories.add(territory);
@@ -281,10 +280,11 @@ public class DataLoader
 						JSONObject jsonObject = jsonArray.getJSONObject(i);
 						float distance = Float.parseFloat(jsonObject.getString(DataLoaderUtil.ResultKeys.Trips.DISTANCE));
 						long secondes = Long.parseLong(jsonObject.getString(DataLoaderUtil.ResultKeys.Trips.TIME));
-						int experience = Integer.parseInt(jsonObject.getString(DataLoaderUtil.ResultKeys.Trips.MONEY));
+						long money = Long.parseLong(jsonObject.getString(DataLoaderUtil.ResultKeys.Trips.MONEY));
+						int experience = Integer.parseInt(jsonObject.getString(DataLoaderUtil.ResultKeys.Trips.EXPERIENCE));
 
 						Date date = java.sql.Date.valueOf(jsonObject.getString(DataLoaderUtil.ResultKeys.Trips.DATE).split(" ")[0]);
-						Trip trip = new Trip(distance, secondes, experience, date);
+						Trip trip = new Trip(distance, secondes, money, experience, date);
 						trips.add(trip);
 					}
 					listener.tripsFetched(trips);
@@ -305,8 +305,8 @@ public class DataLoader
 					double latitude = Double.valueOf(jsonObject.getString(DataLoaderUtil.ResultKeys.PurchaseTerritory.LATITUDE));
 					double longitude = Double.valueOf(jsonObject.getString(DataLoaderUtil.ResultKeys.PurchaseTerritory.LONGITUDE));
 					int revenue = Integer.valueOf(jsonObject.getString(DataLoaderUtil.ResultKeys.PurchaseTerritory.REVENUE));
-					int salePrice = Integer.valueOf(jsonObject.getString(DataLoaderUtil.ResultKeys.PurchaseTerritory.SALE_PRICE));
-					int purchasingPrice = Integer.valueOf(jsonObject.getString(DataLoaderUtil.ResultKeys.PurchaseTerritory.PURCHASE_PRICE));
+					long salePrice = Long.valueOf(jsonObject.getString(DataLoaderUtil.ResultKeys.PurchaseTerritory.SALE_PRICE));
+					long purchasingPrice = Long.valueOf(jsonObject.getString(DataLoaderUtil.ResultKeys.PurchaseTerritory.PURCHASE_PRICE));
 					PurchasableTerritory territory = new PurchasableTerritory(latitude, longitude, player, timeOwned, salePrice, purchasingPrice, revenue);
 					listener.territoryPurchased(territory);
 				}

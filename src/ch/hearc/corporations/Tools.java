@@ -16,6 +16,10 @@ package ch.hearc.corporations;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.location.Location;
+import android.util.Log;
+
+import com.google.android.gms.maps.model.LatLng;
 
 /**
  * @author Alexandre
@@ -42,5 +46,14 @@ public class Tools
 			}
 		});
 		alertDialog.show();
+	}
+
+	public static float distanceBetween(LatLng firstLocation, LatLng secondLocation)
+	{
+		float[] results = new float[3];
+		if(firstLocation == null) Log.e("Tools", "1");
+		if(secondLocation == null) Log.e("Tools", "2");
+		Location.distanceBetween(firstLocation.latitude, firstLocation.longitude, secondLocation.latitude, secondLocation.longitude, results);
+		return results[0];
 	}
 }

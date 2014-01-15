@@ -100,11 +100,10 @@ public final class DataLoaderUtil
 
 		public static final class UploadTrip extends All
 		{
-			public static final String	WHAT				= "uploadTrip";
-			public static final String	KEY_DISTANCE		= "distance";
-			public static final String	KEY_TIME			= "secondes";
-			public static final String	KEY_MONEY_EARNED	= "moneyEarned";
-			public static final String	KEY_DATE			= "date";
+			public static final String	WHAT			= "uploadTrip";
+			public static final String	KEY_DISTANCE	= "distance";
+			public static final String	KEY_TIME		= "secondes";
+			public static final String	KEY_DATE		= "date";
 		}
 
 		public static final class ChangePrice extends All
@@ -167,6 +166,7 @@ public final class DataLoaderUtil
 			public static final String	DISTANCE	= "d";
 			public static final String	TIME		= "t";
 			public static final String	MONEY		= "m";
+			public static final String	EXPERIENCE	= "e";
 		}
 
 		public static class Territories

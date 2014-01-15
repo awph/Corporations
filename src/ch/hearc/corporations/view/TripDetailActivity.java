@@ -43,7 +43,7 @@ public class TripDetailActivity extends Activity
 		((TextView) findViewById(R.id.earn_experience_text_view)).setText(String.format(getResources().getString(R.string.trip_detail_activity_experience_points),
 				Integer.toString(getIntent().getExtras().getInt(EXPERIENCE))));
 		((TextView) findViewById(R.id.earn_money_text_view)).setText(String.format(getResources().getString(R.string.trip_detail_activity_money_earn),
-				Tools.formatMoney(getIntent().getExtras().getInt(MONEY))));
+				Tools.formatMoney(getIntent().getExtras().getLong(MONEY))));
 
 		((TextView) findViewById(R.id.trip_date_text_view)).setText(String.format(getResources().getString(R.string.trip_detail_activity_date),
 				SimpleDateFormat.getDateInstance().format(((Date) getIntent().getExtras().get(DATE)))));

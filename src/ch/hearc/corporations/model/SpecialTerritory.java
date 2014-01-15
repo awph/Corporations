@@ -13,6 +13,7 @@
 
 package ch.hearc.corporations.model;
 
+import android.location.Location;
 import ch.hearc.corporations.controller.AccountController;
 import ch.hearc.corporations.controller.DataLoader;
 import ch.hearc.corporations.controller.DataLoaderAdapter;
@@ -37,9 +38,9 @@ public class SpecialTerritory extends Territory
 	|*							Public Methods							*|
 	\*------------------------------------------------------------------*/
 
-	public boolean capture(final Callback callback)
+	public boolean capture(final Callback callback, Location location)
 	{
-		boolean canCapture = true; // TODO: check position
+		boolean canCapture = isInBounds(location.getLatitude(), location.getLongitude());
 		if (canCapture)
 		{
 			DataLoader.getInstance().captureTerritory(this, new DataLoaderAdapter() {

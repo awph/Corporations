@@ -13,6 +13,9 @@
 
 package ch.hearc.corporations.model;
 
+import com.google.android.gms.maps.model.LatLng;
+
+import ch.hearc.corporations.Tools;
 import ch.hearc.corporations.controller.AccountController;
 import ch.hearc.corporations.controller.DataLoader;
 import ch.hearc.corporations.controller.DataLoaderAdapter;
@@ -27,20 +30,30 @@ public class PurchasableTerritory extends Territory
 {
 
 	/*------------------------------------------------------------------*\
+	|*							Public Attributes						*|
+	\*------------------------------------------------------------------*/
+
+	/*------------------------------*\
+	|*			  Static			*|
+	\*------------------------------*/
+
+	public static final int	NO_PRICE	= -1;
+
+	/*------------------------------------------------------------------*\
 	|*							Private Attributes						*|
 	\*------------------------------------------------------------------*/
 
-	private int	salePrice;
-	private int	purchasingPrice;
+	private long			salePrice;
+	private long			purchasingPrice;
 
 	/*------------------------------------------------------------------*\
 	|*							Constructors							*|
 	\*------------------------------------------------------------------*/
 
-	public PurchasableTerritory(double latitude, double longitude, Player owner, long timeOwned, int salePrice, int purchasingPrice, int revenue)
+	public PurchasableTerritory(double latitude, double longitude, Player owner, long timeOwned, long salePrice, long purchasingPrice, int revenue)
 	{
 		super(latitude, longitude, owner, timeOwned, revenue);
-		this.salePrice = salePrice;
+		this.salePrice = (salePrice == NO_PRICE) ? computePrice() : salePrice;
 		this.purchasingPrice = purchasingPrice;
 	}
 
@@ -51,7 +64,7 @@ public class PurchasableTerritory extends Territory
 	public boolean buy(final Callback callback)
 	{
 		boolean canBuyTerritory = AccountController.getInstance().getProfile().getCurrentMoney() >= salePrice;
-		
+
 		if (canBuyTerritory)
 		{
 			DataLoader.getInstance().purchaseTerritory(this, new DataLoaderAdapter() {
@@ -74,7 +87,7 @@ public class PurchasableTerritory extends Territory
 		return canBuyTerritory;
 	}
 
-	public void changePrice(final int newPrice, final Callback callback)
+	public void changePrice(final long newPrice, final Callback callback)
 	{
 		DataLoader.getInstance().changeTerritoryPrice(this, newPrice, new DataLoaderAdapter() {
 
@@ -87,6 +100,18 @@ public class PurchasableTerritory extends Territory
 		});
 	}
 
+	/*------------------------------------------------------------------*\
+	|*							Private Methods							*|
+	\*------------------------------------------------------------------*/
+
+	private int computePrice()
+	{
+		float distance = Tools.distanceBetween(AccountController.getInstance().getHome(), new LatLng(getLatitude(), getLongitude()));
+		int price = (int) (10 * distance);
+		price -= price * (AccountController.getInstance().getProfile().getSkill(SkillType.purchasePrice).getValue() / 100);
+		return price;
+	}
+
 	/*------------------------------*\
 	|*				Get				*|
 	\*------------------------------*/
@@ -94,7 +119,7 @@ public class PurchasableTerritory extends Territory
 	/**
 	 * @return the salePrice
 	 */
-	public int getSalePrice()
+	public long getSalePrice()
 	{
 		return salePrice;
 	}
@@ -102,7 +127,7 @@ public class PurchasableTerritory extends Territory
 	/**
 	 * @return the purchasingPrice
 	 */
-	public int getPurchasingPrice()
+	public long getPurchasingPrice()
 	{
 		return purchasingPrice;
 	}
