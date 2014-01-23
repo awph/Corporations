@@ -36,6 +36,7 @@ public class PurchasableTerritory extends Territory
 	\*------------------------------*/
 
 	public static final int	NO_PRICE	= -1;
+	public static final long	FIRST_TERRITORY_PRICE	= 1000;
 
 	/*------------------------------------------------------------------*\
 	|*							Private Attributes						*|

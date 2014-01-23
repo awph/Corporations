@@ -119,7 +119,13 @@ public class TerritoriesManager
 				break;
 			}
 		}
-		if (territory == null) territory = new PurchasableTerritory(location.latitude, location.longitude, null, 0, PurchasableTerritory.NO_PRICE, 0, 0);
+		if (territory == null)
+		{
+			if(AccountController.getInstance().getProfile().getNumberTerritories() == 0)
+				territory = new PurchasableTerritory(location.latitude, location.longitude, null, 0, PurchasableTerritory.FIRST_TERRITORY_PRICE, 0, 0);
+			else
+				territory = new PurchasableTerritory(location.latitude, location.longitude, null, 0, PurchasableTerritory.NO_PRICE, 0, 0);
+		}
 		this.territories.add(territory);
 		if (territory.getPolygon() == null) territory.setMap(map);
 		return territory;
@@ -134,6 +140,7 @@ public class TerritoriesManager
 	 */
 	public boolean isConnected(Territory territory)
 	{
+		if(AccountController.getInstance().getProfile().getNumberTerritories() == 0) return true;
 		double latitude = territory.getLatitude();
 		double longitude = territory.getLongitude();
 

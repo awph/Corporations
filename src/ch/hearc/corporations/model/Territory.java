@@ -179,6 +179,7 @@ public abstract class Territory implements Comparable<Territory>
 	 */
 	public boolean isTooFar()
 	{
+		if(AccountController.getInstance().getProfile().getNumberTerritories() == 0) return false;
 		float limit = AccountController.getInstance().getProfile().getSkill(SkillType.purchaseDistance).getValue();
 		float distance = (float) (Math.sqrt(Math.pow(Math.abs(AccountController.getInstance().getHome().latitude - getLatitude()), 2)
 				+ Math.pow(Math.abs(AccountController.getInstance().getHome().longitude - getLongitude()), 2)) / TERRITORY_SIZE_IN_LAT_LON);
