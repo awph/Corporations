@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string name="app_name">Corporations</string>
-    <string name="action_settings">Settings</string>
     <string name="app_id">169291389944036</string>
+    <string name="icon_description">Icon of the application</string>
+    <string name="icon_school">Icon of the HE-Arc</string>
+    <string name="icon_trips">Icon of the trips view</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
     <string name="profile_activity_title">Profile</string>
     <string name="login_facebook_activity_title">Login</string>
     <string name="get_started">To get started, log in using Facebook</string>
@@ -13,23 +16,22 @@
     <string name="title_activity_trip">Trips</string>
     <string name="title_activity_trip_detail">Details of the trip</string>
     <string name="action_refresh">Refresh</string>
-    <string name="icon_description">Icon of the application</string>
     <string name="upgrade_skill">+</string>
     <string name="improve_alert_dialog_title">Improve</string>
     <string name="improve_alert_dialog_message">Improve your %1$s to level %2$d for %3$d experience points?</string>
     <string name="new_price_alert_dialog_title">Change territory price</string>
-    <string name="new_price_alert_dialog_message">Tip the price you want to sell your territory, tip 0 if you don\'t want to sell it!</string>
-    <string name="purchase_price_skill_name">Prix d\'achat d\'un territoire</string>
+    <string name="new_price_alert_dialog_message">Enter the price you want to sell your territory, type 0 if you don\'t want to sell it!</string>
+    <string name="purchase_price_skill_name">Territory purchase price</string>
     <string name="purchase_price_skill_description">-%d%%</string>
-    <string name="purchase_distance_skill_name">Distance d\'achat d\'un territoire</string>
+    <string name="purchase_distance_skill_name">Distance to purchase a territory</string>
     <string name="purchase_distance_skill_description">%s territoires</string>
-    <string name="experience_limit_skill_name">Limite d\'expérience possédé</string>
+    <string name="experience_limit_skill_name">Limit experience earned</string>
     <string name="experience_limit_skill_description">%s</string>
-    <string name="money_limit_skill_name">Limite d\'argent possédé</string>
+    <string name="money_limit_skill_name">Limit money earned</string>
     <string name="money_limit_skill_description">$%d</string>
-    <string name="experience_quantity_found_skill_name">Points d\'expérience trouvé lors des déplacements</string>
+    <string name="experience_quantity_found_skill_name">Experience points found for a trip</string>
     <string name="experience_quantity_found_skill_description">+%d%%</string>
-    <string name="alliance_price_skill_name">Prix d\'une alliance</string>
+    <string name="alliance_price_skill_name">Alliance price</string>
     <string name="alliance_price_skill_description">-%d%%</string>
     <string name="not_in_zone_alert_dialog_title">Not in zone</string>
     <string name="not_in_zone_alert_dialog_message">You are not in the territory, so you can\'t capture it!</string>
@@ -62,6 +64,5 @@
     <string name="trip_detail_activity_experience_points">Earned experience: %s</string>
     <string name="trip_detail_activity_money_earn">Earned money: %s</string>
     <string name="trip_detail_activity_date">Date: %s</string>
-    <string name="trip_detail_activity_time">Trip time: %smin</string>
-
+    <string name="trip_detail_activity_time">Trip time: %1$sh%2$sm</string>
 </resources>

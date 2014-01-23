@@ -1,3 +1,16 @@
+/*=====================================================================*
+| This file declares the following classes:
+|    LeaderboardActivity.java
+|
+| Description of the class LeaderboardActivity.java :
+| View class for displays the leaderboard
+|
+| <p>Copyright : EIAJ, all rights reserved</p>
+| @autor : Alexandre
+| @version : 3 déc. 2013
+|
+ *=====================================================================*/
+
 package ch.hearc.corporations.view;
 
 import android.app.ListActivity;
@@ -26,9 +39,7 @@ public class LeaderboardActivity extends ListActivity
 	 */
 	private void setupActionBar()
 	{
-
 		getActionBar().setDisplayHomeAsUpEnabled(true);
-
 	}
 
 	@Override

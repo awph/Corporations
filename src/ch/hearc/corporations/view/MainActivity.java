@@ -1,7 +1,20 @@
+/*=====================================================================*
+| This file declares the following classes:
+|    MainActivity.java
+|
+| Description of the class MainActivity.java :
+| View class for displays the correct frament (login or territories)
+| Contains the operation to do when the app start.
+| Contains some method for locate player.
+|
+| <p>Copyright : EIAJ, all rights reserved</p>
+| @autor : Alexandre
+| @version : 3 déc. 2013
+|
+ *=====================================================================*/
+
 package ch.hearc.corporations.view;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -12,14 +25,8 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
-import android.content.pm.Signature;
 import android.location.Location;
 import android.os.Bundle;
-import android.util.Base64;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 import ch.hearc.corporations.R;
@@ -225,30 +232,9 @@ public class MainActivity extends Activity implements LocationListener
 	|*							Public Methods							*|
 	\*------------------------------------------------------------------*/
 
-	public void generateKeyHash()
-	{
-		PackageInfo info;
-		try
-		{
-			info = getPackageManager().getPackageInfo(PACKAGE_NAME, PackageManager.GET_SIGNATURES);
-
-			for (Signature signature : info.signatures)
-			{
-				MessageDigest md = MessageDigest.getInstance("SHA");
-				md.update(signature.toByteArray());
-				Log.d(TAG, "KeyHash: " + Base64.encodeToString(md.digest(), Base64.DEFAULT));
-			}
-		}
-		catch (NameNotFoundException e)
-		{
-			e.printStackTrace();
-		}
-		catch (NoSuchAlgorithmException e)
-		{
-			e.printStackTrace();
-		}
-	}
-
+	/**
+	 * @return the current player location
+	 */
 	public Location getCurrentLocation()
 	{
 		if (currentLocation == null) currentLocation = locationClient.getLastLocation();
@@ -266,7 +252,7 @@ public class MainActivity extends Activity implements LocationListener
 	\*------------------------------------------------------------------*/
 
 	/**
-	 * 
+	 * Upload the trips finished to the server
 	 */
 	private void uploadTrips()
 	{
@@ -286,6 +272,14 @@ public class MainActivity extends Activity implements LocationListener
 		}).start();
 	}
 
+	/**
+	 * Switch fragment displayed.
+	 * 
+	 * @param fragmentIndex
+	 *            is the index of the fragment that you want to display
+	 * @param addToBackStack
+	 *            true if you want to add the transaction to back stack
+	 */
 	private void showFragment(int fragmentIndex, boolean addToBackStack)
 	{
 		if (fragmentIndex == TERRITORIES_FRAGMENT)
@@ -321,6 +315,12 @@ public class MainActivity extends Activity implements LocationListener
 		}
 	}
 
+	/**
+	 * Facebook method called when the Facebook session change.
+	 * @param session the Facebook session
+	 * @param state the session state
+	 * @param exception Facebook exception
+	 */
 	private void onSessionStateChange(final Session session, SessionState state, Exception exception)
 	{
 		// Only make changes if the activity is visible
@@ -394,8 +394,12 @@ public class MainActivity extends Activity implements LocationListener
 					}
 
 					/**
+					 * Log to the server
+					 * 
 					 * @param session
+					 *            is the Facebook session for accessToken
 					 * @param location
+					 *            is the current player location
 					 */
 					private void loginToServer(final Session session, LatLng location)
 					{
@@ -418,6 +422,12 @@ public class MainActivity extends Activity implements LocationListener
 		}
 	}
 
+	/**
+	 * Show or hide the login button and the progess
+	 * 
+	 * @param show
+	 *            true if we want to show the login button
+	 */
 	private void showLoginButton(boolean show)
 	{
 		if (show)
@@ -431,7 +441,4 @@ public class MainActivity extends Activity implements LocationListener
 			findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
 		}
 	}
-
-	private static final String	TAG				= "Log : MainActivity";
-	private static final String	PACKAGE_NAME	= "ch.hearc.corporations";
 }

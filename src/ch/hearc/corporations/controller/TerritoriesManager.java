@@ -1,3 +1,17 @@
+/*=====================================================================*
+| This file declares the following classes:
+|    TerritoriesManager.java
+|
+| Description of the class TerritoriesManager.java :
+| This class contains all the logic, for pulling territories from the
+| server, store the territories and make a connect between view and model 
+|
+| <p>Copyright : EIAJ, all rights reserved</p>
+| @autor : Alexandre
+| @version : 3 déc. 2013
+|
+ *=====================================================================*/
+
 package ch.hearc.corporations.controller;
 
 import java.util.List;
@@ -36,7 +50,17 @@ public class TerritoriesManager
 	|*							Public Methods							*|
 	\*------------------------------------------------------------------*/
 
-	public void getTerritoryPolygoneForLocation(final LatLng location, final GoogleMap map)
+	/**
+	 * Check if the position request is out the radius of already fetched
+	 * territories. If not fetch territories from the server. Then add the
+	 * territories to the map.
+	 * 
+	 * @param location
+	 *            location that you want territories
+	 * @param map
+	 *            on witch one you want to add territories
+	 */
+	public void fetchTerritoriesForLocation(final LatLng location, final GoogleMap map)
 	{
 		if (!fetchRunning)
 		{
@@ -62,7 +86,7 @@ public class TerritoriesManager
 					if (status == Status.OK)
 					{
 						TerritoriesManager.this.territories.addAll(territories);
-						TerritoriesManager.this.setVisibleTerritories(location, map);
+						TerritoriesManager.this.setVisibleTerritories(map);
 						for (Territory territory : territories)
 						{
 							Math.max(farthestTerritory, Tools.distanceBetween(location.latitude, location.longitude, territory.getLatitude(), territory.getLongitude()));
@@ -74,6 +98,16 @@ public class TerritoriesManager
 		}
 	}
 
+	/**
+	 * Return the territory for location passed in parameter. In there are no
+	 * territory create a free one.
+	 * 
+	 * @param location
+	 *            location of the territory that you want.
+	 * @param map
+	 *            map on witch the territory is
+	 * @return the territory wanted
+	 */
 	public Territory getTerritoryForLocation(LatLng location, GoogleMap map)
 	{
 		Territory territory = null;
@@ -91,6 +125,13 @@ public class TerritoriesManager
 		return territory;
 	}
 
+	/**
+	 * Check if the territory is connected of one of the player or ally.
+	 * 
+	 * @param territory
+	 *            that we want to know if it's connected
+	 * @return true if the territory is connected
+	 */
 	public boolean isConnected(Territory territory)
 	{
 		double latitude = territory.getLatitude();
@@ -114,7 +155,13 @@ public class TerritoriesManager
 	|*							Private Methods							*|
 	\*------------------------------------------------------------------*/
 
-	private void setVisibleTerritories(LatLng location, GoogleMap map)
+	/**
+	 * Set all territory visible, and add they to the map
+	 * 
+	 * @param map
+	 *            the map witch has the territories
+	 */
+	private void setVisibleTerritories(GoogleMap map)
 	{
 		for (Territory territory : territories)
 		{

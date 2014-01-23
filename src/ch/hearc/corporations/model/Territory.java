@@ -1,3 +1,17 @@
+/*=====================================================================*
+| This file declares the following classes:
+|    Territory.java
+|
+| Description of the class Territory.java :
+| This abstract class contain all info of the territory.
+| And method for compute position, and display on the map
+|
+| <p>Copyright : EIAJ, all rights reserved</p>
+| @autor : Alexandre
+| @version : 3 déc. 2013
+|
+ *=====================================================================*/
+
 package ch.hearc.corporations.model;
 
 import android.graphics.Bitmap;
@@ -25,6 +39,7 @@ public abstract class Territory implements Comparable<Territory>
 	|*			  Static			*|
 	\*------------------------------*/
 
+	// Size of the territory in degree
 	public static final double	TERRITORY_SIZE_IN_LAT_LON	= 0.01D;
 
 	/*------------------------------------------------------------------*\
@@ -67,6 +82,17 @@ public abstract class Territory implements Comparable<Territory>
 	|*							Constructors							*|
 	\*------------------------------------------------------------------*/
 
+	/**
+	 * 
+	 * @param latitude
+	 *            of a point in the territory
+	 * @param longitude
+	 *            of a point in the territory
+	 * @param owner
+	 * @param timeOwned
+	 *            is the time in second since the player got it
+	 * @param revenue
+	 */
 	public Territory(double latitude, double longitude, Player owner, long timeOwned, int revenue)
 	{
 		this.owner = owner;
@@ -94,9 +120,10 @@ public abstract class Territory implements Comparable<Territory>
 	\*------------------------------------------------------------------*/
 
 	/**
-	 * Check if the current territory is in water. Check the four pixels in each
+	 * Check if the current territory is in water. Check four pixels in each
 	 * corner, and if in each corner at least one pixel is blue the territory is
-	 * in water.
+	 * in water. The delta and the offset is for not detect a border of an other
+	 * territory
 	 * 
 	 * @param projection
 	 *            a projection object for convert from/to screen coordinates
@@ -111,6 +138,8 @@ public abstract class Territory implements Comparable<Territory>
 		int WATER2 = 0x00ACCCFF;
 		int OFFSET = 10;
 		int DELTA = 8;
+
+		// get the coordinate in screen of a territory point
 		Point point = projection.toScreenLocation(new LatLng(latitudes[TOP_LEFT], longitudes[TOP_LEFT]));
 		int width = bitmap.getWidth();
 		int height = bitmap.getHeight();
@@ -142,6 +171,12 @@ public abstract class Territory implements Comparable<Territory>
 		return true;
 	}
 
+	/**
+	 * Check if the territory is too far of the home player location, for know
+	 * if the player can buy it.
+	 * 
+	 * @return true if the territory is too far
+	 */
 	public boolean isTooFar()
 	{
 		float limit = AccountController.getInstance().getProfile().getSkill(SkillType.purchaseDistance).getValue();
@@ -150,16 +185,36 @@ public abstract class Territory implements Comparable<Territory>
 		return limit < distance;
 	}
 
+	/**
+	 * Check if the point is in the territory
+	 * 
+	 * @param latitude
+	 *            of the point
+	 * @param longitude
+	 *            of the point
+	 * @return true if the point is in the territory
+	 */
 	public boolean isInBounds(double latitude, double longitude)
 	{
 		return (latitude < latitudes[TOP_LEFT] && latitude > latitudes[BOTTOM_LEFT] && longitude > longitudes[TOP_LEFT] && longitude < longitudes[TOP_RIGHT]);
 	}
 
+	/**
+	 * Check if the point passed in parameter is in this territory and if this
+	 * territory is a player one's or a ally one's
+	 * 
+	 * @param latitude
+	 * @param longitude
+	 * @return
+	 */
 	public boolean isAConnectedTerritory(double latitude, double longitude)
 	{
 		return isInBounds(latitude, longitude) && this.owner != null && (this.owner.isAlly() || this.owner.me());
 	}
 
+	/**
+	 * Update the territory type, and it color.
+	 */
 	public void updateType()
 	{
 		if (owner != null)
@@ -201,14 +256,21 @@ public abstract class Territory implements Comparable<Territory>
 	\*------------------------------------------------------------------*/
 
 	/**
+	 * Compute the correct location of the territory from the point passed in
+	 * parameter
+	 * 
 	 * @param latitude
+	 *            is a latitude in the territory
 	 * @param longitude
+	 *            is a longitude in the territory
 	 */
 	private void computeLocation(double latitude, double longitude)
 	{
 		boolean simple = true;
 		boolean isSpecial = this instanceof SpecialTerritory;
 		borderWidth = isSpecial ? BORDER_WIDTH_SPECIAL : BORDER_WIDTH;
+
+		// simple mean latitude == longitude, so non-square territory
 		if (simple)
 		{
 			double topLatitude = getTopLatitudeTerritoryForLatitude2(latitude);
@@ -259,6 +321,8 @@ public abstract class Territory implements Comparable<Territory>
 	}
 
 	/**
+	 * Create the polygonOptions for display the territory on the map
+	 * 
 	 * @param isSpecial
 	 *            true if it's a special territory
 	 */
@@ -269,18 +333,42 @@ public abstract class Territory implements Comparable<Territory>
 						new LatLng(latitudes[BOTTOM_LEFT], longitudes[BOTTOM_LEFT])).strokeColor(BORDER_COLOR).fillColor(type.getColor(isSpecial)).strokeWidth(borderWidth);
 	}
 
+	/**
+	 * Compute the left longitude of the territory from the longitude passed in
+	 * parameter.
+	 * 
+	 * @param longitude
+	 *            is a longitude in the territory
+	 * @return the left longitude of the territory
+	 */
 	private double getLeftLongitudeTerritoryForLatitudeAndLongitude2(double longitude)
 	{
 		int sign = (longitude >= 0) ? 1 : -1;
 		return Math.round((longitude - (longitude % TERRITORY_SIZE_IN_LAT_LON) * sign) / TERRITORY_SIZE_IN_LAT_LON) * TERRITORY_SIZE_IN_LAT_LON;
 	}
 
+	/**
+	 * Compute the top latitude of the territory from the latitude passed in
+	 * parameter.
+	 * 
+	 * @param latitude
+	 *            is a longitude in the territory
+	 * @return the top latitude of the territory
+	 */
 	private double getTopLatitudeTerritoryForLatitude2(double latitude)
 	{
 		int sign = (latitude >= 0) ? 1 : -1;
 		return Math.round((latitude + TERRITORY_SIZE_IN_LAT_LON - (latitude % TERRITORY_SIZE_IN_LAT_LON) * sign) / TERRITORY_SIZE_IN_LAT_LON) * TERRITORY_SIZE_IN_LAT_LON;
 	}
 
+	/**
+	 * Compute the left longitude of the territory from the longitude passed in
+	 * parameter. With a deformation for a square territory.
+	 * 
+	 * @param longitude
+	 *            is a longitude in the territory
+	 * @return the left longitude of the territory
+	 */
 	private double[] getLeftLongitudeTerritoryForLatitudeAndLongitude(double latitude, double longitude)
 	{
 		double deltaLon = 0.001D;
@@ -302,34 +390,36 @@ public abstract class Territory implements Comparable<Territory>
 
 	}
 
+	/**
+	 * Compute the top latitude of the territory from the latitude passed in
+	 * parameter. With a deformation for a square territory.
+	 * 
+	 * @param latitude
+	 *            is a longitude in the territory
+	 * @return the top latitude of the territory
+	 */
 	private double getTopLatitudeTerritoryForLatitude(double latitude)
 	{
 		Location.distanceBetween(0D, 0D, latitude, 0D, results);
 		float lat = results[0];
-		// Log.d("Log", Float.toString(results[0]));
-		// Log.d("Log", Double.toString(latitude));
 		int sign = (latitude >= 0) ? 1 : -1;
 		Location.distanceBetween(0D, 0D, sign * (results[0]) * deltaLat, 0D, results);
-		// Log.d("Log", Float.toString(results[0]));
-		// Log.d("Log", Double.toString(sign * (results[0]) * deltaLat));
 		double delta = (1 - lat / results[0]) / results[0];
 		lat -= delta * lat * results[0];
 		return sign * (lat - (lat % TERRITORY_SIZE_IN_METER)) * deltaLat;
 	}
 
+	/**
+	 * Compute the delta latitude, use after for have a square territory.
+	 * 
+	 * @return
+	 */
 	private double computeLatitudeDeltaForMeters()
 	{
 		double delta = 10D;
 		Location.distanceBetween(0D, 0D, delta, 0D, results);
 		double ratio = (1D / results[0]);
 		delta *= ratio;
-
-		// Location.distanceBetween(-90D, 0D, 90D, 0D, results);
-		// Log.d("Log", Float.toString(2 * results[0] / 1000)); // 40007.863km
-		//
-		// Location.distanceBetween(90D, 0D, 90D, 180D, results);
-		// Log.d("Log", Float.toString(2 * results[0] / 1000)); // 39807.188km
-
 		return delta;
 	}
 
@@ -405,6 +495,10 @@ public abstract class Territory implements Comparable<Territory>
 	|*				Set				*|
 	\*------------------------------*/
 
+	/**
+	 * Add the territory to the map
+	 * @param map is the map that will display the territory 
+	 */
 	public void setMap(GoogleMap map)
 	{
 		if (polygonOptions == null) createPolygonOptions(this instanceof SpecialTerritory);
@@ -413,11 +507,19 @@ public abstract class Territory implements Comparable<Territory>
 		polygonOptions = null;
 	}
 
+	/**
+	 * Set the territory visible
+	 * @param visible
+	 */
 	public void setVisible(boolean visible)
 	{
 		polygon.setVisible(visible);
 	}
 
+	/**
+	 * Change border size. And remove polygon if this is a free territory
+	 * @param highlighted
+	 */
 	public void setHighlighted(boolean highlighted)
 	{
 		if (!highlighted && type == TerritoyType.Free)

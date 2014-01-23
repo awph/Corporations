@@ -1,3 +1,15 @@
+/*=====================================================================*
+| This file declares the following classes:
+|    TerritoryInfoFragment.java
+|
+| Description of the class TerritoryInfoFragment.java :
+| View class for display the info of the selected territory
+|
+| <p>Copyright : EIAJ, all rights reserved</p>
+| @autor : Alexandre
+| @version : 3 déc. 2013
+|
+ *=====================================================================*/
 package ch.hearc.corporations.view;
 
 import android.annotation.TargetApi;
@@ -93,6 +105,12 @@ public class TerritoryInfoFragment extends Fragment
 	|*							Public Methods							*|
 	\*------------------------------------------------------------------*/
 
+	/**
+	 * Method used when need to update the territory info, change selected territory.
+	 * @param territory the selected territory
+	 * @param isConnected true if the territory is connected to ally or one of our
+	 * @return true if the fragment need to be display
+	 */
 	public boolean updateTerritoryInfo(Territory territory, boolean isConnected)
 	{
 		isCurrentTerritoryConnected = isConnected;
@@ -117,6 +135,9 @@ public class TerritoryInfoFragment extends Fragment
 	|*							Private Methods							*|
 	\*------------------------------------------------------------------*/
 
+	/**
+	 * Refresh view element
+	 */
 	private void loadInfo()
 	{
 		Player owner = territory.getOwner();
@@ -168,7 +189,7 @@ public class TerritoryInfoFragment extends Fragment
 		{
 			infos.append(String.format(getResources().getString(R.string.owner), owner.getName()));
 			infos.append("\n"
-					+ String.format(getResources().getString(R.string.ally), (owner.isAlly() ? getResources().getString(android.R.string.yes) : getResources().getString(android.R.string.no))));
+					+ String.format(getResources().getString(R.string.ally), (owner.isAlly() ? getResources().getString(R.string.yes) : getResources().getString(R.string.no))));
 			infos.append("\n" + String.format(getResources().getString(R.string.revenue), Tools.formatMoney(territory.getRevenue())));
 			if (territory instanceof PurchasableTerritory)
 			{
@@ -196,16 +217,28 @@ public class TerritoryInfoFragment extends Fragment
 		infoTextView.setText(infos);
 	}
 
+	/**
+	 * Hide the button passed in parameter
+	 * @param button to hide
+	 */
 	private void hideButton(Button button)
 	{
 		button.setVisibility(View.GONE);
 	}
 
+	/**
+	 * Show the button passed in parameter
+	 * @param button to show
+	 */
 	private void showButton(Button button)
 	{
 		button.setVisibility(View.VISIBLE);
 	}
 
+	/**
+	 * Set and update the ask for alliance button
+	 * @param ally is true if it's a ally
+	 */
 	private void setAskAllianceButton(final boolean ally)
 	{
 		showButton(secondButton);
@@ -227,6 +260,9 @@ public class TerritoryInfoFragment extends Fragment
 		});
 	}
 
+	/**
+	 * Set the change price button
+	 */
 	private void setChangePriceButton()
 	{
 		showButton(firstButton);
@@ -286,6 +322,9 @@ public class TerritoryInfoFragment extends Fragment
 		});
 	}
 
+	/**
+	 * Set the capture button
+	 */
 	private void setCaptureButton()
 	{
 		showButton(firstButton);
@@ -317,6 +356,10 @@ public class TerritoryInfoFragment extends Fragment
 		});
 	}
 
+	/**
+	 * Set the buy button, only if it price is > 0.
+	 * If it's < 0 the territory can't be buy
+	 */
 	private void setBuyButton()
 	{
 		if (((PurchasableTerritory) territory).getSalePrice() > 0)
@@ -368,6 +411,10 @@ public class TerritoryInfoFragment extends Fragment
 		}
 	}
 
+	/**
+	 * Set a gradient background 
+	 * @param gradientDrawable the color
+	 */
 	@SuppressWarnings("deprecation")
 	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 	private void setBackground(GradientDrawable gradientDrawable)

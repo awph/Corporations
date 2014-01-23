@@ -3,7 +3,7 @@
 |    TripDetailActivity.java
 |
 | Description of the class TripDetailActivity.java :
-|
+| View class for displays the detail of a trip.
 |
 | <p>Copyright : EIAJ, all rights reserved</p>
 | @autor : Alexandre
@@ -47,12 +47,18 @@ public class TripDetailActivity extends Activity
 
 		((TextView) findViewById(R.id.trip_date_text_view)).setText(String.format(getResources().getString(R.string.trip_detail_activity_date),
 				SimpleDateFormat.getDateInstance().format(((Date) getIntent().getExtras().get(DATE)))));
-		((TextView) findViewById(R.id.trip_time_text_view)).setText(String.format(getResources().getString(R.string.trip_detail_activity_time), Long.toString(getIntent().getExtras().getLong(TIME))));
+		long minutes = getIntent().getExtras().getLong(TIME) / 60L;
+		long hours = minutes / 60L;
+		((TextView) findViewById(R.id.trip_time_text_view)).setText(String.format(getResources().getString(R.string.trip_detail_activity_time), Long.toString(hours), Long.toString(minutes - (hours * 60L))));
 
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		setBackground(CorporationsConfiguration.BACKGROUND_TRIP);
 	}
 
+	/**
+	 * Set a gradient background 
+	 * @param gradientDrawable the color
+	 */
 	@SuppressWarnings("deprecation")
 	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 	private void setBackground(GradientDrawable gradientDrawable)

@@ -3,7 +3,8 @@
 |    Trip.java
 |
 | Description of the class Trip.java :
-|
+| This class contain all info for a trip.
+| Implement methods for compute trip info receive from trip service. 
 |
 | <p>Copyright : EIAJ, all rights reserved</p>
 | @autor : Alexandre
@@ -59,6 +60,9 @@ public class Trip implements Serializable
 	|*							Constructors							*|
 	\*------------------------------------------------------------------*/
 
+	/**
+	 * Constructor used when trip is fetched from the server, and just need to stock info.
+	 */
 	public Trip(float distance, long secondes, long money, int experience, Date date)
 	{
 		this.finished = true;
@@ -70,6 +74,9 @@ public class Trip implements Serializable
 		this.date = date;
 	}
 
+	/**
+	 * Constructor used when we need a new trip. And record id.
+	 */
 	public Trip()
 	{
 		this.date = Calendar.getInstance().getTime();
@@ -84,6 +91,12 @@ public class Trip implements Serializable
 	|*							Public Methods							*|
 	\*------------------------------------------------------------------*/
 
+	/**
+	 * Add the last position to the trip (when the player is back home).
+	 * And compute time.
+	 * @param latitude the last latitude
+	 * @param longitude the last longitude
+	 */
 	public void endTrip(double latitude, double longitude)
 	{
 		if (this.latitudes.size() <= 0 && this.longitudes.size() <= 0) return;
@@ -93,6 +106,11 @@ public class Trip implements Serializable
 		this.secondes = (endTime - startTime) / 1000;
 	}
 
+	/**
+	 * Add a checkpoint to the trip
+	 * @param latitude
+	 * @param longitude
+	 */
 	public void addLocation(double latitude, double longitude)
 	{
 		this.latitudes.add(latitude);
@@ -104,6 +122,9 @@ public class Trip implements Serializable
 	|*							Private Methods							*|
 	\*------------------------------------------------------------------*/
 
+	/**
+	 * Compute the distance of the last to location and add it the total
+	 */
 	private void computeLastDelta()
 	{
 		if (this.latitudes.size() <= 1 && this.longitudes.size() <= 1) return;
@@ -163,7 +184,7 @@ public class Trip implements Serializable
 	\*------------------------------*/
 
 	/**
-	 * @return the if this trip is finished
+	 * @return true if this trip is finished
 	 */
 	public boolean isFinished()
 	{
@@ -180,6 +201,9 @@ public class Trip implements Serializable
 
 	/**
 	 * /!\ This method wait for the server response. (Sync)
+	 * 
+	 * Send the trip to the server in current thread. Need to be called by a non-main thread.
+	 * We need to wait for the server response for remove the trip on the device
 	 */
 	public void send()
 	{

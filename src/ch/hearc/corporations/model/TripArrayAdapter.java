@@ -1,9 +1,9 @@
 /*=====================================================================*
 | This file declares the following classes:
-|    PlayerArrayAdapter.java
+|    TripArrayAdapter.java
 |
-| Description of the class PlayerArrayAdapter.java :
-|
+| Description of the class TripArrayAdapter.java :
+| Class help display list of trips
 |
 | <p>Copyright : EIAJ, all rights reserved</p>
 | @autor : Alexandre

@@ -3,7 +3,7 @@
 |    SkillFragment.java
 |
 | Description of the class SkillFragment.java :
-|
+| View class for displays a skill, this the name, value, update button.
 |
 | <p>Copyright : EIAJ, all rights reserved</p>
 | @autor : Alexandre
@@ -96,11 +96,18 @@ public class SkillFragment extends Fragment
 		return view;
 	}
 
+	/**
+	 * Set the skillType of the fragment
+	 * @param skillType the skillType
+	 */
 	public void setSkillType(SkillType skillType)
 	{
 		this.skillType = skillType;
 	}
 
+	/**
+	 * Update information of the skill.
+	 */
 	public void updateLevel()
 	{
 		Skill skill = AccountController.getInstance().getProfile().getSkill(skillType);

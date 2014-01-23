@@ -1,3 +1,16 @@
+/*=====================================================================*
+| This file declares the following classes:
+|    DataLoader.java
+|
+| Description of the class DataLoader.java :
+| This class contains all methods for use api services.
+|
+| <p>Copyright : EIAJ, all rights reserved</p>
+| @autor : Alexandre
+| @version : 3 déc. 2013
+|
+ *=====================================================================*/
+
 package ch.hearc.corporations.controller;
 
 import java.io.BufferedReader;
@@ -46,6 +59,16 @@ public class DataLoader
 		return instance;
 	}
 
+	/**
+	 * Fetch the leaderboad
+	 * 
+	 * @param from
+	 *            first player rank
+	 * @param to
+	 *            last player rank
+	 * @param dataLoaderListener
+	 *            callback listener
+	 */
 	public void getLeaderboard(int from, int to, DataLoaderListener dataLoaderListener)
 	{
 		Map<String, String> parameters = new HashMap<String, String>();
@@ -55,6 +78,12 @@ public class DataLoader
 		request(parameters, ApiRequestType.leaderboard, dataLoaderListener);
 	}
 
+	/**
+	 * Fetch the player profile
+	 * 
+	 * @param dataLoaderListener
+	 *            callback listener
+	 */
 	public void getProfile(DataLoaderListener dataLoaderListener)
 	{
 		Map<String, String> parameters = new HashMap<String, String>();
@@ -62,6 +91,14 @@ public class DataLoader
 		request(parameters, ApiRequestType.profile, dataLoaderListener);
 	}
 
+	/**
+	 * Fetch the trips
+	 * 
+	 * @param number
+	 *            quantity of trips
+	 * @param dataLoaderListener
+	 *            callback listener
+	 */
 	public void getTrips(int number, DataLoaderListener dataLoaderListener)
 	{
 		Map<String, String> parameters = new HashMap<String, String>();
@@ -70,6 +107,16 @@ public class DataLoader
 		request(parameters, ApiRequestType.trips, dataLoaderListener);
 	}
 
+	/**
+	 * Fetch the territories from server for passed location
+	 * 
+	 * @param coordinate
+	 *            location that you want territory
+	 * @param number
+	 *            quantity of territories
+	 * @param dataLoaderListener
+	 *            callback listener
+	 */
 	public void getTerritoriesForLocation(LatLng coordinate, int number, DataLoaderListener dataLoaderListener)
 	{
 		Map<String, String> parameters = new HashMap<String, String>();
@@ -80,6 +127,14 @@ public class DataLoader
 		request(parameters, ApiRequestType.territoriesFetching, dataLoaderListener);
 	}
 
+	/**
+	 * Purchase territory on server
+	 * 
+	 * @param territory
+	 *            the territory to purchase
+	 * @param dataLoaderListener
+	 *            callback listener
+	 */
 	public void purchaseTerritory(PurchasableTerritory territory, DataLoaderListener dataLoaderListener)
 	{
 		Map<String, String> parameters = new HashMap<String, String>();
@@ -91,6 +146,14 @@ public class DataLoader
 		request(parameters, ApiRequestType.territoryPurchasing, dataLoaderListener);
 	}
 
+	/**
+	 * Capture territory on sever
+	 * 
+	 * @param territory
+	 *            the territory to capture
+	 * @param dataLoaderListener
+	 *            callback listener
+	 */
 	public void captureTerritory(Territory territory, DataLoaderListener dataLoaderListener)
 	{
 		Map<String, String> parameters = new HashMap<String, String>();
@@ -101,6 +164,16 @@ public class DataLoader
 		request(parameters, ApiRequestType.territoryCapturing, dataLoaderListener);
 	}
 
+	/**
+	 * Login to the server
+	 * 
+	 * @param facebookToken
+	 *            the Facebook Access token
+	 * @param home
+	 *            the home location
+	 * @param dataLoaderListener
+	 *            callback listener
+	 */
 	public void loginToServer(String facebookToken, LatLng home, DataLoaderListener dataLoaderListener)
 	{
 		Map<String, String> parameters = new HashMap<String, String>();
@@ -112,6 +185,15 @@ public class DataLoader
 		request(parameters, ApiRequestType.connection, dataLoaderListener);
 	}
 
+	/**
+	 * Update alliance between the current player and the player passed in
+	 * parameter
+	 * 
+	 * @param player
+	 *            the player that we want to ally with
+	 * @param dataLoaderListener
+	 *            callback listener
+	 */
 	public void updateAlliance(Player player, DataLoaderListener dataLoaderListener)
 	{
 		Map<String, String> parameters = new HashMap<String, String>();
@@ -121,6 +203,14 @@ public class DataLoader
 		request(parameters, ApiRequestType.updateAlliance, dataLoaderListener);
 	}
 
+	/**
+	 * Upload trip to the server
+	 * 
+	 * @param trip
+	 *            the trip to upload
+	 * @param dataLoaderListener
+	 *            callback listener
+	 */
 	public void uploadTrip(Trip trip, DataLoaderListener dataLoaderListener)
 	{
 		Map<String, String> parameters = new HashMap<String, String>();
@@ -131,11 +221,21 @@ public class DataLoader
 		request(parameters, ApiRequestType.uploadTrip, dataLoaderListener);
 	}
 
-	public void updateProfile(Profile profile, int updatePrice, DataLoaderListener dataLoaderListener)
+	/**
+	 * Update profile on server
+	 * 
+	 * @param profile
+	 *            the profile updated
+	 * @param experiencePoints
+	 *            new experiences points
+	 * @param dataLoaderListener
+	 *            callback listener
+	 */
+	public void updateProfile(Profile profile, int experiencePoints, DataLoaderListener dataLoaderListener)
 	{
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put(DataLoaderUtil.RequestParameters.UpdateProfile.KEY_WHAT, DataLoaderUtil.RequestParameters.UpdateProfile.WHAT);
-		parameters.put(DataLoaderUtil.RequestParameters.UpdateProfile.KEY_EXPERIENCE_POINTS_PRICE, Integer.toString(updatePrice));
+		parameters.put(DataLoaderUtil.RequestParameters.UpdateProfile.KEY_EXPERIENCE_POINTS_PRICE, Integer.toString(experiencePoints));
 		parameters.put(DataLoaderUtil.RequestParameters.UpdateProfile.KEY_PURCHASE_PRICE_SKILL_LEVEL, Integer.toString(profile.getSkill(SkillType.purchasePrice).getLevel()));
 		parameters.put(DataLoaderUtil.RequestParameters.UpdateProfile.KEY_PURCHASE_DISTANCE_SKILL_LEVEL, Integer.toString(profile.getSkill(SkillType.purchaseDistance).getLevel()));
 		parameters.put(DataLoaderUtil.RequestParameters.UpdateProfile.KEY_EXPERIENCE_LIMIT_SKILL_LEVEL, Integer.toString(profile.getSkill(SkillType.experienceLimit).getLevel()));
@@ -145,6 +245,16 @@ public class DataLoader
 		request(parameters, ApiRequestType.updateProfile, dataLoaderListener);
 	}
 
+	/**
+	 * Change the price of the territory on the server
+	 * 
+	 * @param territory
+	 *            territory that we want to change price
+	 * @param newPrice
+	 *            the new price that we want
+	 * @param dataLoaderListener
+	 *            callback listener
+	 */
 	public void changeTerritoryPrice(PurchasableTerritory territory, long newPrice, DataLoaderListener dataLoaderListener)
 	{
 		Map<String, String> parameters = new HashMap<String, String>();
@@ -159,6 +269,16 @@ public class DataLoader
 	{
 	}
 
+	/**
+	 * Create and execute the query to the API
+	 * 
+	 * @param arguments
+	 *            the arguments for the query
+	 * @param apiRequestType
+	 *            the type of query
+	 * @param listener
+	 *            callback listener
+	 */
 	private void request(Map<String, String> arguments, final ApiRequestType apiRequestType, final DataLoaderListener listener)
 	{
 		arguments.put(DataLoaderUtil.RequestParameters.All.KEY_IDENTIFIER, AccountController.getInstance().getIdentifier());
@@ -172,7 +292,6 @@ public class DataLoader
 			url.append("&");
 		}
 		url.deleteCharAt(url.length() - 1);
-		Log.e("DataLoader: request", url.toString());
 
 		new AsyncTask<String, Void, JSONObject>() {
 
@@ -190,6 +309,17 @@ public class DataLoader
 		}.execute(url.toString());
 	}
 
+	/**
+	 * Evaluate the response of the server in JSON and call the callback with
+	 * correct info
+	 * 
+	 * @param result
+	 *            the result in JSON receive from the server
+	 * @param apiRequestType
+	 *            type of request
+	 * @param listener
+	 *            the callback
+	 */
 	protected void requestFinished(JSONObject result, ApiRequestType apiRequestType, DataLoaderListener listener)
 	{
 		Status status = null;
@@ -355,6 +485,12 @@ public class DataLoader
 		}
 	}
 
+	/**
+	 * Update the profile from the info get in the json
+	 * 
+	 * @param jsonObject
+	 *            the json
+	 */
 	private void updateProfile(JSONObject jsonObject)
 	{
 		Profile profile = AccountController.getInstance().getProfile();
@@ -441,7 +577,6 @@ public class DataLoader
 			}
 			is.close();
 			result = sb.toString();
-			Log.e("DataLoader: result", result);
 		}
 		catch (Exception e)
 		{

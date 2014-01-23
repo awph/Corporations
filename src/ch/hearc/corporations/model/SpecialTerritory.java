@@ -3,7 +3,7 @@
 |    SpecialTerritory.java
 |
 | Description of the class SpecialTerritory.java :
-|
+| This class represent a special territory and the capture action.
 |
 | <p>Copyright : EIAJ, all rights reserved</p>
 | @autor : Alexandre
@@ -39,8 +39,15 @@ public class SpecialTerritory extends Territory
 	|*							Public Methods							*|
 	\*------------------------------------------------------------------*/
 
+	/**
+	 * Capture the territory, so check if it's possible, and request the server if it is.
+	 * @param callback is use for notify the controller that the territory is captured
+	 * @param location is the location of the player
+	 * @return true if it can be captured
+	 */
 	public boolean capture(final Callback callback, Location location)
 	{
+		// Check if the player is in the territory
 		boolean canCapture = isInBounds(location.getLatitude(), location.getLongitude());
 		if (canCapture)
 		{

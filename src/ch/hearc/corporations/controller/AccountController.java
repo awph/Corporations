@@ -1,3 +1,16 @@
+/*=====================================================================*
+| This file declares the following classes:
+|    AccountController.java
+|
+| Description of the class AccountController.java :
+| This class let access to the profile info for all the app.
+|
+| <p>Copyright : EIAJ, all rights reserved</p>
+| @autor : Alexandre
+| @version : 3 déc. 2013
+|
+ *=====================================================================*/
+
 package ch.hearc.corporations.controller;
 
 import java.io.UnsupportedEncodingException;
@@ -41,6 +54,9 @@ public class AccountController
 	|*			  Interface			*|
 	\*------------------------------*/
 
+	/**
+	 * Callback service for update player infos
+	 */
 	public interface ProfileInfoDisplayer
 	{
 		void updateProfileInfo();
@@ -64,17 +80,30 @@ public class AccountController
 	|*							Public Methods							*|
 	\*------------------------------------------------------------------*/
 
+	/**
+	 * @return the static instance of the class
+	 */
 	public static AccountController getInstance()
 	{
 		if (instance == null) instance = new AccountController();
 		return instance;
 	}
 
+	/**
+	 * Check if the Facebook ID is the same that the one is saved.
+	 * 
+	 * @param facebookID
+	 *            is the new one
+	 * @return true if they are the same
+	 */
 	public boolean checkFacebookID(String facebookID)
 	{
 		return this.facebookID.equals(facebookID);
 	}
 
+	/**
+	 * Re-load the profile info from the server
+	 */
 	public void updateProfile()
 	{
 		DataLoader.getInstance().getProfile(new DataLoaderAdapter() {
@@ -93,12 +122,18 @@ public class AccountController
 	|*							Private Methods							*|
 	\*------------------------------------------------------------------*/
 
+	/**
+	 * Restore FacebookID from the preferences
+	 */
 	private void restoreFacebookID()
 	{
 		SharedPreferences preferences = Corporations.getAppContext().getSharedPreferences(PREFERENCES_FILENAME, Context.MODE_PRIVATE);
 		facebookID = preferences.getString(FACEBOOK_ID_KEY, null);
 	}
 
+	/**
+	 * Restore the home location from the preferences
+	 */
 	private void restoreHome()
 	{
 		SharedPreferences preferences = Corporations.getAppContext().getSharedPreferences(PREFERENCES_FILENAME, Context.MODE_PRIVATE);
@@ -110,6 +145,9 @@ public class AccountController
 			home = null;
 	}
 
+	/**
+	 * Save FacebookID in the preferences
+	 */
 	private void saveAccount()
 	{
 		SharedPreferences preferences = Corporations.getAppContext().getSharedPreferences(PREFERENCES_FILENAME, Context.MODE_PRIVATE);
@@ -118,6 +156,9 @@ public class AccountController
 		editor.commit();
 	}
 
+	/**
+	 * Save the home location in the preferences
+	 */
 	private void saveHome()
 	{
 		SharedPreferences preferences = Corporations.getAppContext().getSharedPreferences(PREFERENCES_FILENAME, Context.MODE_PRIVATE);
@@ -130,6 +171,10 @@ public class AccountController
 		editor.commit();
 	}
 
+	/**
+	 * Generate the identifier for the unique server identification. Make a SHA1
+	 * with the FacebookId and the device ID
+	 */
 	private void generateIdentifier()
 	{
 		identifier = null;
@@ -154,22 +199,34 @@ public class AccountController
 	|*				Get				*|
 	\*------------------------------*/
 
+	/**
+	 * @return the unique identifier
+	 */
 	public String getIdentifier()
 	{
 		return identifier;
 	}
 
+	/**
+	 * @return the Facebook ID
+	 */
 	public String getFacebookID()
 	{
 		return facebookID;
 	}
 
+	/**
+	 * @return the player profile
+	 */
 	public Profile getProfile()
 	{
 		if (profile == null) profile = new Profile();
 		return profile;
 	}
 
+	/**
+	 * @return the home location
+	 */
 	public LatLng getHome()
 	{
 		return home;
@@ -180,6 +237,8 @@ public class AccountController
 	\*------------------------------*/
 
 	/**
+	 * Set the callback function for update profile info
+	 * 
 	 * @param profileInfoDisplayer
 	 *            the profileInfoDisplayer to set
 	 */
@@ -188,6 +247,12 @@ public class AccountController
 		this.profileInfoDisplayer = profileInfoDisplayer;
 	}
 
+	/**
+	 * Set the Facebook ID
+	 * 
+	 * @param facebookID
+	 *            the facebookID to set
+	 */
 	public void setFacebookID(String facebookID)
 	{
 		this.facebookID = facebookID;
@@ -195,6 +260,12 @@ public class AccountController
 		saveAccount();
 	}
 
+	/**
+	 * Set the profile
+	 * 
+	 * @param profile
+	 *            the profile to set
+	 */
 	public void setProfile(Profile profile)
 	{
 		this.profile = profile;

@@ -3,7 +3,7 @@
 |    DataLoaderUtil.java
 |
 | Description of the class DataLoaderUtil.java :
-|
+| This class contains all key for use in the api.
 |
 | <p>Copyright : EIAJ, all rights reserved</p>
 | @autor : Alexandre

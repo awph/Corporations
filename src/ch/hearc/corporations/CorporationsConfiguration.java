@@ -3,7 +3,7 @@
 |    CorporationsConfiguration.java
 |
 | Description of the class CorporationsConfiguration.java :
-|
+| This class contain info for all the app.
 |
 | <p>Copyright : EIAJ, all rights reserved</p>
 | @autor : Alexandre
@@ -19,10 +19,11 @@ import android.graphics.drawable.GradientDrawable;
  * @author Alexandre
  * 
  */
-public class CorporationsConfiguration
+public final class CorporationsConfiguration
 {
 	public static final String				SERVER_PATH						= "https://corporation-perezapp.rhcloud.com/";
 	public static final String				API_PATH						= SERVER_PATH + "api.php";
+	
 	public static final GradientDrawable	BACKGROUND_TRANSPARENT_FREE		= new GradientDrawable(GradientDrawable.Orientation.BR_TL, new int[] { 0xEE3A3F44, 0xEE707A85 });
 	public static final GradientDrawable	BACKGROUND_TRANSPARENT_ENEMY	= new GradientDrawable(GradientDrawable.Orientation.BR_TL, new int[] { 0xEEDF5D07, 0xEEFF0000 });
 	public static final GradientDrawable	BACKGROUND_TRANSPARENT_ALLY		= new GradientDrawable(GradientDrawable.Orientation.BR_TL, new int[] { 0xEE2980B9, 0xEE54AEEB });

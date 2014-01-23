@@ -1,3 +1,17 @@
+/*=====================================================================*
+| This file declares the following enum:
+|    SkillType.java
+|
+| Description of the emum SkillType.java :
+| This enum contains the different type of skill.
+| Each skill have different value and description.
+|
+| <p>Copyright : EIAJ, all rights reserved</p>
+| @autor : Alexandre
+| @version : 3 déc. 2013
+|
+ *=====================================================================*/
+
 package ch.hearc.corporations.model;
 
 import ch.hearc.corporations.Corporations;
@@ -36,21 +50,33 @@ public enum SkillType
 	|*				Get				*|
 	\*------------------------------*/
 
+	/**
+	 * @return the name of the skill
+	 */
 	public String getName()
 	{
 		return name;
 	}
 
+	/**
+	 * @return the number of the skill, for use in arrays
+	 */
 	public int getNumber()
 	{
 		return number;
 	}
 
+	/**
+	 * @return the description of the skill
+	 */
 	public String getDescription()
 	{
 		return description;
 	}
 
+	/**
+	 * @return the value of the skill, value different for each skill
+	 */
 	public float getExplicitValueSkills()
 	{
 		float resultValue = 0;

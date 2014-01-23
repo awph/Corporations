@@ -3,7 +3,7 @@
 |    OnBoorBroadcastReceiver.java
 |
 | Description of the class OnBoorBroadcastReceiver.java :
-|
+| This is a broadcast receiver for start the trip service
 |
 | <p>Copyright : EIAJ, all rights reserved</p>
 | @autor : Alexandre

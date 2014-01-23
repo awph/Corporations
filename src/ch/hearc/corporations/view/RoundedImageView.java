@@ -1,3 +1,17 @@
+/*=====================================================================*
+| This file declares the following classes:
+|    RoundedImageView.java
+|
+| Description of the class RoundedImageView.java :
+| ImageView class for displays rounded imageView
+| Based on http://stackoverflow.com/a/16208548/2648956
+|
+| <p>Copyright : EIAJ, all rights reserved</p>
+| @autor : Alexandre
+| @version : 3 déc. 2013
+|
+ *=====================================================================*/
+
 package ch.hearc.corporations.view;
 
 import android.content.Context;
@@ -18,8 +32,6 @@ public class RoundedImageView extends ImageView
 {
 	private int	borderColor	= Color.TRANSPARENT;
 	private int	borderWidth	= 0;
-
-	/* http://stackoverflow.com/a/16208548/2648956 */
 
 	public RoundedImageView(Context context)
 	{
@@ -50,6 +62,14 @@ public class RoundedImageView extends ImageView
 		canvas.drawBitmap(roundBitmap, 0, 0, null);
 	}
 
+	/**
+	 * Create a round image with a border
+	 * @param bmp the image source
+	 * @param radius the radius of the rounded image
+	 * @param borderColor the color of the border
+	 * @param borderWidht the size of the border
+	 * @return the rounded image
+	 */
 	public static Bitmap getCroppedBitmap(Bitmap bmp, int radius, int borderColor, int borderWidht)
 	{
 		Bitmap sbmp;

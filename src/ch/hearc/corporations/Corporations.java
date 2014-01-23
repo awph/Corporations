@@ -13,6 +13,9 @@ public class Corporations extends Application
 		Corporations.context = getApplicationContext();
 	}
 
+	/**
+	 * @return the app context
+	 */
 	public static Context getAppContext()
 	{
 		return Corporations.context;

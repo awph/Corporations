@@ -3,7 +3,7 @@
 |    Skill.java
 |
 | Description of the class Skill.java :
-|
+| Represent a skill of the player.
 |
 | <p>Copyright : EIAJ, all rights reserved</p>
 | @autor : Alexandre
@@ -19,27 +19,13 @@ package ch.hearc.corporations.model;
  */
 public class Skill
 {
-	/*------------------------------------------------------------------*\
-	|*							Public Attributes						*|
-	\*------------------------------------------------------------------*/
-
-	/*------------------------------*\
-	|*			  Static			*|
-	\*------------------------------*/
-
-	public static final int	SKILL_PURCHASE_PRICE			= 0;
-	public static final int	SKILL_PURCHASE_DISTANCE			= 1;
-	public static final int	SKILL_EXPERIENCE_LIMIT			= 2;
-	public static final int	SKILL_MONEY_LIMIT				= 3;
-	public static final int	SKILL_EXPERIENCE_QUANTITY_FOUND	= 4;
-	public static final int	SKILL_ALLIANCE_PRICE			= 5;
 
 	/*------------------------------------------------------------------*\
 	|*							Private Attributes						*|
 	\*------------------------------------------------------------------*/
 
-	private SkillType		type;
-	private int				level;
+	private SkillType	type;
+	private int			level;
 
 	/*------------------------------------------------------------------*\
 	|*							Constructors							*|
@@ -55,6 +41,9 @@ public class Skill
 	|*							Public Methods							*|
 	\*------------------------------------------------------------------*/
 
+	/**
+	 * Level up the level
+	 */
 	public void upgrade()
 	{
 		level++;
@@ -64,16 +53,25 @@ public class Skill
 	|*				Get				*|
 	\*------------------------------*/
 
+	/**
+	 * @return the type of the level
+	 */
 	public SkillType getType()
 	{
 		return type;
 	}
 
+	/**
+	 * @return the description of the level, with this advantage
+	 */
 	public String getDescription()
 	{
 		return String.format(type.getDescription(), ((int) type.getExplicitValueSkills() * level));
 	}
 
+	/**
+	 * @return the value of the advantage for the skill
+	 */
 	public float getValue()
 	{
 		return type.getExplicitValueSkills() * level;

@@ -3,7 +3,7 @@
 |    TrakingService.java
 |
 | Description of the class TrakingService.java :
-|
+| This class is a background service that record user location.
 |
 | <p>Copyright : EIAJ, all rights reserved</p>
 | @autor : Alexandre
@@ -104,7 +104,7 @@ public class TripService extends Service implements LocationListener
 		// Toast.makeText(this, "Trip service started",
 		// Toast.LENGTH_LONG).show();
 		locationClient.connect();
-		Log.e(TAG, "Received start id " + startId + ": " + intent);
+		Log.i(TAG, "Received start id " + startId + ": " + intent);
 		return START_STICKY;
 	}
 
@@ -118,7 +118,6 @@ public class TripService extends Service implements LocationListener
 	public void onDestroy()
 	{
 		running = false;
-		Log.e(TAG, "onDestroy");
 		super.onDestroy();
 	}
 
@@ -129,7 +128,6 @@ public class TripService extends Service implements LocationListener
 	@Override
 	public void onLocationChanged(Location location)
 	{
-		Log.e(TAG, "onLocationChanged -> " + location.toString());
 		TripManager.addLocation(this, location.getLatitude(), location.getLongitude());
 	}
 

@@ -3,7 +3,7 @@
 |    PlayerArrayAdapter.java
 |
 | Description of the class PlayerArrayAdapter.java :
-|
+| This class help to display the user in the leaderboard.
 |
 | <p>Copyright : EIAJ, all rights reserved</p>
 | @autor : Alexandre
@@ -82,6 +82,8 @@ public class PlayerArrayAdapter extends ArrayAdapter<Player>
 		rank.setText(Integer.toString(player.getRank()));
 		name.setText(player.getName());
 		numberTerritories.setText(Integer.toString(player.getNumberTerritories()));
+		
+		// Set the correct color for the type of player (ally/current player/other)
 		Resources resources = Corporations.getAppContext().getResources();
 		if (player.getUserId().equals(AccountController.getInstance().getProfile().getUserId()))
 		{

@@ -1,3 +1,16 @@
+/*=====================================================================*
+| This file declares the following enum:
+|    TerritoyType.java
+|
+| Description of the emum TerritoyType.java :
+| This enum contains the different type of territory. Each type has a different color.
+|
+| <p>Copyright : EIAJ, all rights reserved</p>
+| @autor : Alexandre
+| @version : 3 déc. 2013
+|
+ *=====================================================================*/
+
 package ch.hearc.corporations.model;
 
 import android.graphics.Color;
@@ -26,6 +39,10 @@ public enum TerritoyType
 	|*				Get				*|
 	\*------------------------------*/
 
+	/** 
+	 * @param isSpecial true if it's a special territory
+	 * @return the color of the territory, the alpha is bigger if it's a special one.
+	 */
 	public int getColor(boolean isSpecial)
 	{
 		return color + (isSpecial ? SPECIAL_ALPHA_OFFSET : 0);

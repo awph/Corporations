@@ -59,6 +59,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center|center_vertical"
         android:gravity="center"
+        android:contentDescription="@string/icon_school"
         android:src="@drawable/hearc_logo" />
 
 </LinearLayout>

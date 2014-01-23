@@ -3,7 +3,7 @@
 |    Profile.java
 |
 | Description of the class Profile.java :
-|
+| This class represent the profile of the player.
 |
 | <p>Copyright : EIAJ, all rights reserved</p>
 | @autor : Alexandre
@@ -28,6 +28,7 @@ public class Profile extends Player
 	|*							Private Attributes						*|
 	\*------------------------------------------------------------------*/
 
+	// identifier for check server side
 	private String	identifier;
 	private long	currentMoney;
 	private long	currentRevenue;
@@ -51,12 +52,13 @@ public class Profile extends Player
 		this.experiencePoints = experiencePoints;
 		this.home = home;
 		this.skills = new Skill[6];
-		this.skills[Skill.SKILL_PURCHASE_PRICE] = new Skill(SkillType.purchasePrice, purchasePriceSkillLevel);
-		this.skills[Skill.SKILL_PURCHASE_DISTANCE] = new Skill(SkillType.purchaseDistance, purchaseDistanceSkillLevel);
-		this.skills[Skill.SKILL_EXPERIENCE_LIMIT] = new Skill(SkillType.experienceLimit, experienceLimitSkillLevel);
-		this.skills[Skill.SKILL_MONEY_LIMIT] = new Skill(SkillType.moneyLimit, moneyLimitSkillLevel);
-		this.skills[Skill.SKILL_EXPERIENCE_QUANTITY_FOUND] = new Skill(SkillType.experienceQuantityFound, experienceQuantityFoundSkillLevel);
-		this.skills[Skill.SKILL_ALLIANCE_PRICE] = new Skill(SkillType.alliancePrice, alliancePriceSkillLevel);
+		
+		this.skills[SkillType.purchasePrice.getNumber()] = new Skill(SkillType.purchasePrice, purchasePriceSkillLevel);
+		this.skills[SkillType.purchaseDistance.getNumber()] = new Skill(SkillType.purchaseDistance, purchaseDistanceSkillLevel);
+		this.skills[SkillType.experienceLimit.getNumber()] = new Skill(SkillType.experienceLimit, experienceLimitSkillLevel);
+		this.skills[SkillType.moneyLimit.getNumber()] = new Skill(SkillType.moneyLimit, moneyLimitSkillLevel);
+		this.skills[SkillType.experienceQuantityFound.getNumber()] = new Skill(SkillType.experienceQuantityFound, experienceQuantityFoundSkillLevel);
+		this.skills[SkillType.alliancePrice.getNumber()] = new Skill(SkillType.alliancePrice, alliancePriceSkillLevel);
 	}
 
 	public Profile()
@@ -123,16 +125,26 @@ public class Profile extends Player
 		return experiencePoints;
 	}
 
+	/**
+	 * @return the money earned during trips
+	 */
 	public long getTripMoneyEarned()
 	{
 		return tripMoneyEarned;
 	}
 
+	/**
+	 * @param skillType is the skill wanted
+	 * @return the skill that correspond to the argument
+	 */
 	public Skill getSkill(SkillType skillType)
 	{
 		return skills[skillType.getNumber()];
 	}
 
+	/**
+	 * @return the home location
+	 */
 	public LatLng getHome()
 	{
 		return home;
@@ -178,6 +190,10 @@ public class Profile extends Player
 		this.experiencePoints = experiencePoints;
 	}
 
+	/**
+	 * @param tripMoneyEarned
+	 *            the tripMoneyEarned to set
+	 */
 	public void setTripMoneyEarned(long tripMoneyEarned)
 	{
 		this.tripMoneyEarned = tripMoneyEarned;
@@ -201,6 +217,11 @@ public class Profile extends Player
 		this.skills = skills;
 	}
 
+	/**
+	 * Set the level of the skill wanted
+	 * @param skillType is the skill to update
+	 * @param level is the new level
+	 */
 	public void setSkillLevel(SkillType skillType, int level)
 	{
 		skills[skillType.getNumber()].setLevel(level);

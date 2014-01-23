@@ -3,7 +3,7 @@
 |    Player.java
 |
 | Description of the class Player.java :
-|
+| This class represent a player.
 |
 | <p>Copyright : EIAJ, all rights reserved</p>
 | @autor : Alexandre
@@ -39,6 +39,7 @@ public class Player
 	|*							Protected Attributes					*|
 	\*------------------------------------------------------------------*/
 
+	// userId is the Facebook id
 	protected String		userId;
 	protected String		name;
 	protected int			rank;
@@ -79,6 +80,10 @@ public class Player
 	|*							Public Methods							*|
 	\*------------------------------------------------------------------*/
 
+	/**
+	 * Update the alliance between this player and the logged player
+	 * @param callback for notify the controller
+	 */
 	public void updateAlliance(final Callback callback)
 	{
 		final boolean isAlly = this.ally;
@@ -104,9 +109,21 @@ public class Player
 		});
 	}
 
+	/**
+	 * Add the territory to the player
+	 * @param territory
+	 */
 	public void addTerritory(Territory territory)
 	{
 		territories.add(territory);
+	}
+
+	/**
+	 * @return true if this player is the player logged in the game
+	 */
+	public boolean me()
+	{
+		return userId.equals(AccountController.getInstance().getFacebookID());
 	}
 
 	@Override
@@ -119,6 +136,9 @@ public class Player
 	|*							Private Methods							*|
 	\*------------------------------------------------------------------*/
 
+	/**
+	 * Load the name of the player from Facebook
+	 */
 	private void loadFullName()
 	{
 		if (userId == null) return;
@@ -237,10 +257,4 @@ public class Player
 	{
 		this.numberTerritories = numberTerritories;
 	}
-
-	public boolean me()
-	{
-		return userId.equals(AccountController.getInstance().getFacebookID());
-	}
-
 }

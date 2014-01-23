@@ -3,11 +3,11 @@
 |    TripActivity.java
 |
 | Description of the class TripActivity.java :
-|
+| View class for displays the list of trips
 |
 | <p>Copyright : EIAJ, all rights reserved</p>
 | @autor : Alexandre
-| @version : 30 déc. 2013
+| @version : 3 déc. 2013
 |
  *=====================================================================*/
 
@@ -44,6 +44,7 @@ public class TripActivity extends ListActivity
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
+		// Fetch trip from the server
 		DataLoader.getInstance().getTrips(0, new DataLoaderAdapter() {
 
 			@Override
@@ -62,7 +63,11 @@ public class TripActivity extends ListActivity
 	/*------------------------------------------------------------------*\
 	|*							Private Attributes						*|
 	\*------------------------------------------------------------------*/
-
+	
+	/**
+	 * Set a gradient background 
+	 * @param gradientDrawable the color
+	 */
 	@SuppressWarnings("deprecation")
 	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 	private void setBackground(GradientDrawable gradientDrawable)

@@ -1,3 +1,15 @@
+/*=====================================================================*
+| This file declares the following classes:
+|    TripActivity.java
+|
+| Description of the class TripActivity.java :
+| View class for displays the list of trips
+|
+| <p>Copyright : EIAJ, all rights reserved</p>
+| @autor : Alexandre
+| @version : 3 déc. 2013
+|
+ *=====================================================================*/
 package ch.hearc.corporations.view;
 
 import android.app.Fragment;
@@ -86,7 +98,7 @@ public class TerritoriesFragment extends Fragment implements ProfileInfoDisplaye
 				currentLocation = position.target;
 				if (TerritoriesFragment.this.actived)
 				{
-					TerritoriesFragment.this.territories.getTerritoryPolygoneForLocation(position.target, map);
+					TerritoriesFragment.this.territories.fetchTerritoriesForLocation(position.target, map);
 				}
 			}
 		});
@@ -120,6 +132,11 @@ public class TerritoriesFragment extends Fragment implements ProfileInfoDisplaye
 	|*							Public Methods							*|
 	\*------------------------------------------------------------------*/
 
+	/**
+	 * Used for know if the fragment is displayed or not.
+	 * If it is, add listener and update info
+	 * @param actived is true if the fragment is displayed
+	 */
 	public void setActived(boolean actived)
 	{
 		this.actived = actived;
@@ -136,6 +153,9 @@ public class TerritoriesFragment extends Fragment implements ProfileInfoDisplaye
 		}
 	}
 
+	/**
+	 * Update top profile info
+	 */
 	public void updateProfileInfo()
 	{
 		Profile profile = AccountController.getInstance().getProfile();
@@ -153,6 +173,9 @@ public class TerritoriesFragment extends Fragment implements ProfileInfoDisplaye
 		}
 	}
 
+	/**
+	 * Zoom on the home location
+	 */	
 	public void zoomOnHome()
 	{
 		if (AccountController.getInstance().getHome() != null)
@@ -197,11 +220,12 @@ public class TerritoriesFragment extends Fragment implements ProfileInfoDisplaye
 			}
 
 			/**
+			 * Show the territory info view.
 			 * @param map
-			 * @param fragment
-			 * @param location
-			 * @param territory
-			 * @param connected
+			 * @param fragment the fragment to displays
+			 * @param location the location where the player has click
+			 * @param territory the territory of touched
+			 * @param isConnected true if the territory is connected
 			 */
 			private void showInfoView(final GoogleMap map, final TerritoryInfoFragment fragment, LatLng location, Territory territory, boolean isConnected)
 			{

@@ -1,3 +1,16 @@
+/*=====================================================================*
+| This file declares the following classes:
+|    Encrypt.java
+|
+| Description of the class Encrypt.java :
+| Class that provide tool for encrypt data
+|
+| <p>Copyright : EIAJ, all rights reserved</p>
+| @autor : Alexandre
+| @version : 3 déc. 2013
+|
+ *=====================================================================*/
+
 package ch.hearc.corporations.security;
 
 import java.io.UnsupportedEncodingException;

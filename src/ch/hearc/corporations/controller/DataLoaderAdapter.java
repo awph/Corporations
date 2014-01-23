@@ -3,7 +3,7 @@
 |    DataLoaderAdapter.java
 |
 | Description of the class DataLoaderAdapter.java :
-|
+| Class for hide unwanted method of the DataLoaderListener
 |
 | <p>Copyright : EIAJ, all rights reserved</p>
 | @autor : Alexandre

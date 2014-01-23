@@ -57,6 +57,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_margin="10dp"
+        android:contentDescription="@string/icon_trips"
         android:src="@drawable/trips_icon" />
 
     <fragment

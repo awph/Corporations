@@ -21,8 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
-import android.location.Location;
 import android.util.Log;
+import ch.hearc.corporations.Tools;
 import ch.hearc.corporations.model.Trip;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -46,6 +46,16 @@ public class TripManager
 	private static final String	TRIPS_FILENAME				= "trips.bin";
 	private static final String	TAG							= TripManager.class.getSimpleName();
 
+	/**
+	 * Add the location passed in parameter in the current trip.
+	 * 
+	 * @param context
+	 *            app context
+	 * @param latitude
+	 *            latitude of the location
+	 * @param longitude
+	 *            longitude of the location
+	 */
 	public static void addLocation(Context context, double latitude, double longitude)
 	{
 		List<Trip> trips = loadTrips(context);
@@ -75,6 +85,13 @@ public class TripManager
 		saveTrips(context, trips);
 	}
 
+	/**
+	 * Load and return trips saved on device
+	 * 
+	 * @param context
+	 *            app context
+	 * @return the list of trips
+	 */
 	@SuppressWarnings("unchecked")
 	public static List<Trip> loadTrips(Context context)
 	{
@@ -93,6 +110,14 @@ public class TripManager
 		return trips;
 	}
 
+	/**
+	 * Save the trips to the device
+	 * 
+	 * @param context
+	 *            app context
+	 * @param trips
+	 *            the list of trips to save
+	 */
 	public static void saveTrips(Context context, List<Trip> trips)
 	{
 		try
@@ -109,14 +134,21 @@ public class TripManager
 		}
 	}
 
+	/**
+	 * Check if the location is near the home location. Look at the
+	 * {@link RADIUS_HOME_AREA_IN_METER} for zone size
+	 * 
+	 * @param latitude
+	 *            the latitude of the current location
+	 * @param longitude
+	 *            the longitude of the current location
+	 * @return true if it's in home area
+	 */
 	private static boolean isInHomeArea(double latitude, double longitude)
 	{
 		LatLng home = AccountController.getInstance().getHome();
 		if (home == null) return false;
 
-		float[] deltaLocationHome = new float[3];
-		Location.distanceBetween(home.latitude, home.longitude, latitude, longitude, deltaLocationHome);
-		Log.e(TAG, deltaLocationHome[0] + "");
-		return deltaLocationHome[0] < RADIUS_HOME_AREA_IN_METER;
+		return Tools.distanceBetween(home.latitude, home.longitude, latitude, longitude) < RADIUS_HOME_AREA_IN_METER;
 	}
 }

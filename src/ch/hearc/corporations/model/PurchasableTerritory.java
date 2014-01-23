@@ -3,7 +3,7 @@
 |    PurchasableTerritory.java
 |
 | Description of the class PurchasableTerritory.java :
-|
+| This class represent a purchasable territory (normal one's)
 |
 | <p>Copyright : EIAJ, all rights reserved</p>
 | @autor : Alexandre
@@ -59,6 +59,14 @@ public class PurchasableTerritory extends Territory
 	|*							Public Methods							*|
 	\*------------------------------------------------------------------*/
 
+	/**
+	 * Check if the player have enough money and try to buy the territory by
+	 * asking the server
+	 * 
+	 * @param callback
+	 *            for notify controller
+	 * @return true is enough money
+	 */
 	public boolean buy(final Callback callback)
 	{
 		boolean canBuyTerritory = AccountController.getInstance().getProfile().getCurrentMoney() >= salePrice;
@@ -88,6 +96,14 @@ public class PurchasableTerritory extends Territory
 		return canBuyTerritory;
 	}
 
+	/**
+	 * Change the price of the territory on the sever
+	 * 
+	 * @param newPrice
+	 *            is the new price of the territory
+	 * @param callback
+	 *            for notify the controller
+	 */
 	public void changePrice(final long newPrice, final Callback callback)
 	{
 		DataLoader.getInstance().changeTerritoryPrice(this, newPrice, new DataLoaderAdapter() {
@@ -95,7 +111,7 @@ public class PurchasableTerritory extends Territory
 			@Override
 			public void priceChanged(Status status)
 			{
-				PurchasableTerritory.this.salePrice = newPrice;
+				if (status == Status.OK) PurchasableTerritory.this.salePrice = newPrice;
 				callback.update();
 			}
 		});
@@ -105,6 +121,10 @@ public class PurchasableTerritory extends Territory
 	|*							Private Methods							*|
 	\*------------------------------------------------------------------*/
 
+	/**
+	 * Compute the price of the territory if this is a free one.
+	 * @return the price of the territory
+	 */
 	private int computePrice()
 	{
 		float distance = Tools.distanceBetween(AccountController.getInstance().getHome().latitude, AccountController.getInstance().getHome().longitude, getLatitude(), getLongitude());

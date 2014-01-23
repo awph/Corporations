@@ -1,9 +1,9 @@
 /*=====================================================================*
 | This file declares the following classes:
-|    ProfileFragment.java
+|    ProfileActivity.java
 |
-| Description of the class ProfileFragment.java :
-|
+| Description of the class ProfileActivity.java :
+| View class for displays all profile info and update skills
 |
 | <p>Copyright : EIAJ, all rights reserved</p>
 | @autor : Alexandre
@@ -37,7 +37,6 @@ import ch.hearc.corporations.controller.DataLoaderAdapter;
 import ch.hearc.corporations.controller.Status;
 import ch.hearc.corporations.model.Player;
 import ch.hearc.corporations.model.Profile;
-import ch.hearc.corporations.model.Skill;
 import ch.hearc.corporations.model.SkillType;
 
 /**
@@ -103,15 +102,13 @@ public class ProfileActivity extends Activity
 		}
 	}
 
-	private void setProfileInfo()
-	{
-		ProfilePictureView profilePictureView = (ProfilePictureView) findViewById(R.id.profile_picture_view);
-		profilePictureView.setProfileId(AccountController.getInstance().getFacebookID());
-		profilePictureView.setBorderWidth(4);
-		profilePictureView.setBorderColor(getResources().getColor(R.color.white));
-		refreshProfileInfo();
-	}
+	/*------------------------------------------------------------------*\
+	|*							Public Methods							*|
+	\*------------------------------------------------------------------*/
 
+	/**
+	 * Refresh all the informations of the player
+	 */
 	public void refreshProfileInfo()
 	{
 		TextView profileInfo = (TextView) findViewById(R.id.profile_info);
@@ -127,6 +124,36 @@ public class ProfileActivity extends Activity
 		profileInfo.setText(stringBuilder);
 	}
 
+	/**
+	 * Update the skill fragments description
+	 */
+	public void displayed()
+	{
+		for (SkillFragment skillFragment : skillFragments)
+		{
+			skillFragment.updateLevel();
+		}
+	}
+
+	/*------------------------------------------------------------------*\
+	|*							Private Methods							*|
+	\*------------------------------------------------------------------*/
+
+	/**
+	 * Set the image of the player
+	 */
+	private void setProfileInfo()
+	{
+		ProfilePictureView profilePictureView = (ProfilePictureView) findViewById(R.id.profile_picture_view);
+		profilePictureView.setProfileId(AccountController.getInstance().getFacebookID());
+		profilePictureView.setBorderWidth(4);
+		profilePictureView.setBorderColor(getResources().getColor(R.color.white));
+		refreshProfileInfo();
+	}
+
+	/**
+	 * Add the skill's fragments to the view.
+	 */
 	private void addFragmentsToView()
 	{
 		// Update the layout
@@ -144,30 +171,31 @@ public class ProfileActivity extends Activity
 		ft.commit();
 	}
 
-	public void displayed()
-	{
-		for (SkillFragment skillFragment : skillFragments)
-		{
-			skillFragment.updateLevel();
-		}
-	}
-
+	/**
+	 * Create the skill fragments
+	 */
 	private void initSkills()
 	{
-		skillFragments[Skill.SKILL_PURCHASE_PRICE] = new SkillFragment();
-		skillFragments[Skill.SKILL_PURCHASE_PRICE].setSkillType(SkillType.purchasePrice);
-		skillFragments[Skill.SKILL_PURCHASE_DISTANCE] = new SkillFragment();
-		skillFragments[Skill.SKILL_PURCHASE_DISTANCE].setSkillType(SkillType.purchaseDistance);
-		skillFragments[Skill.SKILL_EXPERIENCE_LIMIT] = new SkillFragment();
-		skillFragments[Skill.SKILL_EXPERIENCE_LIMIT].setSkillType(SkillType.experienceLimit);
-		skillFragments[Skill.SKILL_MONEY_LIMIT] = new SkillFragment();
-		skillFragments[Skill.SKILL_MONEY_LIMIT].setSkillType(SkillType.moneyLimit);
-		skillFragments[Skill.SKILL_EXPERIENCE_QUANTITY_FOUND] = new SkillFragment();
-		skillFragments[Skill.SKILL_EXPERIENCE_QUANTITY_FOUND].setSkillType(SkillType.experienceQuantityFound);
-		skillFragments[Skill.SKILL_ALLIANCE_PRICE] = new SkillFragment();
-		skillFragments[Skill.SKILL_ALLIANCE_PRICE].setSkillType(SkillType.alliancePrice);
+		skillFragments[SkillType.purchasePrice.getNumber()] = new SkillFragment();
+		skillFragments[SkillType.purchasePrice.getNumber()].setSkillType(SkillType.purchasePrice);
+		skillFragments[SkillType.purchaseDistance.getNumber()] = new SkillFragment();
+		skillFragments[SkillType.purchaseDistance.getNumber()].setSkillType(SkillType.purchaseDistance);
+		skillFragments[SkillType.experienceLimit.getNumber()] = new SkillFragment();
+		skillFragments[SkillType.experienceLimit.getNumber()].setSkillType(SkillType.experienceLimit);
+		skillFragments[SkillType.moneyLimit.getNumber()] = new SkillFragment();
+		skillFragments[SkillType.moneyLimit.getNumber()].setSkillType(SkillType.moneyLimit);
+		skillFragments[SkillType.experienceQuantityFound.getNumber()] = new SkillFragment();
+		skillFragments[SkillType.experienceQuantityFound.getNumber()].setSkillType(SkillType.experienceQuantityFound);
+		skillFragments[SkillType.alliancePrice.getNumber()] = new SkillFragment();
+		skillFragments[SkillType.alliancePrice.getNumber()].setSkillType(SkillType.alliancePrice);
 	}
 
+	/**
+	 * Set a gradient background
+	 * 
+	 * @param gradientDrawable
+	 *            the color
+	 */
 	@SuppressWarnings("deprecation")
 	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 	private void setBackground(GradientDrawable gradientDrawable)
