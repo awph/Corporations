@@ -113,14 +113,14 @@ public class ProfileActivity extends Activity
 	{
 		TextView profileInfo = (TextView) findViewById(R.id.profile_info);
 		Profile profile = AccountController.getInstance().getProfile();
-		StringBuilder stringBuilder = new StringBuilder("Current money: " + Tools.formatMoney(profile.getCurrentMoney()));
-		stringBuilder.append("\nTotal revenue: " + Tools.formatMoney(profile.getCurrentRevenue()));
-		stringBuilder.append("\nTrip money earned: " + Tools.formatMoney(profile.getTripMoneyEarned()));
-		stringBuilder.append("\nTotal gain: " + Tools.formatMoney(profile.getTotalGain()));
-		stringBuilder.append("\nAllies: " + profile.getNumberAllies());
-		stringBuilder.append("\nTerrotories owned: " + profile.getNumberTerritories());
-		stringBuilder.append("\nExperience points: " + profile.getExperiencePoints());
-		stringBuilder.append("\nRank: " + profile.getRank());
+		StringBuilder stringBuilder = new StringBuilder(getString(R.string.profile_activity_current_money) + " " + Tools.formatMoney(profile.getCurrentMoney()));
+		stringBuilder.append("\n" + getString(R.string.profile_activity_total_revenue) + " " + Tools.formatMoney(profile.getCurrentRevenue()));
+		stringBuilder.append("\n" + getString(R.string.profile_activity_trip_money_earned) + " " + Tools.formatMoney(profile.getTripMoneyEarned()));
+		stringBuilder.append("\n" + getString(R.string.profile_activity_total_gain) + " " + Tools.formatMoney(profile.getTotalGain()));
+		stringBuilder.append("\n" + getString(R.string.profile_activity_allies) + " " + profile.getNumberAllies());
+		stringBuilder.append("\n" + getString(R.string.profile_activity_territories_owned) + " " + profile.getNumberTerritories());
+		stringBuilder.append("\n" + getString(R.string.profile_activity_experience_points) + " " + profile.getExperiencePoints());
+		stringBuilder.append("\n" + getString(R.string.profile_activity_rank) + " " + profile.getRank());
 		profileInfo.setText(stringBuilder);
 	}
 

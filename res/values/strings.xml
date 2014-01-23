@@ -65,4 +65,13 @@
     <string name="trip_detail_activity_money_earn">Earned money: %s</string>
     <string name="trip_detail_activity_date">Date: %s</string>
     <string name="trip_detail_activity_time">Trip time: %1$sh%2$sm</string>
+    
+    <string name="profile_activity_current_money">Current money: </string>
+    <string name="profile_activity_total_revenue">Revenue: </string>
+    <string name="profile_activity_trip_money_earned">Trip money earned: </string>
+    <string name="profile_activity_total_gain">Total gain: </string>
+    <string name="profile_activity_allies">Allies: </string>
+    <string name="profile_activity_territories_owned">Territories owned: </string>
+    <string name="profile_activity_experience_points">Experience points: </string>
+    <string name="profile_activity_rank">Rank: </string>
 </resources>
