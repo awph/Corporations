@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">Corporations</string>
-    <string name="app_id">169291389944036</string>
+    <string name="app_id"></string>
     <string name="icon_description">Icone de l\'application</string>
     <string name="icon_school">Icone de l\'école HE-Arc</string>
     <string name="icon_trips">Icone de la vue des déplacements</string>
@@ -61,7 +61,7 @@
     <string name="trip_detail_activity_money_earn">Argent gagné : %s</string>
     <string name="trip_detail_activity_date">Date : %s</string>
     <string name="trip_detail_activity_time">Temps de déplacement: %1$sh%2$sm</string>
-    
+
     <string name="profile_activity_current_money">Argent actuel : </string>
     <string name="profile_activity_total_revenue">Revenu actuel : </string>
     <string name="profile_activity_trip_money_earned">Argent gagné en déplacement : </string>
@@ -70,7 +70,7 @@
     <string name="profile_activity_territories_owned">Territoires possédés : </string>
     <string name="profile_activity_experience_points">Points d\'expérience : </string>
     <string name="profile_activity_rank">Rang : </string>
-    
+
     <string name="com_facebook_dialogloginactivity_ok_button">OK</string>
     <string name="com_facebook_loginview_log_out_button">Déconnexion</string>
     <string name="com_facebook_loginview_log_in_button">Connexion avec Facebook</string>

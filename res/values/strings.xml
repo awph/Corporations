@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Corporations</string>
-    <string name="app_id">169291389944036</string>
+    <string name="app_id"></string>
     <string name="icon_description">Icon of the application</string>
     <string name="icon_school">Icon of the HE-Arc</string>
     <string name="icon_trips">Icon of the trips view</string>
@@ -65,7 +65,7 @@
     <string name="trip_detail_activity_money_earn">Earned money: %s</string>
     <string name="trip_detail_activity_date">Date: %s</string>
     <string name="trip_detail_activity_time">Trip time: %1$sh%2$sm</string>
-    
+
     <string name="profile_activity_current_money">Current money: </string>
     <string name="profile_activity_total_revenue">Revenue: </string>
     <string name="profile_activity_trip_money_earned">Trip money earned: </string>

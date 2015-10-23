@@ -98,13 +98,11 @@
 
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyBFqfEdcehRMLp2lqexmwt4COetQ5qe45I" />
+            android:value="" />
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
-        <!-- HomePcKey : AIzaSyCbfg79ZBWqX6dwcFaaB5NkEqWsVoHQvaQ -->
-        <!-- WorkPcKey : AIzaSyC_RF5-u0M9ed-kbX_r_58fT3dBGslTohA -->
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/app_id" />
