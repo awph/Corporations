@@ -1,0 +1,47 @@
+Corporations - Dev guide
+.........................
+.... Alexandre perez ....
+...... HE-Arc 2014 ......
+.........................
+
+L'application utilise deux librairies:
+	- Facebook SDK for Android, actuellement 3.5.2.
+		Disponible à cette adresse https://developers.facebook.com/docs/android/
+	- Google Play Services, pour la carte et le location provider.
+		https://developer.android.com/google/play-services/index.html?hl=fr
+		https://developer.android.com/google/play-services/setup.html pour la mise en place.
+
+L'application utilise  également une classe Facebook modifiée, afin d'avoir les images des joueurs rondes, ProfilePictureView. Il est possible que Facebook modifie la façon de récupérer les images et ainsi cette classe devra être adaptée.
+
+Sinon rien de spécial, la min. target est ici de Android 4.0.
+
+Pour la mise en place du serveur, il vous suffit de placer le fichier api.php sur celui-ci, d'y entrer les informations de connexion à la base de données et d'importer cette base de données.
+Il faut ensuite modifier dans la classe de configuration du client l'adresse de votre serveur.
+Pour ajouter des territoires spéciaux au début du jeu, il vous faut utiliser la requête suivante :
+
+drop procedure if exists fill_special_territory;
+
+delimiter #
+create procedure fill_special_territory(in input_latitude_1 double, in input_longitude_1 double, in input_latitude_2 double, in input_longitude_2 double, in quantity int unsigned)
+begin
+	declare quantity_added int unsigned default 0;
+	set @delta = 0.01;
+	start transaction;
+		while quantity_added < quantity do
+			set @latitude = input_latitude_1 + RAND() * (input_latitude_2 - input_latitude_1);
+			set @longitude = input_longitude_1 + RAND() * (input_longitude_2 - input_longitude_1);
+			while (select count(*) from detailed_territory where latitude BETWEEN @latitude - @delta AND @latitude + @delta AND longitude BETWEEN @longitude - @delta AND @longitude + @delta) > 0 do
+				set @latitude = input_latitude_1 + RAND() * (input_latitude_2 - input_latitude_1);
+				set @longitude = input_longitude_1 + RAND() * (input_longitude_2 - input_longitude_1);
+			end while;
+
+			insert into location (latitude, longitude) values (@latitude, @longitude);
+			insert into territory (owner, location, revenue, purchasing_date, purchasing_price, sale_price) VALUES (null, LAST_INSERT_ID(), (4000 + ROUND(RAND()*6001))*10, NOW(), null, null);
+
+			set quantity_added = quantity_added+1;
+		end while;
+	commit;
+end #
+delimiter ;
+
+call fill_special_territory(40.5,5.5,50.5,8.5,500);
